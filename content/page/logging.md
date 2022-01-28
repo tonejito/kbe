@@ -78,4 +78,4 @@ You can remove the created pods with:
 kubectl delete pod/logme pod/oneshot
 ```
 
-[Previous](/secrets) | [Next](/jobs)
+[Previous](../secrets) | [Next](../jobs)

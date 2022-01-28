@@ -9,7 +9,7 @@ In Kubernetes, nodes are the (virtual) machines where your workloads in shape of
 you might want to familiarize yourself with node [operations](https://kubernetes.io/docs/concepts/nodes/node/).
 
 To list available nodes in your cluster (note that the output will depend on the environment
-you're using. This example is using the [OpenShift Playground](/diy/)):
+you're using. This example is using the [OpenShift Playground](../diy/)):
 
 ```bash
 kubectl get nodes
@@ -121,4 +121,4 @@ Allocated resources:
 
 Note that there are more sophisticated methods than shown above, such as using affinity, to [assign pods to nodes](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/) and depending on your use case, you might want to check those out as well.
 
-[Previous](/ic) | [Next](/api)
+[Previous](../ic) | [Next](../api)

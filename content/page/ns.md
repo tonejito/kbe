@@ -10,7 +10,7 @@ as a workspace you're sharing with other users. Many resources such as pods and
 services are namespaced, while some, for example, nodes are not namespaced (but cluster-wide). As a developer you'd usually use an assigned namespace, however admins may wish to manage them, for example to set up access control or resource quotas.
 
 Let's list all namespaces (note that the output will depend on the environment
-you're using, we're using the [OpenShift Playground](/diy/) here):
+you're using, we're using the [OpenShift Playground](../diy/) here):
 
 ```bash
 kubectl get ns
@@ -106,4 +106,4 @@ kubectl delete ns test
 If you're an admin, you might want to check out the [docs](https://kubernetes.io/docs/tasks/administer-cluster/namespaces/)
 for more info how to handle namespaces.
 
-[Previous](/envs) | [Next](/volumes)
+[Previous](../envs) | [Next](../volumes)

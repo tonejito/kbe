@@ -63,4 +63,4 @@ kubectl delete pod/envs
 
 In addition to the above examples, you can also use `secrets`, volumes, or the [downward API](https://kubernetes.io/docs/user-guide/downward-api/) to inject additional information into your container environments.
 
-[Previous](/healthz) | [Next](/ns)
+[Previous](../healthz) | [Next](../ns)

@@ -20,7 +20,7 @@ pod/sise created
 ```
 
 ***Note: Deprecation Warning!***
-Older releases of `kubectl` will produce a [deployment](/deployments/) resource as the result of the provided `kubectl run` example, while newer releases produce a single `pod` resource.  The example commands in this section should still work (assuming you substitute your own pod name) - but you'll need to run `kubectl delete deployment sise` at the end of this section to clean up.
+Older releases of `kubectl` will produce a [deployment](../deployments/) resource as the result of the provided `kubectl run` example, while newer releases produce a single `pod` resource.  The example commands in this section should still work (assuming you substitute your own pod name) - but you'll need to run `kubectl delete deployment sise` at the end of this section to clean up.
 
 Check to see if the pod is running:
 
@@ -142,6 +142,6 @@ kubectl delete pod constraintpod
 To sum up, launching one or more containers (together) in Kubernetes is simple,
 however doing it directly as shown above comes with a serious limitation: you have to
 manually take care of keeping them running in case of a failure. A better way
-to supervise pods is to use [deployments](/deployments), giving you much more control over the life cycle, including rolling out a new version.
+to supervise pods is to use [deployments](../deployments), giving you much more control over the life cycle, including rolling out a new version.
 
-[Next](/labels)
+[Next](../labels)

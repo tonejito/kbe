@@ -50,4 +50,4 @@ kubectl delete -f https://raw.githubusercontent.com/openshift-evangelists/kbe/ma
 If you want to learn more about init containers and related topics, check out the blog post [Kubernetes: A Pod’s Life](https://blog.openshift.com/kubernetes-pods-life/).
 
 
-[Previous](/statefulset) | [Next](/nodes)
+[Previous](../statefulset) | [Next](../nodes)

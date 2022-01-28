@@ -66,6 +66,6 @@ kubectl delete rc rcex
 replicationcontroller "rcex" deleted
 ```
 
-Note that, going forward, the RCs are called [replica sets](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/) (RS), supporting set-based selectors. The RS are already in use in the context of [deployments](/deployments/).
+Note that, going forward, the RCs are called [replica sets](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/) (RS), supporting set-based selectors. The RS are already in use in the context of [deployments](../deployments/).
 
-[Previous](/labels) | [Next](/deployments)
+[Previous](../labels) | [Next](../deployments)

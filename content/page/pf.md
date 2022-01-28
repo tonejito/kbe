@@ -45,4 +45,4 @@ kubectl delete service/simpleservice
 kubectl delete deployment sise-deploy
 ```
 
-[Previous](/sd) | [Next](/healthz)
+[Previous](../sd) | [Next](../healthz)

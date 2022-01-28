@@ -104,4 +104,4 @@ kubectl delete pods labelexother
 Note that labels are not restricted to pods. In fact you can apply them to
 all sorts of objects, such as nodes or services.
 
-[Previous](/pods) | [Next](/deployments)
+[Previous](../pods) | [Next](../deployments)
