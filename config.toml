@@ -146,3 +146,9 @@ googleAnalytics = "UA-34425776-2"
   name = "API Server"
   url = "api/"
   weight = "18"
+
+[[menu.main]]
+  parent = "hands-on"
+  name = "MetalLB"
+  url = "page/metallb/metallb/"
+  weight = "19"

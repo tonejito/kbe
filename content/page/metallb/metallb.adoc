@@ -1,0 +1,16 @@
+ifndef::backend-docbook5,backend-docbook45[:imagesdir: ../../..]
+
+== MetalLB
+
+MetalLB is a load balancer suitable for local environments, it is included as an add-on in `minikube`.
+
+- https://metallb.universe.tf/
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+[cols="^1a,^8a,^1a",options="footer",frame="none",grid="none",align="center",halign="center",valign="middle"]
+|===
+| 
+| link:../../../[Home]
+| link:../install[Next]
+|===
