@@ -8,7 +8,16 @@ HUGO_THEME=beautifulhugo
 BIND_HOST?=0.0.0.0
 BIND_PORT?=1313
 
-default:	run
+HUGO_ARGS=\
+--environment ${HUGO_ENV} \
+--debug --verbose --log --verboseLog --logFile /dev/fd/2 \
+--bind ${BIND_HOST} --port ${BIND_PORT} \
+--theme=${HUGO_THEME} \
+--buildDrafts --buildExpired --buildFuture \
+--noHTTPCache --ignoreCache \
+--disableFastRender
+
+default:	container
 
 install:
 	brew install hugo
@@ -16,13 +25,7 @@ install:
 
 run:
 	 hugo server \
-	  --environment ${HUGO_ENV} \
-	  --debug --verbose --log --verboseLog --logFile /dev/fd/2 \
-	  --bind ${BIND_HOST} --port ${BIND_PORT} \
-	  --theme=${HUGO_THEME} \
-	  --buildDrafts --buildExpired --buildFuture \
-	  --noHTTPCache --ignoreCache \
-	  --renderToDisk --disableFastRender \
+	  ${HUGO_ARGS} --renderToDisk \
 	;
 
 container:
@@ -32,11 +35,5 @@ container:
 	  -p ${BIND_PORT}:${BIND_PORT} \
 	  ${HUGO_IMAGE} \
 	    server \
-	      --environment ${HUGO_ENV} \
-	      --debug --verbose --log --verboseLog --logFile /dev/fd/2 \
-	      --bind ${BIND_HOST} --port ${BIND_PORT} \
-	      --theme=${HUGO_THEME} \
-	      --buildDrafts --buildExpired --buildFuture \
-	      --noHTTPCache --ignoreCache \
-	      --disableFastRender \
+	      ${HUGO_ARGS} \
 	    ;
