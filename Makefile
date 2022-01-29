@@ -8,6 +8,11 @@ HUGO_THEME=beautifulhugo
 BIND_HOST?=0.0.0.0
 BIND_PORT?=1313
 
+SITE_REPO=https://github.com/tonejito/kbe.git
+SITE_URL=https://tonejito.github.io/kbe/
+SITE_BRANCH=gh-pages
+SITE_DIR=public/
+
 HUGO_ARGS=\
 --environment ${HUGO_ENV} \
 --debug --verbose --log --verboseLog --logFile /dev/fd/2 \
@@ -37,3 +42,14 @@ container:
 	    server \
 	      ${HUGO_ARGS} \
 	    ;
+
+release:
+	git submodule add -f -b ${SITE_BRANCH} ${SITE_REPO} ${SITE_DIR}
+	hugo --theme ${HUGO_THEME} --baseURL ${SITE_URL}
+	$(MAKE) -C public -f ../Makefile do_release
+
+do_release:
+	git add --all
+	git status
+	git commit
+	git push -u origin ${SITE_BRANCH}
