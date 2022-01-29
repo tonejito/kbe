@@ -2,75 +2,75 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://kubernetesbyexample.com/</loc>
+    <loc>https://tonejito.github.io/kbe/</loc>
     <lastmod>2020-08-10T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url><url>
-    <loc>https://kubernetesbyexample.com/diy/</loc>
+    <loc>https://tonejito.github.io/kbe/diy/</loc>
     <lastmod>2020-08-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/page/</loc>
+    <loc>https://tonejito.github.io/kbe/page/</loc>
     <lastmod>2020-08-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/ns/</loc>
+    <loc>https://tonejito.github.io/kbe/ns/</loc>
     <lastmod>2020-03-23T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/nodes/</loc>
+    <loc>https://tonejito.github.io/kbe/nodes/</loc>
     <lastmod>2020-03-23T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/statefulset/</loc>
+    <loc>https://tonejito.github.io/kbe/statefulset/</loc>
     <lastmod>2020-03-23T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/jobs/</loc>
+    <loc>https://tonejito.github.io/kbe/jobs/</loc>
     <lastmod>2020-03-19T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/volumes/</loc>
+    <loc>https://tonejito.github.io/kbe/volumes/</loc>
     <lastmod>2020-03-19T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/api/</loc>
+    <loc>https://tonejito.github.io/kbe/api/</loc>
     <lastmod>2019-03-23T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/pods/</loc>
+    <loc>https://tonejito.github.io/kbe/pods/</loc>
     <lastmod>2019-03-23T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/logging/</loc>
+    <loc>https://tonejito.github.io/kbe/logging/</loc>
     <lastmod>2019-02-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/secrets/</loc>
+    <loc>https://tonejito.github.io/kbe/secrets/</loc>
     <lastmod>2019-02-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/deployments/</loc>
+    <loc>https://tonejito.github.io/kbe/deployments/</loc>
     <lastmod>2019-02-27T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/envs/</loc>
+    <loc>https://tonejito.github.io/kbe/envs/</loc>
     <lastmod>2019-02-27T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/healthz/</loc>
+    <loc>https://tonejito.github.io/kbe/healthz/</loc>
     <lastmod>2019-02-27T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/labels/</loc>
+    <loc>https://tonejito.github.io/kbe/labels/</loc>
     <lastmod>2019-02-27T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/pv/</loc>
+    <loc>https://tonejito.github.io/kbe/pv/</loc>
     <lastmod>2019-02-27T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/rcs/</loc>
+    <loc>https://tonejito.github.io/kbe/rcs/</loc>
     <lastmod>2019-02-27T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/sd/</loc>
+    <loc>https://tonejito.github.io/kbe/sd/</loc>
     <lastmod>2019-02-27T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/services/</loc>
+    <loc>https://tonejito.github.io/kbe/services/</loc>
     <lastmod>2019-02-27T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/ic/</loc>
+    <loc>https://tonejito.github.io/kbe/ic/</loc>
     <lastmod>2019-02-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/pf/</loc>
+    <loc>https://tonejito.github.io/kbe/pf/</loc>
     <lastmod>2019-02-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kubernetesbyexample.com/categories/</loc>
+    <loc>https://tonejito.github.io/kbe/categories/</loc>
   </url><url>
-    <loc>https://kubernetesbyexample.com/tags/</loc>
+    <loc>https://tonejito.github.io/kbe/tags/</loc>
   </url>
 </urlset>
