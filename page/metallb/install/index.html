@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Kubernetes By Example</title>
+  <meta property="og:title" content="Kubernetes By Example" />
+  <meta name="twitter:title" content="Kubernetes By Example" />
+  <meta name="description" content="Install MetalLB in a minikube cluster MetalLB is distributed as a minikube addon. You can also consult the upstream project installation guide.
+Set the virtualbox driver as default for minikube.
+[user@host kbe]$ minikube config set driver virtualbox ❗ These changes will take effect upon a minikube delete and then a minikube start Create a minikube instance.
+[user@host kbe]$ minikube start 😄 minikube v1.24.0 on Redhat 8.5 ✨ Using the virtualbox driver based on user configuration 👍 Starting control plane node minikube in cluster minikube 🔥 Creating virtualbox VM (CPUs=2, Memory=6000MB, Disk=20000MB) .">
+  <meta property="og:description" content="Install MetalLB in a minikube cluster MetalLB is distributed as a minikube addon. You can also consult the upstream project installation guide.
+Set the virtualbox driver as default for minikube.
+[user@host kbe]$ minikube config set driver virtualbox ❗ These changes will take effect upon a minikube delete and then a minikube start Create a minikube instance.
+[user@host kbe]$ minikube start 😄 minikube v1.24.0 on Redhat 8.5 ✨ Using the virtualbox driver based on user configuration 👍 Starting control plane node minikube in cluster minikube 🔥 Creating virtualbox VM (CPUs=2, Memory=6000MB, Disk=20000MB) .">
+  <meta name="twitter:description" content="Install MetalLB in a minikube cluster MetalLB is distributed as a minikube addon. You can also consult the upstream project installation guide.
+Set the virtualbox driver as default for minikube. …">
+  <meta name="author" content=""/>
+  <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://tonejito.github.io/kbe/page/metallb/install/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kubernetes By Example" />
+
+  <meta name="generator" content="Hugo 0.92.1" />
+  <link rel="canonical" href="https://tonejito.github.io/kbe/page/metallb/install/" />
+  <link rel="alternate" href="https://tonejito.github.io/index.xml" type="application/rss+xml" title="Kubernetes By Example">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/main.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/pygment_highlights.css" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/highlight.min.css" />
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WNHKJNX');</script>
+  
+</head>
+
+  <body>
+    
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WNHKJNX"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
+  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white;background: #53b9fc;font-size:small;' role="alert">
+    <strong>Kubernetes By Example is evolving!</strong><br/>On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.<br/>Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE. 
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://tonejito.github.io/">Home</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/pods/">Pods</a>
+                
+                  <a href="/kbe/labels/">Labels</a>
+                
+                  <a href="/kbe/deployments/">Deployments</a>
+                
+                  <a href="/kbe/services/">Services</a>
+                
+                  <a href="/kbe/sd/">Service Discovery</a>
+                
+                  <a href="/kbe/pf/">Port Forward</a>
+                
+                  <a href="/kbe/healthz/">Health Checks</a>
+                
+                  <a href="/kbe/envs/">Environment Variables</a>
+                
+                  <a href="/kbe/ns/">Namespaces</a>
+                
+                  <a href="/kbe/volumes/">Volumes</a>
+                
+                  <a href="/kbe/pv/">Persistent Volumes</a>
+                
+                  <a href="/kbe/secrets/">Secrets</a>
+                
+                  <a href="/kbe/logging/">Logging</a>
+                
+                  <a href="/kbe/jobs/">Jobs</a>
+                
+                  <a href="/kbe/statefulset/">Stateful Sets</a>
+                
+                  <a href="/kbe/ic/">Init Containers</a>
+                
+                  <a href="/kbe/nodes/">Nodes</a>
+                
+                  <a href="/kbe/api/">API Server</a>
+                
+                  <a href="/kbe/page/metallb/metallb/">MetalLB</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Try out!" href="/kbe/diy/">Try out!</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="Kubernetes By Example" href="https://tonejito.github.io/">
+            <img class="avatar-img" src="https://tonejito.github.io/kbe//img/kbe-logo.png" alt="Kubernetes By Example" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  <div class="intro-header"></div>
+
+
+    
+  <div class="container" role="main">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <h1 id="install-metallb-in-a-minikube-cluster">Install MetalLB in a <code>minikube</code> cluster</h1>
+<p>MetalLB is distributed as a <code>minikube</code> addon.
+You can also consult the upstream project <a href="https://metallb.universe.tf/installation/">installation guide</a>.</p>
+<p>Set the <code>virtualbox</code> driver as default for <code>minikube</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ minikube config set driver virtualbox
+❗  These changes will take effect upon a minikube delete and <span style="color:#66d9ef">then</span> a minikube start
+</code></pre></div><p>Create a <code>minikube</code> instance.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ minikube start
+😄  minikube v1.24.0 on Redhat 8.5
+✨  Using the virtualbox driver based on user configuration
+👍  Starting control plane node minikube in cluster minikube
+🔥  Creating virtualbox VM <span style="color:#f92672">(</span>CPUs<span style="color:#f92672">=</span>2, Memory<span style="color:#f92672">=</span>6000MB, Disk<span style="color:#f92672">=</span>20000MB<span style="color:#f92672">)</span> ...
+🐳  Preparing Kubernetes v1.22.3 on Docker 20.10.8 ...
+    ▪ Generating certificates and keys ...
+    ▪ Booting up control plane ...
+    ▪ Configuring RBAC rules ...
+🔎  Verifying Kubernetes components...
+    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+🌟  Enabled addons: storage-provisioner, default-storageclass
+🏄  Done! kubectl is now configured to use <span style="color:#e6db74">&#34;minikube&#34;</span> cluster and <span style="color:#e6db74">&#34;default&#34;</span> namespace by default
+</code></pre></div><p>Wait until all pods are ready</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl get pods -n kube-system
+NAME                               READY   STATUS    RESTARTS   AGE
+coredns-78fcd69978-mvjqv           1/1     Running   <span style="color:#ae81ff">0</span>          5m24s
+etcd-minikube                      1/1     Running   <span style="color:#ae81ff">0</span>          5m36s
+kube-apiserver-minikube            1/1     Running   <span style="color:#ae81ff">0</span>          5m36s
+kube-controller-manager-minikube   1/1     Running   <span style="color:#ae81ff">0</span>          5m36s
+kube-proxy-kl6tc                   1/1     Running   <span style="color:#ae81ff">0</span>          5m24s
+kube-scheduler-minikube            1/1     Running   <span style="color:#ae81ff">0</span>          5m36s
+storage-provisioner                1/1     Running   <span style="color:#ae81ff">0</span>          5m36s
+</code></pre></div><p>Check the driver on which the minikube VM is created.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ minikube profile list
+|---------------|------------|---------|----------------|------|---------|---------|-------|
+|    Profile    | VM Driver  | Runtime |       IP       | Port | Version | Status  | Nodes |
+|---------------|------------|---------|----------------|------|---------|---------|-------|
+| minikube      | virtualbox | docker  | 192.168.59.118 | <span style="color:#ae81ff">8443</span> | v1.22.3 | Running |     <span style="color:#ae81ff">1</span> |
+|---------------|------------|---------|----------------|------|---------|---------|-------|
+</code></pre></div><p>Check the VirtualBox host-only network that the minikube VM is connected to.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Open the VirtualBox console, and select the <code>minikube</code> VM.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><img src="../../../img/metallb-001-virtualbox-minikube.png" alt=""></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">VirtualBox console</td>
+</tr>
+</tbody>
+</table>
+<p>Scroll down on the right panel, and check the configuration parameters of the second network adapter to see on which host-only adapter the VM is connected to.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><img src="../../../img/metallb-002-virtualbox-minikube-network.png" alt=""></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>minikube</code> VM network parameters</td>
+</tr>
+</tbody>
+</table>
+<p>Check the avaliable IP ranges for the VirtualBox host-only network.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Open the <strong>File</strong> menu and click <strong>Host Network Manager</strong>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><img src="../../../img/metallb-003-virtualbox-host-network-manager-menu.png" alt=""></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">VirtualBox console</td>
+</tr>
+</tbody>
+</table>
+<p>On the Host Network Manager window, click the <strong>properties</strong> button, select the appropriate <code>vboxnet</code> adapter and click on the <strong>DHCP Server</strong> tab.
+Take note of the lower and upper address bounds.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><img src="../../../img/metallb-005-virtualbox-host-network-manager-dhcp.png" alt=""></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">VirtualBox host-only adapter DHCP settings</td>
+</tr>
+</tbody>
+</table>
+<p>Check if <code>metallb</code> is listed on the avaliable add-ons for <code>minikube</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ minikube addons list
+|--------------------------|----------|------------|-----------------------|
+|        ADDON NAME        | PROFILE  |   STATUS   |      MAINTAINER       |
+|--------------------------|----------|------------|-----------------------|
+| ambassador               | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| auto-pause               | minikube | disabled   | google                |
+| csi-hostpath-driver      | minikube | disabled   | kubernetes            |
+| dashboard                | minikube | disabled   | kubernetes            |
+| default-storageclass     | minikube | enabled ✅ | kubernetes            |
+| efk                      | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| freshpod                 | minikube | disabled   | google                |
+| gcp-auth                 | minikube | disabled   | google                |
+| gvisor                   | minikube | disabled   | google                |
+| helm-tiller              | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| ingress                  | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| ingress-dns              | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| istio                    | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| istio-provisioner        | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| kubevirt                 | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| logviewer                | minikube | disabled   | google                |
+| metallb                  | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| metrics-server           | minikube | disabled   | kubernetes            |
+| nvidia-driver-installer  | minikube | disabled   | google                |
+| nvidia-gpu-device-plugin | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| olm                      | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| pod-security-policy      | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| portainer                | minikube | disabled   | portainer.io          |
+| registry                 | minikube | disabled   | google                |
+| registry-aliases         | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| registry-creds           | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| storage-provisioner      | minikube | enabled ✅ | kubernetes            |
+| volumesnapshots          | minikube | disabled   | kubernetes            |
+|--------------------------|----------|------------|-----------------------|
+💡  To see addons list <span style="color:#66d9ef">for</span> other profiles use: <span style="color:#e6db74">`</span>minikube addons -p name list<span style="color:#e6db74">`</span>
+</code></pre></div><p>Enable the MetalLB minikube addon.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ minikube addons enable metallb
+    ▪ Using image metallb/controller:v0.9.6
+    ▪ Using image metallb/speaker:v0.9.6
+🌟  The <span style="color:#e6db74">&#39;metallb&#39;</span> addon is enabled
+</code></pre></div><p>Configure the IP addresses that can be used by MetalLB for the LoadBalancer services.
+The provided IP range for MetalLB must not overlap with the DHCP range for the host-only network adapter.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ minikube addons configure metallb
+-- Enter Load Balancer Start IP: 192.168.59.20 
+-- Enter Load Balancer End IP: 192.168.59.30
+    ▪ Using image metallb/speaker:v0.9.6
+    ▪ Using image metallb/controller:v0.9.6
+✅  metallb was successfully configured
+</code></pre></div><p>Review the applied settings</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl get configmap/config -n metallb-system -o yaml
+apiVersion: v1
+data:
+  config: |
+    address-pools:
+    - name: default
+      protocol: layer2
+      addresses:
+      - 192.168.59.20-192.168.59.30
+kind: ConfigMap
+...output omitted...
+</code></pre></div><p>Create a deployment.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl create deployment nginx <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --image quay.io/redhattraining/nginx:1.21 --port <span style="color:#ae81ff">80</span>
+deployment.apps/nginx created
+</code></pre></div><p>Check that the pod for the deployment is ready</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl get pods,deployments
+NAME                        READY   STATUS    RESTARTS   AGE
+pod/nginx-f66b485df-7krfh   1/1     Running   <span style="color:#ae81ff">0</span>          50s
+
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx   1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           50s
+</code></pre></div><p>Expose the deployment to create a LoadBalancer service</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl expose deployment nginx <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --type LoadBalancer --port <span style="color:#ae81ff">80</span> --target-port <span style="color:#ae81ff">80</span>
+service/nginx exposed
+</code></pre></div><p>Get the external IP address for the LoadBalancer service.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl get services
+NAME                 TYPE           CLUSTER-IP     EXTERNAL-IP     PORT<span style="color:#f92672">(</span>S<span style="color:#f92672">)</span>        AGE
+service/kubernetes   ClusterIP      10.96.0.1      &lt;none&gt;          443/TCP        5h27m
+service/nginx        LoadBalancer   10.105.39.72   192.168.59.20   80:31304/TCP   46s
+</code></pre></div><p>Check that the service responds with <code>curl</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ curl -vk#L <span style="color:#e6db74">&#39;http://192.168.59.20/&#39;</span> | <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  grep -o <span style="color:#e6db74">&#34;&lt;title&gt;.*&lt;/title&gt;&#34;</span>
+*   Trying 192.168.59.20...
+* TCP_NODELAY set
+* Connected to 192.168.59.20 <span style="color:#f92672">(</span>192.168.59.20<span style="color:#f92672">)</span> port <span style="color:#ae81ff">80</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
+&gt; GET / HTTP/1.1
+&gt; Host: 192.168.59.20
+&gt; User-Agent: curl/7.61.1
+&gt; Accept: */*
+&gt; 
+&lt; HTTP/1.1 <span style="color:#ae81ff">200</span> OK
+&lt; Server: nginx/1.21.6
+&lt; Date: Sat, <span style="color:#ae81ff">29</span> Jan <span style="color:#ae81ff">2022</span> 06:11:46 GMT
+&lt; Content-Type: text/html
+&lt; Content-Length: <span style="color:#ae81ff">615</span>
+&lt; Last-Modified: Tue, <span style="color:#ae81ff">25</span> Jan <span style="color:#ae81ff">2022</span> 15:03:52 GMT
+&lt; Connection: keep-alive
+&lt; ETag: <span style="color:#e6db74">&#34;61f01158-267&#34;</span>
+&lt; Accept-Ranges: bytes
+&lt; 
+<span style="color:#f92672">{</span> <span style="color:#f92672">[</span><span style="color:#ae81ff">615</span> bytes data<span style="color:#f92672">]</span>
+<span style="color:#75715e">#################################################################### 100.0%</span>
+* Connection <span style="color:#75715e">#0 to host 192.168.59.20 left intact</span>
+
+&lt;title&gt;Welcome to nginx!&lt;/title&gt;
+</code></pre></div><p>Visit the service URL with a web browser to see the page.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><img src="../../../img/metallb-006-web-page.png" alt=""></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Web page from the LoadBalancer service</td>
+</tr>
+</tbody>
+</table>
+<p>Remove the resources created</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl delete service nginx
+service <span style="color:#e6db74">&#34;nginx&#34;</span> deleted
+
+<span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl delete deployment nginx
+deployment.apps <span style="color:#e6db74">&#34;nginx&#34;</span> deleted
+</code></pre></div><p>Verify that the resources are deleted.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl get all
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT<span style="color:#f92672">(</span>S<span style="color:#f92672">)</span>   AGE
+service/kubernetes   ClusterIP   10.96.0.1    &lt;none&gt;        443/TCP   5h50m
+</code></pre></div><h2 id="references">References</h2>
+<ul>
+<li><a href="https://metallb.universe.tf/installation/">MetalLB installation documentation</a></li>
+</ul>
+<hr>
+<p><a href="../metallb">Previous</a> | <a href="../install">Next</a></p>
+
+        
+      </div>
+    </div>
+  </div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+          &nbsp;&bull;&nbsp;
+          2020
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://tonejito.github.io/">Kubernetes By Example</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.92.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://tonejito.github.io/kbe//js/main.js"></script>
+<script>
+
+$('.language-test').parent().css('display', 'none')
+
+
+var copybtns = {
+  fallbackCopyTextToClipboard: function (text) {
+    var txt = document.createElement("textarea");
+    txt.value = text;
+    
+    
+    txt.style.position = "fixed";
+    txt.style.top = "0";
+    txt.style.left = "0";
+  
+    document.body.appendChild(txt);
+    txt.focus();
+    txt.select();
+    txt.setSelectionRange(0, 99999);
+  
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+    } catch (err) {
+      console.error('Fallback: Unable to copy', err);
+    }
+  
+    document.body.removeChild(txt);
+  },
+  copyTextToClipboard: function (text) {
+    if (!navigator.clipboard) {
+      copybtns.fallbackCopyTextToClipboard(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+      
+    }, function(err) {
+      
+      copybtns.fallbackCopyTextToClipboard(text);
+    });
+  },
+  flash: function(btn, content){
+    
+    content.fadeTo(50, 0.25, function() { $(this).fadeTo(300, 1.0); });
+    
+    btn.fadeTo(50, 0.0, function() { $(this).fadeTo(900, 1.0); });
+  },
+  txtClick : function(){
+    var content = $(this);
+    var btn = content.prev('button');
+    
+    copybtns.flash(btn, content);
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  btnClick : function(){
+    var btn = $(this);
+    var content = $(btn.next().children()[0]);
+    
+    copybtns.flash(btn, content)
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  init : function() {
+    var buttonHTML = '<button type="button" data-toggle="tooltip" data-placement="top" title="Copy" class="copybtn btn btn-outline-dark"><img src="/img/Icon-Red_Hat-Media_and_documents-Paper_Stack_Blank-A-Black-RGB.png"/></button>';
+    
+    $('div.highlight').prepend(buttonHTML);
+    
+    $('button.copybtn').bind("click", copybtns.btnClick);
+    $('div.highlight pre').bind("click", copybtns.txtClick);
+  }
+}
+copybtns.init();
+</script>
+<script src="https://tonejito.github.io/kbe//js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-34425776-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+  </body>
+</html>
+
