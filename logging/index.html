@@ -20,7 +20,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Kubernetes By Example" />
 
-  <meta name="generator" content="Hugo 0.83.1" />
+  <meta name="generator" content="Hugo 0.92.1" />
   <link rel="canonical" href="https://kubernetesbyexample.com/logging/" />
   <link rel="alternate" href="https://kubernetesbyexample.com/index.xml" type="application/rss+xml" title="Kubernetes By Example">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
@@ -191,18 +191,18 @@ container produces available, which is a good use case for debugging. More advan
 them in a central place, either within the cluster or via a dedicated (cloud-based) service.</p>
 <p>Let&rsquo;s create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/logging/pod.yaml">pod</a>
 called <code>logme</code> that runs a container writing to <code>stdout</code> and <code>stderr</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/logging/pod.yaml
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/logging/pod.yaml
 </code></pre></div><p>To view the five most recent log lines of the <code>gen</code> container in the <code>logme</code> pod,
 execute:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl logs --tail<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span> logme -c gen
-</code></pre></div><pre><code class="language-cat" data-lang="cat">Thu Apr 27 11:34:40 UTC 2017
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl logs --tail<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span> logme -c gen
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">Thu Apr 27 11:34:40 UTC 2017
 Thu Apr 27 11:34:41 UTC 2017
 Thu Apr 27 11:34:41 UTC 2017
 Thu Apr 27 11:34:42 UTC 2017
 Thu Apr 27 11:34:42 UTC 2017
 </code></pre><p>To stream the log of the <code>gen</code> container in the <code>logme</code> pod (like <code>tail -f</code>), do:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl logs -f --since<span style="color:#f92672">=</span>10s logme -c gen
-</code></pre></div><pre><code class="language-cat" data-lang="cat">Thu Apr 27 11:43:11 UTC 2017
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl logs -f --since<span style="color:#f92672">=</span>10s logme -c gen
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">Thu Apr 27 11:43:11 UTC 2017
 Thu Apr 27 11:43:11 UTC 2017
 Thu Apr 27 11:43:12 UTC 2017
 Thu Apr 27 11:43:12 UTC 2017
@@ -214,9 +214,9 @@ would have gotten all log lines from the start of the container.</p>
 For this we create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/logging/oneshotpod.yaml">pod</a>
 called <code>oneshot</code> that counts down from 9 to 1 and then exits. Using the <code>-p</code> option
 you can print the logs for previous instances of the container in a pod:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/logging/oneshotpod.yaml
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl logs -p oneshot -c gen
-</code></pre></div><pre><code class="language-cat" data-lang="cat">9
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/logging/oneshotpod.yaml
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl logs -p oneshot -c gen
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">9
 8
 7
 6
@@ -226,8 +226,8 @@ you can print the logs for previous instances of the container in a pod:</p>
 2
 1
 </code></pre><p>You can remove the created pods with:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete pod/logme pod/oneshot
-</code></pre></div><p><a href="/secrets">Previous</a> | <a href="/jobs">Next</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete pod/logme pod/oneshot
+</code></pre></div><p><a href="../secrets">Previous</a> | <a href="../jobs">Next</a></p>
 
         
       </div>
@@ -254,7 +254,7 @@ you can print the logs for previous instances of the container in a pod:</p>
         </p>
         
         <p class="credits theme-by text-muted">
-          <a href="http://gohugo.io">Hugo v0.83.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          <a href="http://gohugo.io">Hugo v0.92.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
           
         </p>
       </div>

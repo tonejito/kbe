@@ -20,7 +20,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Kubernetes By Example" />
 
-  <meta name="generator" content="Hugo 0.83.1" />
+  <meta name="generator" content="Hugo 0.92.1" />
   <link rel="canonical" href="https://kubernetesbyexample.com/labels/" />
   <link rel="alternate" href="https://kubernetesbyexample.com/index.xml" type="application/rss+xml" title="Kubernetes By Example">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
@@ -191,47 +191,47 @@ So you&rsquo;re free to choose labels as you see fit, for example, to express
 environments such as &lsquo;this pod is running in production&rsquo; or ownership,
 like &lsquo;department X owns that pod&rsquo;.</p>
 <p>Let&rsquo;s create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/labels/pod.yaml">pod</a> that initially has one label (<code>env=development</code>):</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/labels/pod.yaml
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods --show-labels
-</code></pre></div><pre><code class="language-cat" data-lang="cat">NAME       READY     STATUS    RESTARTS   AGE    LABELS
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/labels/pod.yaml
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods --show-labels
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME       READY     STATUS    RESTARTS   AGE    LABELS
 labelex    1/1       Running   0          10m    env=development
 </code></pre><p>In above <code>get pods</code> command note the <code>--show-labels</code> option that output the
 labels of an object in an additional column.</p>
 <p>You can add a label to the pod as:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl label pods labelex owner<span style="color:#f92672">=</span>michael
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods --show-labels
-</code></pre></div><pre><code class="language-cat" data-lang="cat">NAME        READY     STATUS    RESTARTS   AGE    LABELS
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl label pods labelex owner<span style="color:#f92672">=</span>michael
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods --show-labels
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME        READY     STATUS    RESTARTS   AGE    LABELS
 labelex     1/1       Running   0          16m    env=development,owner=michael
 </code></pre><p>To use a label for filtering, for example to list only pods that have an
 <code>owner</code> that equals <code>michael</code>, use the <code>--selector</code> option:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods --selector owner<span style="color:#f92672">=</span>michael
-</code></pre></div><pre><code class="language-cat" data-lang="cat">NAME      READY     STATUS    RESTARTS   AGE
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods --selector owner<span style="color:#f92672">=</span>michael
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME      READY     STATUS    RESTARTS   AGE
 labelex   1/1       Running   0          27m
 </code></pre><p>The <code>--selector</code> option can be abbreviated to <code>-l</code>, so to select pods that are
 labelled with <code>env=development</code>, do:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods -l env<span style="color:#f92672">=</span>development
-</code></pre></div><pre><code class="language-cat" data-lang="cat">NAME      READY     STATUS    RESTARTS   AGE
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods -l env<span style="color:#f92672">=</span>development
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME      READY     STATUS    RESTARTS   AGE
 labelex   1/1       Running   0          27m
 </code></pre><p>Oftentimes, Kubernetes objects also support set-based selectors.
 Let&rsquo;s launch <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/labels/anotherpod.yaml">another pod</a>
 that has two labels (<code>env=production</code> and <code>owner=michael</code>):</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/labels/anotherpod.yaml
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/labels/anotherpod.yaml
 </code></pre></div><p>Now, let&rsquo;s list all pods that are either labelled with <code>env=development</code> or with
 <code>env=production</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods -l <span style="color:#e6db74">&#39;env in (production, development)&#39;</span>
-</code></pre></div><pre><code class="language-cat" data-lang="cat">NAME           READY     STATUS    RESTARTS   AGE
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods -l <span style="color:#e6db74">&#39;env in (production, development)&#39;</span>
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME           READY     STATUS    RESTARTS   AGE
 labelex        1/1       Running   0          43m
 labelexother   1/1       Running   0          3m
 </code></pre><p>Other verbs also support label selection, for example, you could
 remove both of these pods with:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete pods -l <span style="color:#e6db74">&#39;env in (production, development)&#39;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete pods -l <span style="color:#e6db74">&#39;env in (production, development)&#39;</span>
 </code></pre></div><p>Beware that this will destroy any pods with those labels.</p>
 <p>You can also delete them directly, via their names, with:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete pods labelex
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete pods labelexother
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete pods labelex
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete pods labelexother
 </code></pre></div><p>Note that labels are not restricted to pods. In fact you can apply them to
 all sorts of objects, such as nodes or services.</p>
-<p><a href="/pods">Previous</a> | <a href="/deployments">Next</a></p>
+<p><a href="../pods">Previous</a> | <a href="../deployments">Next</a></p>
 
         
       </div>
@@ -258,7 +258,7 @@ all sorts of objects, such as nodes or services.</p>
         </p>
         
         <p class="credits theme-by text-muted">
-          <a href="http://gohugo.io">Hugo v0.83.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          <a href="http://gohugo.io">Hugo v0.92.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
           
         </p>
       </div>

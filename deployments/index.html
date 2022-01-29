@@ -20,7 +20,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Kubernetes By Example" />
 
-  <meta name="generator" content="Hugo 0.83.1" />
+  <meta name="generator" content="Hugo 0.92.1" />
   <link rel="canonical" href="https://kubernetesbyexample.com/deployments/" />
   <link rel="alternate" href="https://kubernetesbyexample.com/index.xml" type="application/rss+xml" title="Kubernetes By Example">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
@@ -184,74 +184,74 @@
   <div class="container" role="main">
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        <p>A deployment is a supervisor for <a href="/pods/">pods</a>, giving you fine-grained control over how and when a new pod version is rolled out as well as rolled back to a previous state.</p>
+        <p>A deployment is a supervisor for <a href="../pods/">pods</a>, giving you fine-grained control over how and when a new pod version is rolled out as well as rolled back to a previous state.</p>
 <p>Let&rsquo;s create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/deployments/d09.yaml">deployment</a>
 called <code>sise-deploy</code> that supervises two replicas of a pod as well as a replica set:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/deployments/d09.yaml
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/deployments/d09.yaml
 </code></pre></div><p>You can have a look at the deployment, as well as the the replica set and the pods the deployment looks after like so:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get deploy
-</code></pre></div><pre><code class="language-cat" data-lang="cat">NAME          DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get deploy
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME          DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 sise-deploy   2         2         2            2           10s
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get rs
-</code></pre></div><pre><code class="language-cat" data-lang="cat">NAME                     DESIRED   CURRENT   READY     AGE
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get rs
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                     DESIRED   CURRENT   READY     AGE
 sise-deploy-3513442901   2         2         2         19s
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods
-</code></pre></div><pre><code class="language-cat" data-lang="cat">NAME                           READY     STATUS    RESTARTS   AGE
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                           READY     STATUS    RESTARTS   AGE
 sise-deploy-3513442901-cndsx   1/1       Running   0          25s
 sise-deploy-3513442901-sn74v   1/1       Running   0          25s
 </code></pre><p>Note the naming of the pods and replica set, derived from the deployment name.</p>
 <p>At this point in time the <code>sise</code> containers running in the pods are configured
 to return the version <code>0.9</code>.  Let&rsquo;s verify this from within the cluster using <code>curl</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec sise-deploy-3513442901-sn74v -t -- curl -s 127.0.0.1:9876/info
-</code></pre></div><pre><code class="language-cat" data-lang="cat">{&quot;host&quot;: &quot;127.0.0.1:9876&quot;, &quot;version&quot;: &quot;0.9&quot;, &quot;from&quot;: &quot;127.0.0.1&quot;}
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec sise-deploy-3513442901-sn74v -t -- curl -s 127.0.0.1:9876/info
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">{&quot;host&quot;: &quot;127.0.0.1:9876&quot;, &quot;version&quot;: &quot;0.9&quot;, &quot;from&quot;: &quot;127.0.0.1&quot;}
 </code></pre><p>Let&rsquo;s now see what happens if we change that version to <code>1.0</code> in an updated
 <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/deployments/d10.yaml">deployment</a>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/deployments/d10.yaml
-</code></pre></div><pre><code class="language-cat" data-lang="cat">deployment &quot;sise-deploy&quot; configured
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/deployments/d10.yaml
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">deployment &quot;sise-deploy&quot; configured
 </code></pre><p>Note that you could have used <code>kubectl edit deploy/sise-deploy</code> alternatively to
 achieve the same by manually editing the deployment.</p>
 <p>What we now see is the rollout of two new pods with the updated version <code>1.0</code> as well as the two old pods with version <code>0.9</code> being terminated:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods
-</code></pre></div><pre><code class="language-cat" data-lang="cat">NAME                           READY     STATUS        RESTARTS   AGE
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                           READY     STATUS        RESTARTS   AGE
 sise-deploy-2958877261-nfv28   1/1       Running       0          25s
 sise-deploy-2958877261-w024b   1/1       Running       0          25s
 sise-deploy-3513442901-cndsx   1/1       Terminating   0          16m
 sise-deploy-3513442901-sn74v   1/1       Terminating   0          16m
 </code></pre><p>Also, a new replica set has been created by the deployment:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get rs
-</code></pre></div><pre><code class="language-cat" data-lang="cat">NAME                     DESIRED   CURRENT   READY     AGE
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get rs
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                     DESIRED   CURRENT   READY     AGE
 sise-deploy-2958877261   2         2         2         4s
 sise-deploy-3513442901   0         0         0         24m
 </code></pre><p>Note that during the deployment you can check the progress using <code>kubectl rollout status deploy/sise-deploy</code>.</p>
 <p>To verify that if the new <code>1.0</code> version is really available, we execute from within the cluster (again using <code>kubectl describe</code> get the IP of one of the pods):</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec sise-deploy-2958877261-nfv28 -t -- curl -s 127.0.0.1:9876/info
-</code></pre></div><pre><code class="language-cat" data-lang="cat">{&quot;host&quot;: &quot;127.0.0.1:9876&quot;, &quot;version&quot;: &quot;1.0&quot;, &quot;from&quot;: &quot;127.0.0.1&quot;}
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec sise-deploy-2958877261-nfv28 -t -- curl -s 127.0.0.1:9876/info
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">{&quot;host&quot;: &quot;127.0.0.1:9876&quot;, &quot;version&quot;: &quot;1.0&quot;, &quot;from&quot;: &quot;127.0.0.1&quot;}
 </code></pre><p>A history of all deployments is available via:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl rollout history deploy/sise-deploy
-</code></pre></div><pre><code class="language-cat" data-lang="cat">deployments &quot;sise-deploy&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl rollout history deploy/sise-deploy
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">deployments &quot;sise-deploy&quot;
 REVISION        CHANGE-CAUSE
 1               &lt;none&gt;
 2               &lt;none&gt;
 </code></pre><p>If there are problems in the deployment Kubernetes will automatically roll back to the previous version, however you can also explicitly roll back to a specific revision, as in our case to revision 1 (the original pod version):</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl rollout undo deploy/sise-deploy --to-revision<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
-</code></pre></div><pre><code class="language-cat" data-lang="cat">deployment &quot;sise-deploy&quot; rolled back
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl rollout history deploy/sise-deploy
-</code></pre></div><pre><code class="language-cat" data-lang="cat">deployments &quot;sise-deploy&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl rollout undo deploy/sise-deploy --to-revision<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">deployment &quot;sise-deploy&quot; rolled back
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl rollout history deploy/sise-deploy
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">deployments &quot;sise-deploy&quot;
 REVISION        CHANGE-CAUSE
 2               &lt;none&gt;
 3               &lt;none&gt;
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods
-</code></pre></div><pre><code class="language-cat" data-lang="cat">NAME                           READY     STATUS    RESTARTS   AGE
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                           READY     STATUS    RESTARTS   AGE
 sise-deploy-3513442901-ng8fz   1/1       Running   0          1m
 sise-deploy-3513442901-s8q4s   1/1       Running   0          1m
 </code></pre><p>At this point in time we&rsquo;re back at where we started, with two new pods serving
 again version <code>0.9</code>.</p>
 <p>Finally, to clean up, we remove the deployment and with it the replica sets and
 pods it supervises:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete deploy sise-deploy
-</code></pre></div><pre><code class="language-cat" data-lang="cat">deployment &quot;sise-deploy&quot; deleted
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete deploy sise-deploy
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">deployment &quot;sise-deploy&quot; deleted
 </code></pre><p>See also the <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">docs</a> for more options on deployments and when they are triggered.</p>
-<p><a href="/labels">Previous</a> | <a href="/services">Next</a></p>
+<p><a href="../labels">Previous</a> | <a href="../services">Next</a></p>
 
         
       </div>
@@ -278,7 +278,7 @@ pods it supervises:</p>
         </p>
         
         <p class="credits theme-by text-muted">
-          <a href="http://gohugo.io">Hugo v0.83.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          <a href="http://gohugo.io">Hugo v0.92.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
           
         </p>
       </div>

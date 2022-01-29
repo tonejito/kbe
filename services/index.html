@@ -20,7 +20,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Kubernetes By Example" />
 
-  <meta name="generator" content="Hugo 0.83.1" />
+  <meta name="generator" content="Hugo 0.92.1" />
   <link rel="canonical" href="https://kubernetesbyexample.com/services/" />
   <link rel="alternate" href="https://kubernetesbyexample.com/index.xml" type="application/rss+xml" title="Kubernetes By Example">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
@@ -190,15 +190,15 @@ new services in the cluster.</p>
 <p>Let&rsquo;s create a pod supervised by an <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/services/rc.yaml">RC</a>
 and a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/services/svc.yaml">service</a>
 along with it:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/services/rc.yaml
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/services/svc.yaml
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/services/rc.yaml
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/services/svc.yaml
 </code></pre></div><p>Now we have the supervised pod running:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods -l app<span style="color:#f92672">=</span>sise
-</code></pre></div><pre><code class="language-cat" data-lang="cat">NAME           READY     STATUS    RESTARTS   AGE
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods -l app<span style="color:#f92672">=</span>sise
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME           READY     STATUS    RESTARTS   AGE
 rcsise-6nq3k   1/1       Running   0          57s
 </code></pre><p>A new pod name should be generated each time this example is run. Make sure to include your own pod name when running the following examples:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl describe pod rcsise-6nq3k
-</code></pre></div><pre><code class="language-cat" data-lang="cat">Name:                   rcsise-6nq3k
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl describe pod rcsise-6nq3k
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">Name:                   rcsise-6nq3k
 Namespace:              default
 Security Policy:        restricted
 Node:                   localhost/192.168.99.100
@@ -210,15 +210,15 @@ Controllers:            ReplicationController/rcsise
 Containers:
 ...
 </code></pre><p>You can, from within the cluster, access the pod directly via its assigned IP <code>172.17.0.3</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec rcsise-6nq3k -t -- curl -s 172.17.0.3:9876/info
-</code></pre></div><pre><code class="language-cat" data-lang="cat">{&quot;host&quot;: &quot;172.17.0.3:9876&quot;, &quot;version&quot;: &quot;0.5.0&quot;, &quot;from&quot;: &quot;172.17.0.1&quot;}
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec rcsise-6nq3k -t -- curl -s 172.17.0.3:9876/info
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">{&quot;host&quot;: &quot;172.17.0.3:9876&quot;, &quot;version&quot;: &quot;0.5.0&quot;, &quot;from&quot;: &quot;172.17.0.1&quot;}
 </code></pre><p>This is however, as mentioned above, not advisable since the IPs assigned
 to pods may change as pods are migrated or rescheduled.  Hence, enter the included <code>simpleservice</code> service endpoint example:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get svc
-</code></pre></div><pre><code class="language-cat" data-lang="cat">NAME              CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get svc
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME              CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE
 simpleservice     172.30.228.255   &lt;none&gt;        80/TCP                    5m
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl describe svc simpleservice
-</code></pre></div><pre><code class="language-cat" data-lang="cat">Name:                   simpleservice
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl describe svc simpleservice
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">Name:                   simpleservice
 Namespace:              default
 Labels:                 &lt;none&gt;
 Selector:               app=sise
@@ -230,39 +230,39 @@ Session Affinity:       None
 No events.
 </code></pre><p>The <code>service</code> resource uses labels to identify which pods it will forward traffic to. In our case, pods labeled with <code>app=sise</code> will receive traffic.</p>
 <p>From within the cluster, we can now access any affiliated pods using the IP address of the <code>simpleservice</code> svc endpoint on port <code>80</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec rcsise-6nq3k -t -- curl -s 172.30.228.255:80/info
-</code></pre></div><pre><code class="language-cat" data-lang="cat">{&quot;host&quot;: &quot;172.30.228.255&quot;, &quot;version&quot;: &quot;0.5.0&quot;, &quot;from&quot;: &quot;10.0.2.15&quot;}
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec rcsise-6nq3k -t -- curl -s 172.30.228.255:80/info
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">{&quot;host&quot;: &quot;172.30.228.255&quot;, &quot;version&quot;: &quot;0.5.0&quot;, &quot;from&quot;: &quot;10.0.2.15&quot;}
 </code></pre><p>KubeDNS even provides basic name resolution for kubernetes <code>services</code> (within the same kubernetes namespace). This allows us to connect to pods using the associated service name - No need to including IP addresses or port numbers!</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec rcsise-6nq3k -t -- curl -s simpleservice/info
-</code></pre></div><pre><code class="language-cat" data-lang="cat">{&quot;host&quot;: &quot;simpleservice&quot;, &quot;version&quot;: &quot;0.5.0&quot;, &quot;from&quot;: &quot;10.0.2.15&quot;}
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec rcsise-6nq3k -t -- curl -s simpleservice/info
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">{&quot;host&quot;: &quot;simpleservice&quot;, &quot;version&quot;: &quot;0.5.0&quot;, &quot;from&quot;: &quot;10.0.2.15&quot;}
 </code></pre><p>What makes the VIP <code>172.30.228.255</code> forward the traffic to the pod?
 The answer is: <a href="https://wiki.centos.org/HowTos/Network/IPTables">IPtables</a>,
 which is essentially a long list of rules that tells the Linux kernel what to do
 with a certain IP package.</p>
 <p>Looking at the rules that concern our service (executed on a cluster node) yields:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">minikube ssh
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo iptables-save | grep simpleservice
-</code></pre></div><pre><code class="language-cat" data-lang="cat">-A KUBE-SEP-4SQFZS32ZVMTQEZV -s 172.17.0.3/32 -m comment --comment &quot;default/simpleservice:&quot; -j KUBE-MARK-MASQ
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">minikube ssh
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo iptables-save | grep simpleservice
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">-A KUBE-SEP-4SQFZS32ZVMTQEZV -s 172.17.0.3/32 -m comment --comment &quot;default/simpleservice:&quot; -j KUBE-MARK-MASQ
 -A KUBE-SEP-4SQFZS32ZVMTQEZV -p tcp -m comment --comment &quot;default/simpleservice:&quot; -m tcp -j DNAT --to-destination 172.17.0.3:9876
 -A KUBE-SERVICES -d 172.30.228.255/32 -p tcp -m comment --comment &quot;default/simpleservice: cluster IP&quot; -m tcp --dport 80 -j KUBE-SVC-EZC6WLOVQADP4IAW
 -A KUBE-SVC-EZC6WLOVQADP4IAW -m comment --comment &quot;default/simpleservice:&quot; -j KUBE-SEP-4SQFZS32ZVMTQEZV
 </code></pre><p>exit the pod to continue</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">exit
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">exit
 </code></pre></div><p>Above you can see the four rules that <code>kube-proxy</code> has thankfully added to the
 routing table, essentially stating that TCP traffic to <code>172.30.228.255:80</code>
 should be forwarded to <code>172.17.0.3:9876</code>, which is our pod.</p>
 <p>Let’s now add a second pod by scaling up the RC supervising it:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl scale --replicas<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> rc/rcsise
-</code></pre></div><pre><code class="language-cat" data-lang="cat">replicationcontroller &quot;rcsise&quot; scaled
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods -l app<span style="color:#f92672">=</span>sise
-</code></pre></div><pre><code class="language-cat" data-lang="cat">NAME           READY     STATUS    RESTARTS   AGE
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl scale --replicas<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> rc/rcsise
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">replicationcontroller &quot;rcsise&quot; scaled
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods -l app<span style="color:#f92672">=</span>sise
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME           READY     STATUS    RESTARTS   AGE
 rcsise-6nq3k   1/1       Running   0          15m
 rcsise-nv8zm   1/1       Running   0          5s
 </code></pre><p>When we now check the relevant parts of the routing table again we notice
 the addition of a bunch of IPtables rules:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">minikube ssh
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo iptables-save | grep simpleservice
-</code></pre></div><pre><code class="language-cat" data-lang="cat">-A KUBE-SEP-4SQFZS32ZVMTQEZV -s 172.17.0.3/32 -m comment --comment &quot;default/simpleservice:&quot; -j KUBE-MARK-MASQ
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">minikube ssh
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo iptables-save | grep simpleservice
+</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">-A KUBE-SEP-4SQFZS32ZVMTQEZV -s 172.17.0.3/32 -m comment --comment &quot;default/simpleservice:&quot; -j KUBE-MARK-MASQ
 -A KUBE-SEP-4SQFZS32ZVMTQEZV -p tcp -m comment --comment &quot;default/simpleservice:&quot; -m tcp -j DNAT --to-destination 172.17.0.3:9876
 -A KUBE-SEP-PXYYII6AHMUWKLYX -s 172.17.0.4/32 -m comment --comment &quot;default/simpleservice:&quot; -j KUBE-MARK-MASQ
 -A KUBE-SEP-PXYYII6AHMUWKLYX -p tcp -m comment --comment &quot;default/simpleservice:&quot; -m tcp -j DNAT --to-destination 172.17.0.4:9876
@@ -271,15 +271,15 @@ the addition of a bunch of IPtables rules:</p>
 -A KUBE-SVC-EZC6WLOVQADP4IAW -m comment --comment &quot;default/simpleservice:&quot; -j KUBE-SEP-PXYYII6AHMUWKLYX
 </code></pre><p>In above routing table listing we see rules for the newly created pod serving at
 <code>172.17.0.4:9876</code> as well as an additional rule:</p>
-<pre><code class="language-cat" data-lang="cat">-A KUBE-SVC-EZC6WLOVQADP4IAW -m comment --comment &quot;default/simpleservice:&quot; -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-4SQFZS32ZVMTQEZV
+<pre tabindex="0"><code class="language-cat" data-lang="cat">-A KUBE-SVC-EZC6WLOVQADP4IAW -m comment --comment &quot;default/simpleservice:&quot; -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-4SQFZS32ZVMTQEZV
 </code></pre><p>return to continue</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">exit
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">exit
 </code></pre></div><p>This causes the traffic to the service being equally split between our two pods
 by invoking the <code>statistics</code> module of IPtables.</p>
 <p>You can remove all the resources created by doing:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete svc simpleservice
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete rc rcsise
-</code></pre></div><p><a href="/deployments">Previous</a> | <a href="/sd">Next</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete svc simpleservice
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete rc rcsise
+</code></pre></div><p><a href="../deployments">Previous</a> | <a href="../sd">Next</a></p>
 
         
       </div>
@@ -306,7 +306,7 @@ by invoking the <code>statistics</code> module of IPtables.</p>
         </p>
         
         <p class="credits theme-by text-muted">
-          <a href="http://gohugo.io">Hugo v0.83.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          <a href="http://gohugo.io">Hugo v0.92.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
           
         </p>
       </div>
