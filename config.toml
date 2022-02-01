@@ -148,7 +148,13 @@ googleAnalytics = "UA-34425776-2"
   weight = "18"
 
 [[menu.main]]
-  parent = "hands-on"
+  identifier = "topics"
+  name = "Other topics"
+  url = "/"
+  weight = "1"
+
+[[menu.main]]
+  parent = "topics"
   name = "MetalLB"
-  url = "page/metallb/metallb/"
-  weight = "19"
+  url = "topics/metallb/metallb/"
+  weight = "1"

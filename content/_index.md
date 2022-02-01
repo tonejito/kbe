@@ -18,7 +18,10 @@ This is a hands-on introduction to Kubernetes. Browse the examples:
 - [init containers](ic/)
 - [nodes](nodes/)
 - [API server](api/)
-- [MetalLB](page/metallb/metallb/)
+
+There are other topics that include guided exercises:
+
+- [MetalLB](topics/metallb/metallb/)
 
 Want to try it out yourself? You can run all this on Red Hat's distribution of
 Kubernetes, OpenShift. Follow the instructions [here](diy/) to quickly access an online environment.
