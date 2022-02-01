@@ -216,34 +216,5 @@ Let&amp;rsquo;s create an app consisting of a deployment and a service called si
 kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/pf/app.yaml Let&amp;rsquo;s say we want to access the simpleservice service from the local environment, say, your laptop, on port 8080.</description>
     </item>
     
-    <item>
-      <title></title>
-      <link>https://tonejito.github.io/kbe/page/metallb/install/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://tonejito.github.io/kbe/page/metallb/install/</guid>
-      <description>Guided Exercise: Installing MetalLB on a minikube cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
- Outcomes
- You should be able to:
-   Create a minikube instance
-  Get the DHCP network parameters of the minikube VM driver
-  Enable and configure the MetalLB minikube addon
-  Create an example deployment and LoadBalancer service
-  Access the service with the external IP address provided by MetalLB</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://tonejito.github.io/kbe/page/metallb/metallb/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://tonejito.github.io/kbe/page/metallb/metallb/</guid>
-      <description>MetalLB MetalLB is a load balancer suitable for local environments, it is included as an add-on in minikube.
-   https://metallb.universe.tf/
-         Home
- Next
-      </description>
-    </item>
-    
   </channel>
 </rss>
