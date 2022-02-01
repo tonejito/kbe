@@ -17,7 +17,7 @@ HUGO_ARGS=\
 --environment ${HUGO_ENV} \
 --debug --verbose --log --verboseLog --logFile /dev/fd/2 \
 --bind ${BIND_HOST} --port ${BIND_PORT} \
---theme=${HUGO_THEME} \
+--theme ${HUGO_THEME} \
 --buildDrafts --buildExpired --buildFuture \
 --noHTTPCache --ignoreCache \
 --disableFastRender
@@ -45,7 +45,12 @@ container:
 
 release:
 	git submodule add -f -b ${SITE_BRANCH} ${SITE_REPO} ${SITE_DIR}
-	hugo --theme ${HUGO_THEME} --baseURL ${SITE_URL}
+	docker run \
+	  -it --rm --name ${HUGO_NAME} \
+	  -v $(CURDIR):/src \
+	  -p ${BIND_PORT}:${BIND_PORT} \
+	  ${HUGO_IMAGE} \
+	    --baseURL ${SITE_URL} --theme ${HUGO_THEME}
 	$(MAKE) -C public -f ../Makefile do_release
 
 do_release:
