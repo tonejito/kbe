@@ -5,6 +5,10 @@ theme = "beautifulhugo"
 metaDataFormat = "yaml"
 googleAnalytics = "UA-34425776-2"
 
+[security]
+  [security.exec]
+    allow = ['^dart-sass-embedded$', '^go$', '^npx$', '^postcss$', '^asciidoctor$', '^pandoc$']
+
 [Params]
   subtitle = "Brought to you by the OpenShift team"
   logo = "img/kbe-logo.png"
