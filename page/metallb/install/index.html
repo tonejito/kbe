@@ -8,16 +8,26 @@
   <title>Kubernetes By Example</title>
   <meta property="og:title" content="Kubernetes By Example" />
   <meta name="twitter:title" content="Kubernetes By Example" />
-  <meta name="description" content="Install MetalLB in a minikube cluster MetalLB is distributed as a minikube addon. You can also consult the upstream project installation guide.
-Set the virtualbox driver as default for minikube.
-[user@host kbe]$ minikube config set driver virtualbox ❗ These changes will take effect upon a minikube delete and then a minikube start Create a minikube instance.
-[user@host kbe]$ minikube start 😄 minikube v1.24.0 on Redhat 8.5 ✨ Using the virtualbox driver based on user configuration 👍 Starting control plane node minikube in cluster minikube 🔥 Creating virtualbox VM (CPUs=2, Memory=6000MB, Disk=20000MB) .">
-  <meta property="og:description" content="Install MetalLB in a minikube cluster MetalLB is distributed as a minikube addon. You can also consult the upstream project installation guide.
-Set the virtualbox driver as default for minikube.
-[user@host kbe]$ minikube config set driver virtualbox ❗ These changes will take effect upon a minikube delete and then a minikube start Create a minikube instance.
-[user@host kbe]$ minikube start 😄 minikube v1.24.0 on Redhat 8.5 ✨ Using the virtualbox driver based on user configuration 👍 Starting control plane node minikube in cluster minikube 🔥 Creating virtualbox VM (CPUs=2, Memory=6000MB, Disk=20000MB) .">
-  <meta name="twitter:description" content="Install MetalLB in a minikube cluster MetalLB is distributed as a minikube addon. You can also consult the upstream project installation guide.
-Set the virtualbox driver as default for minikube. …">
+  <meta name="description" content="Guided Exercise: Installing MetalLB on a minikube cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
+ Outcomes
+ You should be able to:
+   Create a minikube instance
+  Get the DHCP network parameters of the minikube VM driver
+  Enable and configure the MetalLB minikube addon
+  Create an example deployment and LoadBalancer service
+  Access the service with the external IP address provided by MetalLB">
+  <meta property="og:description" content="Guided Exercise: Installing MetalLB on a minikube cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
+ Outcomes
+ You should be able to:
+   Create a minikube instance
+  Get the DHCP network parameters of the minikube VM driver
+  Enable and configure the MetalLB minikube addon
+  Create an example deployment and LoadBalancer service
+  Access the service with the external IP address provided by MetalLB">
+  <meta name="twitter:description" content="Guided Exercise: Installing MetalLB on a minikube cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
+ Outcomes
+ You should be able to:
+   Create a minikube instance …">
   <meta name="author" content=""/>
   <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
   <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
@@ -27,7 +37,7 @@ Set the virtualbox driver as default for minikube. …">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Kubernetes By Example" />
 
-  <meta name="generator" content="Hugo 0.92.1" />
+  <meta name="generator" content="Hugo 0.91.2" />
   <link rel="canonical" href="https://tonejito.github.io/kbe/page/metallb/install/" />
   <link rel="alternate" href="https://tonejito.github.io/index.xml" type="application/rss+xml" title="Kubernetes By Example">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
@@ -170,18 +180,82 @@ Set the virtualbox driver as default for minikube. …">
   <div class="container" role="main">
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        <h1 id="install-metallb-in-a-minikube-cluster">Install MetalLB in a <code>minikube</code> cluster</h1>
+        <div class="sect1">
+<h2 id="_guided_exercise_installing_metallb_on_a_minikube_cluster">Guided Exercise: Installing MetalLB on a minikube cluster</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this exercise, you will deploy the MetalLB add-on on a minikube cluster.</p>
+</div>
+<div class="paragraph">
+<p>Outcomes</p>
+</div>
+<div class="paragraph">
+<p>You should be able to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create a minikube instance</p>
+</li>
+<li>
+<p>Get the DHCP network parameters of the minikube VM driver</p>
+</li>
+<li>
+<p>Enable and configure the MetalLB minikube addon</p>
+</li>
+<li>
+<p>Create an example deployment and LoadBalancer service</p>
+</li>
+<li>
+<p>Access the service with the external IP address provided by MetalLB</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To perform this exercise, ensure that you have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>kubectl</code>, and <code>minikube</code> executables version 1.22 or higher on a directory listed in <code>${PATH}</code></p>
+</li>
+<li>
+<p>VirtualBox version 6.1 or higher</p>
+</li>
+<li>
+<p>The current user is in the <code>vboxusers</code> system group</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
 <p>MetalLB is distributed as a <code>minikube</code> addon.
-You can also consult the upstream project <a href="https://metallb.universe.tf/installation/">installation guide</a>.</p>
-<p>Set the <code>virtualbox</code> driver as default for <code>minikube</code>.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ minikube config set driver virtualbox
-❗  These changes will take effect upon a minikube delete and <span style="color:#66d9ef">then</span> a minikube start
-</code></pre></div><p>Create a <code>minikube</code> instance.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ minikube start
+You can also consult the upstream project <a href="https://metallb.universe.tf/installation/">installation guide</a></p>
+</div>
+<div class="paragraph">
+<p>Procedure instructions</p>
+</div>
+<div class="paragraph">
+<p>1) Create a minikube instance.</p>
+</div>
+<div class="paragraph">
+<p>1.1) Set the <code>virtualbox</code> driver as default for <code>minikube</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ minikube config set driver virtualbox
+❗  These changes will take effect upon a minikube delete and then a minikube start</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>1.2) Create a <code>minikube</code> instance.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ minikube start
 😄  minikube v1.24.0 on Redhat 8.5
 ✨  Using the virtualbox driver based on user configuration
 👍  Starting control plane node minikube in cluster minikube
-🔥  Creating virtualbox VM <span style="color:#f92672">(</span>CPUs<span style="color:#f92672">=</span>2, Memory<span style="color:#f92672">=</span>6000MB, Disk<span style="color:#f92672">=</span>20000MB<span style="color:#f92672">)</span> ...
+🔥  Creating virtualbox VM (CPUs=2, Memory=6000MB, Disk=20000MB) ...
 🐳  Preparing Kubernetes v1.22.3 on Docker 20.10.8 ...
     ▪ Generating certificates and keys ...
     ▪ Booting up control plane ...
@@ -189,135 +263,226 @@ You can also consult the upstream project <a href="https://metallb.universe.tf/i
 🔎  Verifying Kubernetes components...
     ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
 🌟  Enabled addons: storage-provisioner, default-storageclass
-🏄  Done! kubectl is now configured to use <span style="color:#e6db74">&#34;minikube&#34;</span> cluster and <span style="color:#e6db74">&#34;default&#34;</span> namespace by default
-</code></pre></div><p>Wait until all pods are ready</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl get pods -n kube-system
+🏄  Done! kubectl is now configured to use &#34;minikube&#34; cluster and &#34;default&#34; namespace by default</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>1.3) Wait until all pods in the cluster are ready.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get pods -n kube-system
 NAME                               READY   STATUS    RESTARTS   AGE
-coredns-78fcd69978-mvjqv           1/1     Running   <span style="color:#ae81ff">0</span>          5m24s
-etcd-minikube                      1/1     Running   <span style="color:#ae81ff">0</span>          5m36s
-kube-apiserver-minikube            1/1     Running   <span style="color:#ae81ff">0</span>          5m36s
-kube-controller-manager-minikube   1/1     Running   <span style="color:#ae81ff">0</span>          5m36s
-kube-proxy-kl6tc                   1/1     Running   <span style="color:#ae81ff">0</span>          5m24s
-kube-scheduler-minikube            1/1     Running   <span style="color:#ae81ff">0</span>          5m36s
-storage-provisioner                1/1     Running   <span style="color:#ae81ff">0</span>          5m36s
-</code></pre></div><p>Check the driver on which the minikube VM is created.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ minikube profile list
+coredns-78fcd69978-mvjqv           1/1     Running   0          5m24s
+etcd-minikube                      1/1     Running   0          5m36s
+kube-apiserver-minikube            1/1     Running   0          5m36s
+kube-controller-manager-minikube   1/1     Running   0          5m36s
+kube-proxy-kl6tc                   1/1     Running   0          5m24s
+kube-scheduler-minikube            1/1     Running   0          5m36s
+storage-provisioner                1/1     Running   0          5m36s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2) Get the IP address range for the DHCP server.</p>
+</div>
+<div class="paragraph">
+<p>2.1) Check the driver on which the minikube VM is created.
+This guided exercise assumes that the VM driver is provided by VirtualBox.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ minikube profile list
 |---------------|------------|---------|----------------|------|---------|---------|-------|
 |    Profile    | VM Driver  | Runtime |       IP       | Port | Version | Status  | Nodes |
 |---------------|------------|---------|----------------|------|---------|---------|-------|
-| minikube      | virtualbox | docker  | 192.168.59.118 | <span style="color:#ae81ff">8443</span> | v1.22.3 | Running |     <span style="color:#ae81ff">1</span> |
-|---------------|------------|---------|----------------|------|---------|---------|-------|
-</code></pre></div><p>Check the VirtualBox host-only network that the minikube VM is connected to.</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>Open the VirtualBox console, and select the <code>minikube</code> VM.</p>
+| minikube      | virtualbox | docker  | 192.168.59.118 | 8443 | v1.22.3 | Running |     1 |
+|---------------|------------|---------|----------------|------|---------|---------|-------|</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
 <table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The instructions on this step will be different if another VM driver is used.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>2.2) Check the VirtualBox host-only network that the minikube VM is connected to.</p>
+</div>
+<div class="paragraph">
+<p>2.3) Open the VirtualBox console, and select the <code>minikube</code> VM.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
 <thead>
 <tr>
-<th style="text-align:center"><img src="../../../img/metallb-001-virtualbox-minikube.png" alt=""></th>
+<th class="tableblock halign-center valign-top">VirtualBox console</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">VirtualBox console</td>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/metallb-001-virtualbox-minikube.png" alt="VirtualBox console" width="100%"/>
+</div>
+</div></div></td>
 </tr>
 </tbody>
 </table>
-<p>Scroll down on the right panel, and check the configuration parameters of the second network adapter to see on which host-only adapter the VM is connected to.</p>
-<table>
+<div class="paragraph">
+<p>2.4) Scroll down on the right panel, and check the configuration parameters of the second network adapter to see on which host-only adapter the VM is connected to.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
 <thead>
 <tr>
-<th style="text-align:center"><img src="../../../img/metallb-002-virtualbox-minikube-network.png" alt=""></th>
+<th class="tableblock halign-center valign-top"><code>minikube</code> VM network parameters</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center"><code>minikube</code> VM network parameters</td>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/metallb-002-virtualbox-minikube-network.png" alt="minikube VM network parameters" width="100%"/>
+</div>
+</div></div></td>
 </tr>
 </tbody>
 </table>
-<p>Check the avaliable IP ranges for the VirtualBox host-only network.</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>Open the <strong>File</strong> menu and click <strong>Host Network Manager</strong>.</p>
-<table>
+<div class="paragraph">
+<p>2.5) Check the avaliable IP ranges for the VirtualBox host-only network.</p>
+</div>
+<div class="paragraph">
+<p>2.6) Open the <strong>File</strong> menu and click <strong>Host Network Manager</strong>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
 <thead>
 <tr>
-<th style="text-align:center"><img src="../../../img/metallb-003-virtualbox-host-network-manager-menu.png" alt=""></th>
+<th class="tableblock halign-center valign-top">VirtualBox Host Network Manager</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">VirtualBox console</td>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/metallb-003-virtualbox-host-network-manager-menu.png" alt="VirtualBox Host Network Manager" width="100%"/>
+</div>
+</div></div></td>
 </tr>
 </tbody>
 </table>
-<p>On the Host Network Manager window, click the <strong>properties</strong> button, select the appropriate <code>vboxnet</code> adapter and click on the <strong>DHCP Server</strong> tab.
+<div class="paragraph">
+<p>2.7) On the Host Network Manager window, click the <strong>properties</strong> button, select the appropriate <code>vboxnet</code> adapter and click on the <strong>DHCP Server</strong> tab.
 Take note of the lower and upper address bounds.</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
 <thead>
 <tr>
-<th style="text-align:center"><img src="../../../img/metallb-005-virtualbox-host-network-manager-dhcp.png" alt=""></th>
+<th class="tableblock halign-center valign-top">VirtualBox host-only adapter properties</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">VirtualBox host-only adapter DHCP settings</td>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/metallb-004-virtualbox-host-network-manager-adapter.png" alt="VirtualBox host-only adapter properties" width="100%"/>
+</div>
+</div></div></td>
 </tr>
 </tbody>
 </table>
-<p>Check if <code>metallb</code> is listed on the avaliable add-ons for <code>minikube</code>.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ minikube addons list
+<div class="paragraph">
+<p>3) Enable the MetalLB minikube add-on.</p>
+</div>
+<div class="paragraph">
+<p>3.1) Check if <code>metallb</code> is listed on the avaliable add-ons for <code>minikube</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ minikube addons list
 |--------------------------|----------|------------|-----------------------|
 |        ADDON NAME        | PROFILE  |   STATUS   |      MAINTAINER       |
 |--------------------------|----------|------------|-----------------------|
-| ambassador               | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| ambassador               | minikube | disabled   | unknown (third-party) |
 | auto-pause               | minikube | disabled   | google                |
 | csi-hostpath-driver      | minikube | disabled   | kubernetes            |
 | dashboard                | minikube | disabled   | kubernetes            |
 | default-storageclass     | minikube | enabled ✅ | kubernetes            |
-| efk                      | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| efk                      | minikube | disabled   | unknown (third-party) |
 | freshpod                 | minikube | disabled   | google                |
 | gcp-auth                 | minikube | disabled   | google                |
 | gvisor                   | minikube | disabled   | google                |
-| helm-tiller              | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
-| ingress                  | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
-| ingress-dns              | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
-| istio                    | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
-| istio-provisioner        | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
-| kubevirt                 | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| helm-tiller              | minikube | disabled   | unknown (third-party) |
+| ingress                  | minikube | disabled   | unknown (third-party) |
+| ingress-dns              | minikube | disabled   | unknown (third-party) |
+| istio                    | minikube | disabled   | unknown (third-party) |
+| istio-provisioner        | minikube | disabled   | unknown (third-party) |
+| kubevirt                 | minikube | disabled   | unknown (third-party) |
 | logviewer                | minikube | disabled   | google                |
-| metallb                  | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| metallb                  | minikube | disabled   | unknown (third-party) |
 | metrics-server           | minikube | disabled   | kubernetes            |
 | nvidia-driver-installer  | minikube | disabled   | google                |
-| nvidia-gpu-device-plugin | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
-| olm                      | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
-| pod-security-policy      | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| nvidia-gpu-device-plugin | minikube | disabled   | unknown (third-party) |
+| olm                      | minikube | disabled   | unknown (third-party) |
+| pod-security-policy      | minikube | disabled   | unknown (third-party) |
 | portainer                | minikube | disabled   | portainer.io          |
 | registry                 | minikube | disabled   | google                |
-| registry-aliases         | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
-| registry-creds           | minikube | disabled   | unknown <span style="color:#f92672">(</span>third-party<span style="color:#f92672">)</span> |
+| registry-aliases         | minikube | disabled   | unknown (third-party) |
+| registry-creds           | minikube | disabled   | unknown (third-party) |
 | storage-provisioner      | minikube | enabled ✅ | kubernetes            |
 | volumesnapshots          | minikube | disabled   | kubernetes            |
 |--------------------------|----------|------------|-----------------------|
-💡  To see addons list <span style="color:#66d9ef">for</span> other profiles use: <span style="color:#e6db74">`</span>minikube addons -p name list<span style="color:#e6db74">`</span>
-</code></pre></div><p>Enable the MetalLB minikube addon.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ minikube addons enable metallb
+💡  To see addons list for other profiles use: `minikube addons -p name list`</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>3.2) Enable the MetalLB minikube addon.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ minikube addons enable metallb
     ▪ Using image metallb/controller:v0.9.6
     ▪ Using image metallb/speaker:v0.9.6
-🌟  The <span style="color:#e6db74">&#39;metallb&#39;</span> addon is enabled
-</code></pre></div><p>Configure the IP addresses that can be used by MetalLB for the LoadBalancer services.
+🌟  The &#39;metallb&#39; addon is enabled</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>3.3) Configure the IP addresses that can be used by MetalLB for the LoadBalancer services.
 The provided IP range for MetalLB must not overlap with the DHCP range for the host-only network adapter.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ minikube addons configure metallb
--- Enter Load Balancer Start IP: 192.168.59.20 
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ minikube addons configure metallb
+-- Enter Load Balancer Start IP: 192.168.59.20
 -- Enter Load Balancer End IP: 192.168.59.30
     ▪ Using image metallb/speaker:v0.9.6
     ▪ Using image metallb/controller:v0.9.6
-✅  metallb was successfully configured
-</code></pre></div><p>Review the applied settings</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl get configmap/config -n metallb-system -o yaml
+✅  metallb was successfully configured</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>3.4) Review the applied settings</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get configmap/config -n metallb-system -o yaml
 apiVersion: v1
 data:
   config: |
@@ -327,82 +492,214 @@ data:
       addresses:
       - 192.168.59.20-192.168.59.30
 kind: ConfigMap
-...output omitted...
-</code></pre></div><p>Create a deployment.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl create deployment nginx <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  --image quay.io/redhattraining/nginx:1.21 --port <span style="color:#ae81ff">80</span>
-deployment.apps/nginx created
-</code></pre></div><p>Check that the pod for the deployment is ready</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl get pods,deployments
-NAME                        READY   STATUS    RESTARTS   AGE
-pod/nginx-f66b485df-7krfh   1/1     Running   <span style="color:#ae81ff">0</span>          50s
-
+...output omitted...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>4) Deploy an example application.</p>
+</div>
+<div class="paragraph">
+<p>4.1) Create a deployment with a sample application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl create deployment nginx \
+  --image quay.io/redhattraining/nginx:1.21 --port 80
+deployment.apps/nginx created</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>4.2) Check that the pod for the deployment is ready</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get deployments,pods -l app=nginx
 NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/nginx   1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           50s
-</code></pre></div><p>Expose the deployment to create a LoadBalancer service</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl expose deployment nginx <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  --type LoadBalancer --port <span style="color:#ae81ff">80</span> --target-port <span style="color:#ae81ff">80</span>
-service/nginx exposed
-</code></pre></div><p>Get the external IP address for the LoadBalancer service.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl get services
-NAME                 TYPE           CLUSTER-IP     EXTERNAL-IP     PORT<span style="color:#f92672">(</span>S<span style="color:#f92672">)</span>        AGE
-service/kubernetes   ClusterIP      10.96.0.1      &lt;none&gt;          443/TCP        5h27m
-service/nginx        LoadBalancer   10.105.39.72   192.168.59.20   80:31304/TCP   46s
-</code></pre></div><p>Check that the service responds with <code>curl</code>.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ curl -vk#L <span style="color:#e6db74">&#39;http://192.168.59.20/&#39;</span> | <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  grep -o <span style="color:#e6db74">&#34;&lt;title&gt;.*&lt;/title&gt;&#34;</span>
+deployment.apps/nginx   1/1     1            1           50s
+
+NAME                        READY   STATUS    RESTARTS   AGE
+pod/nginx-f66b485df-7krfh   1/1     Running   0          50s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>4.3) Expose the deployment to create a LoadBalancer service</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl expose deployment nginx \
+  --type LoadBalancer --port 80 --target-port 80
+service/nginx exposed</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>4.4) Get the external IP address for the LoadBalancer service.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get services -l app=nginx
+NAME    TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)        AGE
+nginx   LoadBalancer   10.105.39.72   192.168.59.20   80:31304/TCP   45s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>5) Access the example application.</p>
+</div>
+<div class="paragraph">
+<p>5.1) Check that the service responds with <code>curl</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ curl -vk#L &#39;http://192.168.59.20/&#39; | \
+  grep -o &#34;&lt;title&gt;.*&lt;/title&gt;&#34;
 *   Trying 192.168.59.20...
 * TCP_NODELAY set
-* Connected to 192.168.59.20 <span style="color:#f92672">(</span>192.168.59.20<span style="color:#f92672">)</span> port <span style="color:#ae81ff">80</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
+* Connected to 192.168.59.20 (192.168.59.20) port 80 (#0)
 &gt; GET / HTTP/1.1
 &gt; Host: 192.168.59.20
 &gt; User-Agent: curl/7.61.1
 &gt; Accept: */*
-&gt; 
-&lt; HTTP/1.1 <span style="color:#ae81ff">200</span> OK
+&gt;
+&lt; HTTP/1.1 200 OK
 &lt; Server: nginx/1.21.6
-&lt; Date: Sat, <span style="color:#ae81ff">29</span> Jan <span style="color:#ae81ff">2022</span> 06:11:46 GMT
+&lt; Date: Sat, 29 Jan 2022 06:11:46 GMT
 &lt; Content-Type: text/html
-&lt; Content-Length: <span style="color:#ae81ff">615</span>
-&lt; Last-Modified: Tue, <span style="color:#ae81ff">25</span> Jan <span style="color:#ae81ff">2022</span> 15:03:52 GMT
+&lt; Content-Length: 615
+&lt; Last-Modified: Tue, 25 Jan 2022 15:03:52 GMT
 &lt; Connection: keep-alive
-&lt; ETag: <span style="color:#e6db74">&#34;61f01158-267&#34;</span>
+&lt; ETag: &#34;61f01158-267&#34;
 &lt; Accept-Ranges: bytes
-&lt; 
-<span style="color:#f92672">{</span> <span style="color:#f92672">[</span><span style="color:#ae81ff">615</span> bytes data<span style="color:#f92672">]</span>
-<span style="color:#75715e">#################################################################### 100.0%</span>
-* Connection <span style="color:#75715e">#0 to host 192.168.59.20 left intact</span>
+&lt;
+{ [615 bytes data]
+#################################################################### 100.0%
+* Connection #0 to host 192.168.59.20 left intact
 
-&lt;title&gt;Welcome to nginx!&lt;/title&gt;
-</code></pre></div><p>Visit the service URL with a web browser to see the page.</p>
-<table>
+&lt;title&gt;Welcome to nginx!&lt;/title&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>5.2) Visit the service URL with a web browser to see the page.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
 <thead>
 <tr>
-<th style="text-align:center"><img src="../../../img/metallb-006-web-page.png" alt=""></th>
+<th class="tableblock halign-center valign-top">Web page from the LoadBalancer service</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">Web page from the LoadBalancer service</td>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/metallb-006-web-page.png" alt="Web page from the LoadBalancer service" width="100%"/>
+</div>
+</div></div></td>
 </tr>
 </tbody>
 </table>
-<p>Remove the resources created</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl delete service nginx
-service <span style="color:#e6db74">&#34;nginx&#34;</span> deleted
+<div class="paragraph">
+<p>5.3) List all the resources with the <code>app=nginx</code> label.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get all -l app=nginx
+NAME                        READY   STATUS    RESTARTS   AGE
+pod/nginx-f66b485df-7krfh   1/1     Running   0          2m10s
 
-<span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl delete deployment nginx
-deployment.apps <span style="color:#e6db74">&#34;nginx&#34;</span> deleted
-</code></pre></div><p>Verify that the resources are deleted.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>user@host kbe<span style="color:#f92672">]</span>$ kubectl get all
-NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT<span style="color:#f92672">(</span>S<span style="color:#f92672">)</span>   AGE
-service/kubernetes   ClusterIP   10.96.0.1    &lt;none&gt;        443/TCP   5h50m
-</code></pre></div><h2 id="references">References</h2>
+NAME            TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
+service/nginx   LoadBalancer   10.105.39.72    192.168.59.20   80:31304/TCP   105s
+
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx   1/1     1            1           2m10s
+
+NAME                              DESIRED   CURRENT   READY   AGE
+replicaset.apps/nginx-f66b485df   1         1         1       2m10s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>6) Cleanup</p>
+</div>
+<div class="paragraph">
+<p>6.1) Remove the resources created.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl delete service nginx
+service &#34;nginx&#34; deleted
+
+[user@host kbe]$ kubectl delete deployment nginx
+deployment.apps &#34;nginx&#34; deleted</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can optionally delete all the resources with the following command that filters</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl delete all -l app=nginx
+pod &#34;nginx-f66b485df-7krfh&#34; deleted
+service &#34;nginx&#34; deleted
+deployment.apps &#34;nginx&#34; deleted
+replicaset.apps &#34;nginx-f66b485df&#34; deleted</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>6.2) Verify that the resources are deleted.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get all -l app=nginx
+No resources found in default namespace.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This concludes the guided exercise.</p>
+</div>
+<div class="sect2">
+<h3 id="_references">References</h3>
+<div class="ulist">
 <ul>
-<li><a href="https://metallb.universe.tf/installation/">MetalLB installation documentation</a></li>
+<li>
+<p><a href="https://metallb.universe.tf/installation/">MetalLB installation documentation</a></p>
+</li>
 </ul>
-<hr>
-<p><a href="../metallb">Previous</a> | <a href="../install">Next</a></p>
+</div>
+<hr/>
+<table class="tableblock frame-none grid-none stretch">
+<colgroup>
+<col style="width: 10%;"/>
+<col style="width: 80%;"/>
+<col style="width: 10%;"/>
+</colgroup>
+<tfoot>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="paragraph">
+<p><a href="../metallb">Previous</a></p>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="paragraph">
+<p><a href="../../../">Home</a></p>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="paragraph">
+<p><a href="../install">Next</a></p>
+</div></div></td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+</div>
 
         
       </div>
@@ -429,7 +726,7 @@ service/kubernetes   ClusterIP   10.96.0.1    &lt;none&gt;        443/TCP   5h50
         </p>
         
         <p class="credits theme-by text-muted">
-          <a href="http://gohugo.io">Hugo v0.92.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          <a href="http://gohugo.io">Hugo v0.91.2</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
           
         </p>
       </div>
