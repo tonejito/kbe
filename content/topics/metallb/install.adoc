@@ -115,7 +115,7 @@ nic2="hostonly"
 [options="header", cols="^1a"]
 |===
 | VirtualBox console
-| image::img/metallb-001-virtualbox-minikube.png[width="100%",align="center",alt="VirtualBox console"]
+| image::img/metallb/metallb-001-virtualbox-minikube.png[width="100%",align="center",alt="VirtualBox console"]
 |===
 
 2.3) Scroll down on the right panel, and check the configuration parameters of the second network adapter to see on which host-only adapter the VM is connected to.
@@ -124,7 +124,7 @@ Take note of the host-only `vboxnet` adapter that the VM is connected to.
 [options="header", cols="^1a"]
 |===
 | `minikube` VM network parameters
-| image::img/metallb-002-virtualbox-minikube-network.png[width="100%",align="center",alt="minikube VM network parameters"]
+| image::img/metallb/metallb-002-virtualbox-minikube-network.png[width="100%",align="center",alt="minikube VM network parameters"]
 |===
 
 ////
@@ -153,7 +153,7 @@ VBoxNetworkName: HostInterfaceNetworking-vboxnet2
 [options="header", cols="^1a"]
 |===
 | VirtualBox Host Network Manager
-| image::img/metallb-003-virtualbox-host-network-manager-menu.png[width="100%",align="center",alt="VirtualBox Host Network Manager"]
+| image::img/metallb/metallb-003-virtualbox-host-network-manager-menu.png[width="100%",align="center",alt="VirtualBox Host Network Manager"]
 |===
 
 2.5) On the Host Network Manager window, click the **properties** button, select the appropriate `vboxnet` adapter and click on the **DHCP Server** tab.
@@ -163,14 +163,14 @@ Take note of the lower and upper address bounds.
 [options="header", cols="^1a"]
 |===
 | VirtualBox host-only adapter properties
-| image::img/metallb-004-virtualbox-host-network-manager-adapter.png[width="100%",align="center",alt="VirtualBox host-only adapter properties"]
+| image::img/metallb/metallb-004-virtualbox-host-network-manager-adapter.png[width="100%",align="center",alt="VirtualBox host-only adapter properties"]
 |===
 ////
 
 [options="header", cols="^1a"]
 |===
 | VirtualBox host-only adapter DHCP settings
-| image::img/metallb-005-virtualbox-host-network-manager-dhcp.png[width="100%",align="center",alt="VirtualBox host-only adapter DHCP settings"]
+| image::img/metallb/metallb-005-virtualbox-host-network-manager-dhcp.png[width="100%",align="center",alt="VirtualBox host-only adapter DHCP settings"]
 |===
 
 
@@ -352,7 +352,7 @@ If the external IP address shows a `<pending>` value, then you have a problem wi
 [options="header", cols="^1a"]
 |===
 | Web page from the LoadBalancer service
-| image::img/metallb-006-web-page.png[width="100%",align="center",alt="Web page from the LoadBalancer service"]
+| image::img/metallb/metallb-006-web-page.png[width="100%",align="center",alt="Web page from the LoadBalancer service"]
 |===
 
 5.3) List all the resources with the `app=nginx` label.
