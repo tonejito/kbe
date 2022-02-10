@@ -48,6 +48,8 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
   <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/pygment_highlights.css" />
   <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/highlight.min.css" />
+<link rel="stylesheet" type="text/css" href="https://tonejito.github.io/kbe/css/custom.css">
+
 
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -259,7 +261,7 @@ You can also consult the upstream project <a href="https://metallb.universe.tf/i
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ minikube start
-😄  minikube v1.22.0 on Redhat 8.5
+😄  minikube v1.22.0 on RedHat 8.5
 ✨  Using the virtualbox driver based on user configuration
 👍  Starting control plane node minikube in cluster minikube
 🔥  Creating virtualbox VM (CPUs=2, Memory=6000MB, Disk=20000MB) ...
@@ -350,7 +352,7 @@ This guided exercise assumes that the VM driver is provided by VirtualBox.</p>
 <tr>
 <td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
 <div class="content">
-<img src="../../../img/metallb-001-virtualbox-minikube.png" alt="VirtualBox console" width="100%"/>
+<img src="../../../img/metallb/metallb-001-virtualbox-minikube.png" alt="VirtualBox console" width="100%"/>
 </div>
 </div></div></td>
 </tr>
@@ -373,7 +375,7 @@ Take note of the host-only <code>vboxnet</code> adapter that the VM is connected
 <tr>
 <td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
 <div class="content">
-<img src="../../../img/metallb-002-virtualbox-minikube-network.png" alt="minikube VM network parameters" width="100%"/>
+<img src="../../../img/metallb/metallb-002-virtualbox-minikube-network.png" alt="minikube VM network parameters" width="100%"/>
 </div>
 </div></div></td>
 </tr>
@@ -395,7 +397,7 @@ Take note of the host-only <code>vboxnet</code> adapter that the VM is connected
 <tr>
 <td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
 <div class="content">
-<img src="../../../img/metallb-003-virtualbox-host-network-manager-menu.png" alt="VirtualBox Host Network Manager" width="100%"/>
+<img src="../../../img/metallb/metallb-003-virtualbox-host-network-manager-menu.png" alt="VirtualBox Host Network Manager" width="100%"/>
 </div>
 </div></div></td>
 </tr>
@@ -418,7 +420,7 @@ Take note of the lower and upper address bounds.</p>
 <tr>
 <td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
 <div class="content">
-<img src="../../../img/metallb-005-virtualbox-host-network-manager-dhcp.png" alt="VirtualBox host-only adapter DHCP settings" width="100%"/>
+<img src="../../../img/metallb/metallb-005-virtualbox-host-network-manager-dhcp.png" alt="VirtualBox host-only adapter DHCP settings" width="100%"/>
 </div>
 </div></div></td>
 </tr>
@@ -465,7 +467,7 @@ Take note of the lower and upper address bounds.</p>
 | storage-provisioner      | minikube | enabled ✅ | kubernetes            |
 | volumesnapshots          | minikube | disabled   | kubernetes            |
 |--------------------------|----------|------------|-----------------------|
-💡  To see addons list for other profiles use: `minikube addons -p name list`</code></pre>
+💡 To see addons list for other profiles use: `minikube addons -p name list`</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -642,7 +644,7 @@ nginx   LoadBalancer   10.105.39.72   192.168.59.20   80:31304/TCP   45s</code><
 <tr>
 <td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
 <div class="content">
-<img src="../../../img/metallb-006-web-page.png" alt="Web page from the LoadBalancer service" width="100%"/>
+<img src="../../../img/metallb/metallb-006-web-page.png" alt="Web page from the LoadBalancer service" width="100%"/>
 </div>
 </div></div></td>
 </tr>
@@ -725,7 +727,7 @@ No resources found in default namespace.</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The MetalLB installation is required for other guided excercises.</p>
+<p>The MetalLB installation is required for other guided exercises.</p>
 </div>
 </td>
 </tr>

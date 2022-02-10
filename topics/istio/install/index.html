@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Kubernetes By Example</title>
+  <meta property="og:title" content="Kubernetes By Example" />
+  <meta name="twitter:title" content="Kubernetes By Example" />
+  <meta name="description" content="Guided Exercise: Installing Istio on a minikube cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
+ Outcomes
+ You should be able to:
+   Install Istio on the minikube cluster.
+  Get the Istio ingress service endpoint.
+  Deploy the Istio add-ons.
+  Create an example application to test the Istio installation.
+   To perform this exercise, ensure that you have:">
+  <meta property="og:description" content="Guided Exercise: Installing Istio on a minikube cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
+ Outcomes
+ You should be able to:
+   Install Istio on the minikube cluster.
+  Get the Istio ingress service endpoint.
+  Deploy the Istio add-ons.
+  Create an example application to test the Istio installation.
+   To perform this exercise, ensure that you have:">
+  <meta name="twitter:description" content="Guided Exercise: Installing Istio on a minikube cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
+ Outcomes
+ You should be able to:
+   Install Istio on the minikube …">
+  <meta name="author" content=""/>
+  <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://tonejito.github.io/kbe/topics/istio/install/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kubernetes By Example" />
+
+  <meta name="generator" content="Hugo 0.91.2" />
+  <link rel="canonical" href="https://tonejito.github.io/kbe/topics/istio/install/" />
+  <link rel="alternate" href="https://tonejito.github.io/index.xml" type="application/rss+xml" title="Kubernetes By Example">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/main.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/pygment_highlights.css" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/highlight.min.css" />
+<link rel="stylesheet" type="text/css" href="https://tonejito.github.io/kbe/css/custom.css">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WNHKJNX');</script>
+  
+</head>
+
+  <body>
+    
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WNHKJNX"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
+  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small; height: 0em; display: none; visibility: hidden;' role="alert">
+    <strong>Kubernetes By Example is evolving!</strong><br/>On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.<br/>Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE. 
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://tonejito.github.io/">Home</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/pods/">Pods</a>
+                
+                  <a href="/kbe/labels/">Labels</a>
+                
+                  <a href="/kbe/deployments/">Deployments</a>
+                
+                  <a href="/kbe/services/">Services</a>
+                
+                  <a href="/kbe/sd/">Service Discovery</a>
+                
+                  <a href="/kbe/pf/">Port Forward</a>
+                
+                  <a href="/kbe/healthz/">Health Checks</a>
+                
+                  <a href="/kbe/envs/">Environment Variables</a>
+                
+                  <a href="/kbe/ns/">Namespaces</a>
+                
+                  <a href="/kbe/volumes/">Volumes</a>
+                
+                  <a href="/kbe/pv/">Persistent Volumes</a>
+                
+                  <a href="/kbe/secrets/">Secrets</a>
+                
+                  <a href="/kbe/logging/">Logging</a>
+                
+                  <a href="/kbe/jobs/">Jobs</a>
+                
+                  <a href="/kbe/statefulset/">Stateful Sets</a>
+                
+                  <a href="/kbe/ic/">Init Containers</a>
+                
+                  <a href="/kbe/nodes/">Nodes</a>
+                
+                  <a href="/kbe/api/">API Server</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Try out!" href="/kbe/diy/">Try out!</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="Kubernetes By Example" href="https://tonejito.github.io/">
+            <img class="avatar-img" src="https://tonejito.github.io/kbe//img/kbe-logo.png" alt="Kubernetes By Example" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  <div class="intro-header"></div>
+
+
+    
+  <div class="container" role="main">
+    <div class="sect1">
+<h2 id="_guided_exercise_installing_istio_on_a_minikube_cluster">Guided Exercise: Installing Istio on a minikube cluster</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this exercise, you will deploy the MetalLB add-on on a minikube cluster.</p>
+</div>
+<div class="paragraph">
+<p>Outcomes</p>
+</div>
+<div class="paragraph">
+<p>You should be able to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Install Istio on the minikube cluster.</p>
+</li>
+<li>
+<p>Get the Istio ingress service endpoint.</p>
+</li>
+<li>
+<p>Deploy the Istio add-ons.</p>
+</li>
+<li>
+<p>Create an example application to test the Istio installation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To perform this exercise, ensure that you have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>kubectl</code>, and <code>minikube</code> executables version 1.24 or higher on a directory listed in <code>${PATH}</code>.</p>
+</li>
+<li>
+<p>MetalLB installed in the cluster.
+You can consult the <a href="../../metallb/install">installation guided exercise</a>.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Minikube provides Istio as an add-on.
+However, the version is outdated and can’t be installed in recent versions of Kubernetes.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>Procedure instructions</p>
+</div>
+<div class="paragraph">
+<p>1) Start the minikube instance, and verify that MetalLB is installed.</p>
+</div>
+<div class="paragraph">
+<p>1.1) Start the minikube instance.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ minikube start --cpus=4 --memory=8g
+...output omitted...</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Istio requires 4 vCPUs and 8GB of RAM to work in minikube.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>1.2) Verify that the pods in the <code>metallb-system</code> are running.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get pods -n metallb-system
+NAME                          READY   STATUS    RESTARTS   AGE
+controller-66bc445b99-2gv6w   1/1     Running   0          1h
+speaker-jxjdm                 1/1     Running   0          1h</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This guided exercise assumes that MetalLB is installed and configured.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>2) Install Istio on the minikube cluster.</p>
+</div>
+<div class="paragraph">
+<p>2.1) Download an archive of the Istio release.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ export ISTIO_VERSION=1.12.1
+
+[user@host kbe]$ wget -c -nv \
+  https://github.com/istio/istio/releases/download/${ISTIO_VERSION}/istio-${ISTIO_VERSION}-linux-amd64.tar.gz
+...output omitted...</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can also clone the Istio source repository and checkout the appropriate tag.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>2.2) Extract the archive.
+Delete the archive after extracting because it is not needed anymore.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ tar -xzf istio-${ISTIO_VERSION}-linux-amd64.tar.gz
+
+[user@host kbe]$ rm -v istio-${ISTIO_VERSION}-linux-amd64.tar.gz</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2.3) Install the <code>istioctl</code> executable.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ export PATH=&#34;${PATH}:${HOME}/bin&#34;
+
+[user@host kbe]$ mkdir -vp ~/bin
+mkdir: created directory &#39;/home/user/bin&#39;
+
+[user@host kbe]$ install --mode 0755 istio-${ISTIO_VERSION}/bin/istioctl ~/bin/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2.4) Add the export line at the end of the <code>~/.bashrc</code> file to have a persistent configuration for the <code>PATH</code> variable.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ echo &#39;export PATH=&#34;${PATH}:${HOME}/bin&#34;&#39; | tee -a ~/.bashrc
+export PATH=&#34;${PATH}:${HOME}/bin&#34;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The argument to the <code>echo</code> command is enclosed in single quotes to prevent shell expansion of the variables.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>2.5) Verify that the shell is able to find the <code>istioctl</code> executable, and check the version of the tool.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ which istioctl
+~/bin/istioctl
+
+[user@host kbe]$ istioctl version
+no running Istio pods in &#34;istio-system&#34;
+1.12.1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2.6) Run a pre-check to inspect if the cluster meets the requirements to install Istio.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ istioctl experimental precheck
+✔ No issues found when checking the cluster. Istio is safe to install or upgrade!
+  To get started, check out https://istio.io/latest/docs/setup/getting-started/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2.7) Install Istio in the Kubernetes cluster.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ istioctl install --set profile=demo -y
+✔ Istio core installed
+✔ Istiod installed
+✔ Egress gateways installed
+✔ Ingress gateways installed
+✔ Installation complete
+Making this installation the default for injection and validation.
+
+Thank you for installing Istio 1.12.
+Please take a few minutes to tell us about your install/upgrade experience!
+https://forms.gle/FegQbc9UvePd4Z9z7</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The install command generates an Istio install manifest and applies it to a cluster.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>2.8) Check the resources created in the <code>istio-system</code> namespace.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get deployments,pods -n istio-system
+NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/istio-egressgateway    1/1     1            1           4m
+deployment.apps/istio-ingressgateway   1/1     1            1           4m
+deployment.apps/istiod                 1/1     1            1           5m
+
+NAME                                        READY   STATUS    RESTARTS   AGE
+pod/istio-egressgateway-687f4db598-wjfkb    1/1     Running   0          4m
+pod/istio-ingressgateway-78f69bd5db-s5pjz   1/1     Running   0          4m
+pod/istiod-76d66d9876-jvl98                 1/1     Running   0          5m</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When istio is installed using <code>helm</code>, two namespaces are created: <code>istio-system</code>, and <code>istio-ingress</code>.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>3) Get the Istio ingress service endpoint.</p>
+</div>
+<div class="paragraph">
+<p>3.1) Get the services in the <code>istio-system</code> namespace.
+The external IP address is provided by MetalLB since the ingress gateway service type is LoadBalancer.
+This closely match what you might get when deploying on a cloud environment.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get services -n istio-system
+NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                                                                      AGE
+istio-egressgateway    ClusterIP      10.111.169.103   &lt;none&gt;          80/TCP,443/TCP                                                               5m
+istio-ingressgateway   LoadBalancer   10.97.37.96      192.168.59.20   15021:30669/TCP,80:32031/TCP,443:31872/TCP,31400:32249/TCP,15443:30657/TCP   5m
+istiod                 ClusterIP      10.103.227.204   &lt;none&gt;          15010/TCP,15012/TCP,443/TCP,15014/TCP                                        6m</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If Istio was installed using <code>helm</code>, then the ingress and egress resources are in the <code>istio-ingress</code> namespace.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>3.2) Get the Istio ingress IP address.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get service istio-ingressgateway \
+  -n istio-system \
+  -o jsonpath=&#39;{.status.loadBalancer.ingress[0].ip}{&#34;\n&#34;}&#39;
+192.168.59.20
+
+[user@host kbe]$ export INGRESS_HOST=&#34;192.168.59.20&#34;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can export the IP address using a single command.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ export INGRESS_HOST=$(kubectl get service \
+  istio-ingressgateway -n istio-system \
+  -o jsonpath=&#39;{.status.loadBalancer.ingress[0].ip}&#39;)</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>3.3) Get the Istio ingress port numbers for the HTTP and HTTPS endpoints.
+The service ports match the standard port numbers because MetalLB provided an IP address for this LoadBalancer service.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get service istio-ingressgateway \
+  -n istio-system \
+  -o jsonpath=&#39;{.spec.ports[?(@.name==&#34;http2&#34;)].port}{&#34;\n&#34;}&#39;
+80
+
+[user@host kbe]$ export INGRESS_PORT=&#34;80&#34;
+
+[user@host kbe]$ kubectl get service istio-ingressgateway \
+  -n istio-system \
+  -o jsonpath=&#39;{.spec.ports[?(@.name==&#34;https&#34;)].port}{&#34;\n&#34;}&#39;
+443
+
+[user@host kbe]$ export SECURE_INGRESS_PORT=&#34;443&#34;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can export the port numbers using a single command.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ export INGRESS_PORT=$(kubectl get service \
+  istio-ingressgateway -n istio-system \
+  -o jsonpath=&#39;{.spec.ports[?(@.name==&#34;http2&#34;)].port}&#39;)
+
+[user@host kbe]$ export SECURE_INGRESS_PORT=$(kubectl get service \
+  istio-ingressgateway -n istio-system \
+  -o jsonpath=&#39;{.spec.ports[?(@.name==&#34;https&#34;)].port}&#39;)</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>3.4) Export an environment variable with the ingress gateway IP address and port number.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ export GATEWAY_URL=&#34;${INGRESS_HOST}:${INGRESS_PORT}&#34;
+
+[user@host kbe]$ printenv GATEWAY_URL
+192.168.59.20:80</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>4) Deploy the Istio add-ons.</p>
+</div>
+<div class="paragraph">
+<p>4.1) List the add-ons provided with the Istio release.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[user@host kbe]$ ISTIO_VERSION=1.12.1
+
+[user@host kbe]$ ls istio-${ISTIO_VERSION}/samples/addons/
+extras  grafana.yaml  jaeger.yaml  kiali.yaml  prometheus.yaml  README.md</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>4.2) Apply the resource manifests for the Istio add-ons.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl apply -f istio-${ISTIO_VERSION}/samples/addons
+...output omitted...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>4.3) Verify that the deployments in the <code>istio-system</code> namespace show a ready status.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get deployments -n istio-system
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+grafana                1/1     1            1           2m
+istio-egressgateway    1/1     1            1           12m
+istio-ingressgateway   1/1     1            1           12m
+istiod                 1/1     1            1           12m
+jaeger                 1/1     1            1           2m
+kiali                  1/1     1            1           2m
+prometheus             1/1     1            1           2m</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You might need to repeat the command until the desired condition is reached.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>5) Create an example application</p>
+</div>
+<div class="paragraph">
+<p>5.1) Enable the sidecar injection for the <code>default</code> namespace.
+This allows Istio to add an <code>istio-proxy</code> container on each pod to control ingress and egress traffic.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl label namespace default istio-injection=enabled --overwrite
+namespace/default labeled</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>5.2) Deploy an example application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl apply -f istio-${ISTIO_VERSION}/samples/helloworld/helloworld.yaml
+service/helloworld created
+deployment.apps/helloworld-v1 created
+deployment.apps/helloworld-v2 created</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>5.3) Check that the deployment and pod are ready.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get deployments,pods -l app=helloworld
+NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/helloworld-v1   1/1     1            1           2m
+deployment.apps/helloworld-v2   1/1     1            1           2m
+
+NAME                                 READY   STATUS    RESTARTS   AGE
+pod/helloworld-v1-776f57d5f6-mfkf7   2/2     Running   0          2m
+pod/helloworld-v2-54df5f84b-wdx5n    2/2     Running   0          2m</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You might need to repeat the command until the desired condition is reached.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>5.4) Verify that the service is present.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get services -l app=helloworld
+NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+helloworld   ClusterIP   10.101.60.68   &lt;none&gt;        5000/TCP   3m</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>5.5) Create the gateway and virtual service to access the example application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl apply -f istio-${ISTIO_VERSION}/samples/helloworld/helloworld-gateway.yaml
+gateway.networking.istio.io/helloworld-gateway created
+virtualservice.networking.istio.io/helloworld created</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The parameters of the gateway and virtual service resources will be covered in another exercise.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>5.6) Verify that the gateway and virtual service resources are deployed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get gateways,virtualservices
+NAME                                             AGE
+gateway.networking.istio.io/helloworld-gateway   60s
+
+NAME                                           GATEWAYS               HOSTS  AGE
+virtualservice.networking.istio.io/helloworld  [&#34;helloworld-gateway&#34;] [&#34;*&#34;]  60s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>5.7) Get the URL path prefix for the application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host istio]$ kubectl get virtualservice helloworld \
+  -o jsonpath=&#39;{.spec.http[0].match[0].uri}{&#34;\n&#34;}&#39;
+{&#34;exact&#34;:&#34;/hello&#34;}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>6) Generate traffic for the example application.</p>
+</div>
+<div class="paragraph">
+<p>6.1) Access the example application with <code>curl</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ curl -vk# &#34;http://${GATEWAY_URL}/hello&#34;
+*   Trying 192.168.59.20...
+* TCP_NODELAY set
+* Connected to 192.168.59.20 (192.168.59.20) port 80 (#0)
+&gt; GET /hello HTTP/1.1
+&gt; Host: 192.168.59.20
+&gt; User-Agent: curl/7.61.1
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+&lt; content-type: text/html; charset=utf-8
+&lt; content-length: 60
+&lt; server: istio-envoy
+&lt; date: Fri, 04 Feb 2022 02:48:11 GMT
+&lt; x-envoy-upstream-service-time: 123
+&lt;
+Hello version: v1, instance: helloworld-v1-776f57d5f6-mfkf7
+* Connection #0 to host 192.168.59.20 left intact</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>6.2) Check the commands contained in the <code>loadgen.sh</code> script.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host istio]$ grep -v &#39;^#&#39; \
+  istio-${ISTIO_VERSION}/samples/helloworld/loadgen.sh
+
+while true; do curl -s -o /dev/null &#34;http://$GATEWAY_URL/hello&#34;; done</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>6.3) Generate traffic for the example application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ ./istio-${ISTIO_VERSION}/samples/helloworld/loadgen.sh
+...output omitted...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>7) Access the Istio dashboard.</p>
+</div>
+<div class="paragraph">
+<p>7.1) Open another terminal and execute the following command to view the Istio Kiali dashboard.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ istioctl dashboard kiali
+http://localhost:20001/kiali</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Istio Kiali dashboard</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/istio-001-dashboard.png" alt="Istio Kiali dashboard" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>7.2) Click on the applications, and select the default namespace.
+Click on the <code>helloworld</code> application name.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">k8s applications</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/istio-002-applications.png" alt="k8s applications" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>7.3) The overview tab displays the connections between the Istio ingress gateway, the application service, and the pods that process the requests.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Application overview</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/istio-003-application-overview.png" alt="Application overview" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>7.4) Click on the application name, and then click on the <strong>Inbound Metrics</strong> tab.
+Wait one minute while the network traffic graphs are updated.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Application inbound metrics</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/istio-004-inbound-metrics.png" alt="Application inbound metrics" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>7.6) Click on the <strong>Traces</strong> tab to show the graph with data points for each processed request.
+Hover on any data point to view the duration of the processing.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Application traces</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/istio-005-traces.png" alt="Application traces" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>7.7) Click on <strong>Workloads</strong>, then click on the deployment name <code>helloworld-v1</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Kiali workloads</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/istio-006-workloads.png" alt="Kiali workloads" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>7.8) Click on the <strong>Logs</strong> tab to display the logs for the pod containers.
+You can select the checkboxes to filter the logs for the <code>helloworld</code> application container or the <code>istio-proxy</code> container.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Application logs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/istio-007-workloads-logs.png" alt="Application logs" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>7.9) Click on <strong>Services</strong>, then click on the <code>helloworld</code> service.
+The service topology is displayed.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Application topology</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/istio-008-application-topology.png" alt="Application topology" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>7.10) Click on the <strong>Inbound Metrics</strong> tab to display the metrics for the ingress traffic for this particular service.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Service metrics</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/istio-009-service-metrics.png" alt="Service metrics" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>helloworld</code> application has only one service and all the ingress traffic is directed to it.
+There are complex applications that route different paths to different services.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>8) Cleanup</p>
+</div>
+<div class="paragraph">
+<p>8.1) Close the browser window where the Istio Kiali dashboard is displayed.</p>
+</div>
+<div class="paragraph">
+<p>8.2) Press <code>Ctrl+C</code> on the terminal window where the <code>istioctl</code> command is running.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ istioctl dashboard kiali
+http://localhost:20001/kiali
+^C</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>8.3) Press <code>Ctrl+C</code> on the terminal window where the <code>loadgen.sh</code> script is running.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ ./istio-${ISTIO_VERSION}/samples/helloworld/loadgen.sh
+^C</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>8.4) Review the gateways and virtual services present in the current namespace.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get gateways
+NAME                 AGE
+helloworld-gateway   1h
+
+[user@host kbe]$ kubectl get virtualservices
+NAME         GATEWAYS                 HOSTS   AGE
+helloworld   [&#34;helloworld-gateway&#34;]   [&#34;*&#34;]   1h</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>8.5) Delete the gateway and virtual service resources.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl delete gateway helloworld-gateway
+gateway.networking.istio.io &#34;helloworld-gateway&#34; deleted
+
+[user@host kbe]$ kubectl delete virtualservice helloworld
+virtualservice.networking.istio.io &#34;helloworld&#34; deleted</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>8.6) Review the resources with the <code>app=helloworld</code> label.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get all -l app=helloworld
+NAME                                 READY   STATUS    RESTARTS   AGE
+pod/helloworld-v1-776f57d5f6-mfkf7   2/2     Running   0          1h
+pod/helloworld-v2-54df5f84b-wdx5n    2/2     Running   0          1h
+
+NAME                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+service/helloworld   ClusterIP   10.101.60.68   &lt;none&gt;        5000/TCP   1h
+
+NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/helloworld-v1   1/1     1            1           1h
+deployment.apps/helloworld-v2   1/1     1            1           1h
+
+NAME                                       DESIRED   CURRENT   READY   AGE
+replicaset.apps/helloworld-v1-776f57d5f6   1         1         1       1h
+replicaset.apps/helloworld-v2-54df5f84b    1         1         1       1h</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>8.7) Delete all the resources with the <code>app=helloworld</code> label.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl delete all -l app=helloworld
+pod &#34;helloworld-v1-776f57d5f6-mfkf7&#34; deleted
+pod &#34;helloworld-v2-54df5f84b-wdx5n&#34; deleted
+service &#34;helloworld&#34; deleted
+deployment.apps &#34;helloworld-v1&#34; deleted
+deployment.apps &#34;helloworld-v2&#34; deleted
+replicaset.apps &#34;helloworld-v2-54df5f84b&#34; deleted</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>8.8) Remove the label from the <code>default</code> namespace.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl label namespace default istio-injection-
+namespace/default labeled</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This concludes the guided exercise.</p>
+</div>
+<div class="sect2">
+<h3 id="_references">References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://istio.io/v1.12/docs/setup/" class="bare">https://istio.io/v1.12/docs/setup/</a></p>
+</li>
+<li>
+<p><a href="https://github.com/istio/istio/tree/1.12.2" class="bare">https://github.com/istio/istio/tree/1.12.2</a></p>
+</li>
+<li>
+<p><a href="https://github.com/istio/istio/tree/1.12.2/samples/helloworld" class="bare">https://github.com/istio/istio/tree/1.12.2/samples/helloworld</a></p>
+</li>
+</ul>
+</div>
+<hr/>
+<table class="tableblock frame-none grid-none stretch">
+<colgroup>
+<col style="width: 10%;"/>
+<col style="width: 80%;"/>
+<col style="width: 10%;"/>
+</colgroup>
+<tfoot>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="paragraph">
+<p><a href="../istio">Previous</a></p>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="paragraph">
+<p><a href="../../../">Home</a></p>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="paragraph">
+<p><a href="../install">Next</a></p>
+</div></div></td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+</div>
+
+  </div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+          &nbsp;&bull;&nbsp;
+          2020
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://tonejito.github.io/">Kubernetes By Example</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.91.2</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://tonejito.github.io/kbe//js/main.js"></script>
+<script>
+
+$('.language-test').parent().css('display', 'none')
+
+
+var copybtns = {
+  fallbackCopyTextToClipboard: function (text) {
+    var txt = document.createElement("textarea");
+    txt.value = text;
+    
+    
+    txt.style.position = "fixed";
+    txt.style.top = "0";
+    txt.style.left = "0";
+  
+    document.body.appendChild(txt);
+    txt.focus();
+    txt.select();
+    txt.setSelectionRange(0, 99999);
+  
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+    } catch (err) {
+      console.error('Fallback: Unable to copy', err);
+    }
+  
+    document.body.removeChild(txt);
+  },
+  copyTextToClipboard: function (text) {
+    if (!navigator.clipboard) {
+      copybtns.fallbackCopyTextToClipboard(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+      
+    }, function(err) {
+      
+      copybtns.fallbackCopyTextToClipboard(text);
+    });
+  },
+  flash: function(btn, content){
+    
+    content.fadeTo(50, 0.25, function() { $(this).fadeTo(300, 1.0); });
+    
+    btn.fadeTo(50, 0.0, function() { $(this).fadeTo(900, 1.0); });
+  },
+  txtClick : function(){
+    var content = $(this);
+    var btn = content.prev('button');
+    
+    copybtns.flash(btn, content);
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  btnClick : function(){
+    var btn = $(this);
+    var content = $(btn.next().children()[0]);
+    
+    copybtns.flash(btn, content)
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  init : function() {
+    var buttonHTML = '<button type="button" data-toggle="tooltip" data-placement="top" title="Copy" class="copybtn btn btn-outline-dark"><img src="https:\/\/tonejito.github.io\/kbe\//img/Icon-Red_Hat-Media_and_documents-Paper_Stack_Blank-A-Black-RGB.png"/></button>';
+    
+    $('div.highlight').prepend(buttonHTML);
+    
+    $('button.copybtn').bind("click", copybtns.btnClick);
+    $('div.highlight pre').bind("click", copybtns.txtClick);
+  }
+}
+copybtns.init();
+</script>
+<script src="https://tonejito.github.io/kbe//js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-34425776-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+  </body>
+</html>
+
