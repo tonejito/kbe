@@ -16,6 +16,8 @@ googleAnalytics = "UA-34425776-2"
   dateFormat = "2006-01-02"
   commit = false
   rss = false
+  custom_css = ["css/custom.css"]
+
 
 [[menu.main]]
   identifier = "try-out"
