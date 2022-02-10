@@ -10,7 +10,7 @@ MetalLB is a load balancer suitable for local environments, it is included as an
 
 [cols="^1a,^8a,^1a",options="footer",frame="none",grid="none",align="center",halign="center",valign="middle"]
 |===
-| 
+|
 | link:../../../[Home]
 | link:../install[Next]
 |===

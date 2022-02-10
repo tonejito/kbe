@@ -40,7 +40,7 @@ Procedure instructions
 [source,bash]
 ----
 [user@host kbe]$ minikube start
-😄  minikube v1.22.0 on Redhat 8.5
+😄  minikube v1.22.0 on RedHat 8.5
 ✨  Using the virtualbox driver based on user configuration
 👍  Starting control plane node minikube in cluster minikube
 🔥  Creating virtualbox VM (CPUs=2, Memory=6000MB, Disk=20000MB) ...
@@ -128,7 +128,7 @@ Take note of the host-only `vboxnet` adapter that the VM is connected to.
 |===
 
 ////
-2.5) Check the avaliable IP ranges for the VirtualBox host-only network.
+2.5) Check the available IP ranges for the VirtualBox host-only network.
 
 [source,bash]
 ----
@@ -215,7 +215,7 @@ Take note of the lower and upper address bounds.
 | storage-provisioner      | minikube | enabled ✅ | kubernetes            |
 | volumesnapshots          | minikube | disabled   | kubernetes            |
 |--------------------------|----------|------------|-----------------------|
-💡  To see addons list for other profiles use: `minikube addons -p name list`
+💡 To see addons list for other profiles use: `minikube addons -p name list`
 ----
 
 3.2) Enable the MetalLB minikube add-on.
@@ -412,7 +412,7 @@ This concludes the guided exercise.
 
 [NOTE]
 ====
-The MetalLB installation is required for other guided excercises.
+The MetalLB installation is required for other guided exercises.
 ====
 
 === References
