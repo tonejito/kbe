@@ -46,9 +46,8 @@ container:
 release:
 	git submodule add -f -b ${SITE_BRANCH} ${SITE_REPO} ${SITE_DIR}
 	docker run \
-	  -it --rm --name ${HUGO_NAME} \
+	  -it --rm --name ${HUGO_NAME}-release \
 	  -v $(CURDIR):/src \
-	  -p ${BIND_PORT}:${BIND_PORT} \
 	  ${HUGO_IMAGE} \
 	    --baseURL ${SITE_URL} --theme ${HUGO_THEME}
 	$(MAKE) -C public -f ../Makefile do_release
