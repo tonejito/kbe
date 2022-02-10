@@ -1,0 +1,695 @@
+ifndef::backend-docbook5,backend-docbook45[:imagesdir: ../../..]
+
+== Guided Exercise: Installing Istio on a minikube cluster
+
+In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
+
+Outcomes
+
+You should be able to:
+
+* Install Istio on the minikube cluster.
+* Get the Istio ingress service endpoint.
+* Deploy the Istio add-ons.
+* Create an example application to test the Istio installation.
+
+To perform this exercise, ensure that you have:
+
+* The `kubectl`, and `minikube` executables version 1.24 or higher on a directory listed in `${PATH}`.
+* MetalLB installed in the cluster.
+You can consult the link:../../metallb/install[installation guided exercise].
+
+[NOTE]
+====
+Minikube provides Istio as an add-on.
+However, the version is outdated and can't be installed in recent versions of Kubernetes.
+
+////
+[source,bash]
+----
+[user@host kbe]$ minikube addons list
+|--------------------------|----------|------------|-----------------------|
+|        ADDON NAME        | PROFILE  |   STATUS   |      MAINTAINER       |
+|--------------------------|----------|------------|-----------------------|
+...output omitted...
+| istio                    | minikube | disabled   | unknown (third-party) |
+| istio-provisioner        | minikube | disabled   | unknown (third-party) |
+...output omitted...
+|--------------------------|----------|------------|-----------------------|
+💡 To see addons list for other profiles use: `minikube addons -p name list`
+----
+////
+
+====
+
+Procedure instructions
+
+1) Start the minikube instance, and verify that MetalLB is installed.
+
+1.1) Start the minikube instance.
+
+[source,bash]
+----
+[user@host kbe]$ minikube start --cpus=4 --memory=8g
+...output omitted...
+----
+
+[NOTE]
+====
+Istio requires 4 vCPUs and 8GB of RAM to work in minikube.
+====
+
+1.2) Verify that the pods in the `metallb-system` are running.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get pods -n metallb-system
+NAME                          READY   STATUS    RESTARTS   AGE
+controller-66bc445b99-2gv6w   1/1     Running   0          1h
+speaker-jxjdm                 1/1     Running   0          1h
+----
+
+[WARNING]
+====
+This guided exercise assumes that MetalLB is installed and configured.
+====
+
+
+
+2) Install Istio on the minikube cluster.
+
+2.1) Download an archive of the Istio release.
+
+[source,bash]
+----
+[user@host kbe]$ export ISTIO_VERSION=1.12.1
+
+[user@host kbe]$ wget -c -nv \
+  https://github.com/istio/istio/releases/download/${ISTIO_VERSION}/istio-${ISTIO_VERSION}-linux-amd64.tar.gz
+...output omitted...
+----
+
+[NOTE]
+====
+You can also clone the Istio source repository and checkout the appropriate tag.
+====
+
+2.2) Extract the archive.
+Delete the archive after extracting because it is not needed anymore.
+
+[source,bash]
+----
+[user@host kbe]$ tar -xzf istio-${ISTIO_VERSION}-linux-amd64.tar.gz
+
+[user@host kbe]$ rm -v istio-${ISTIO_VERSION}-linux-amd64.tar.gz
+----
+
+2.3) Install the `istioctl` executable.
+
+[source,bash]
+----
+[user@host kbe]$ export PATH="${PATH}:${HOME}/bin"
+
+[user@host kbe]$ mkdir -vp ~/bin
+mkdir: created directory '/home/user/bin'
+
+[user@host kbe]$ install --mode 0755 istio-${ISTIO_VERSION}/bin/istioctl ~/bin/
+----
+
+2.4) Add the export line at the end of the `~/.bashrc` file to have a persistent configuration for the `PATH` variable.
+
+[source,bash]
+----
+[user@host kbe]$ echo 'export PATH="${PATH}:${HOME}/bin"' | tee -a ~/.bashrc
+export PATH="${PATH}:${HOME}/bin"
+----
+
+[NOTE]
+====
+The argument to the `echo` command is enclosed in single quotes to prevent shell expansion of the variables.
+====
+
+2.5) Verify that the shell is able to find the `istioctl` executable, and check the version of the tool.
+
+[source,bash]
+----
+[user@host kbe]$ which istioctl
+~/bin/istioctl
+
+[user@host kbe]$ istioctl version
+no running Istio pods in "istio-system"
+1.12.1
+----
+
+2.6) Run a pre-check to inspect if the cluster meets the requirements to install Istio.
+
+[source,bash]
+----
+[user@host kbe]$ istioctl experimental precheck
+✔ No issues found when checking the cluster. Istio is safe to install or upgrade!
+  To get started, check out https://istio.io/latest/docs/setup/getting-started/
+----
+
+2.7) Install Istio in the Kubernetes cluster.
+
+[source,bash]
+----
+[user@host kbe]$ istioctl install --set profile=demo -y
+✔ Istio core installed
+✔ Istiod installed
+✔ Egress gateways installed
+✔ Ingress gateways installed
+✔ Installation complete
+Making this installation the default for injection and validation.
+
+Thank you for installing Istio 1.12.
+Please take a few minutes to tell us about your install/upgrade experience!
+https://forms.gle/FegQbc9UvePd4Z9z7
+----
+
+[NOTE]
+====
+The install command generates an Istio install manifest and applies it to a cluster.
+====
+
+2.8) Check the resources created in the `istio-system` namespace.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get deployments,pods -n istio-system
+NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/istio-egressgateway    1/1     1            1           4m
+deployment.apps/istio-ingressgateway   1/1     1            1           4m
+deployment.apps/istiod                 1/1     1            1           5m
+
+NAME                                        READY   STATUS    RESTARTS   AGE
+pod/istio-egressgateway-687f4db598-wjfkb    1/1     Running   0          4m
+pod/istio-ingressgateway-78f69bd5db-s5pjz   1/1     Running   0          4m
+pod/istiod-76d66d9876-jvl98                 1/1     Running   0          5m
+----
+
+[NOTE]
+====
+When istio is installed using `helm`, two namespaces are created: `istio-system`, and `istio-ingress`.
+====
+
+
+
+3) Get the Istio ingress service endpoint.
+
+3.1) Get the services in the `istio-system` namespace.
+The external IP address is provided by MetalLB since the ingress gateway service type is LoadBalancer.
+This closely match what you might get when deploying on a cloud environment.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get services -n istio-system
+NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                                                                      AGE
+istio-egressgateway    ClusterIP      10.111.169.103   <none>          80/TCP,443/TCP                                                               5m
+istio-ingressgateway   LoadBalancer   10.97.37.96      192.168.59.20   15021:30669/TCP,80:32031/TCP,443:31872/TCP,31400:32249/TCP,15443:30657/TCP   5m
+istiod                 ClusterIP      10.103.227.204   <none>          15010/TCP,15012/TCP,443/TCP,15014/TCP                                        6m
+----
+
+[NOTE]
+====
+If Istio was installed using `helm`, then the ingress and egress resources are in the `istio-ingress` namespace.
+====
+
+3.2) Get the Istio ingress IP address.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get service istio-ingressgateway \
+  -n istio-system \
+  -o jsonpath='{.status.loadBalancer.ingress[0].ip}{"\n"}'
+192.168.59.20
+
+[user@host kbe]$ export INGRESS_HOST="192.168.59.20"
+----
+
+[NOTE]
+====
+You can export the IP address using a single command.
+
+[source,bash]
+----
+[user@host kbe]$ export INGRESS_HOST=$(kubectl get service \
+  istio-ingressgateway -n istio-system \
+  -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+----
+====
+
+3.3) Get the Istio ingress port numbers for the HTTP and HTTPS endpoints.
+The service ports match the standard port numbers because MetalLB provided an IP address for this LoadBalancer service.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get service istio-ingressgateway \
+  -n istio-system \
+  -o jsonpath='{.spec.ports[?(@.name=="http2")].port}{"\n"}'
+80
+
+[user@host kbe]$ export INGRESS_PORT="80"
+
+[user@host kbe]$ kubectl get service istio-ingressgateway \
+  -n istio-system \
+  -o jsonpath='{.spec.ports[?(@.name=="https")].port}{"\n"}'
+443
+
+[user@host kbe]$ export SECURE_INGRESS_PORT="443"
+----
+
+[NOTE]
+====
+You can export the port numbers using a single command.
+
+[source,bash]
+----
+[user@host kbe]$ export INGRESS_PORT=$(kubectl get service \
+  istio-ingressgateway -n istio-system \
+  -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
+
+[user@host kbe]$ export SECURE_INGRESS_PORT=$(kubectl get service \
+  istio-ingressgateway -n istio-system \
+  -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
+----
+====
+
+3.4) Export an environment variable with the ingress gateway IP address and port number.
+
+[source,bash]
+----
+[user@host kbe]$ export GATEWAY_URL="${INGRESS_HOST}:${INGRESS_PORT}"
+
+[user@host kbe]$ printenv GATEWAY_URL
+192.168.59.20:80
+----
+
+
+
+4) Deploy the Istio add-ons.
+
+4.1) List the add-ons provided with the Istio release.
+
+----
+[user@host kbe]$ ISTIO_VERSION=1.12.1
+
+[user@host kbe]$ ls istio-${ISTIO_VERSION}/samples/addons/
+extras  grafana.yaml  jaeger.yaml  kiali.yaml  prometheus.yaml  README.md
+----
+
+4.2) Apply the resource manifests for the Istio add-ons.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl apply -f istio-${ISTIO_VERSION}/samples/addons
+...output omitted...
+----
+
+4.3) Verify that the deployments in the `istio-system` namespace show a ready status.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get deployments -n istio-system
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+grafana                1/1     1            1           2m
+istio-egressgateway    1/1     1            1           12m
+istio-ingressgateway   1/1     1            1           12m
+istiod                 1/1     1            1           12m
+jaeger                 1/1     1            1           2m
+kiali                  1/1     1            1           2m
+prometheus             1/1     1            1           2m
+----
+
+[NOTE]
+====
+You might need to repeat the command until the desired condition is reached.
+====
+
+
+
+5) Create an example application
+
+5.1) Enable the sidecar injection for the `default` namespace.
+This allows Istio to add an `istio-proxy` container on each pod to control ingress and egress traffic.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl label namespace default istio-injection=enabled --overwrite
+namespace/default labeled
+----
+
+5.2) Deploy an example application.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl apply -f istio-${ISTIO_VERSION}/samples/helloworld/helloworld.yaml
+service/helloworld created
+deployment.apps/helloworld-v1 created
+deployment.apps/helloworld-v2 created
+----
+
+5.3) Check that the deployment and pod are ready.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get deployments,pods -l app=helloworld
+NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/helloworld-v1   1/1     1            1           2m
+deployment.apps/helloworld-v2   1/1     1            1           2m
+
+NAME                                 READY   STATUS    RESTARTS   AGE
+pod/helloworld-v1-776f57d5f6-mfkf7   2/2     Running   0          2m
+pod/helloworld-v2-54df5f84b-wdx5n    2/2     Running   0          2m
+----
+
+[NOTE]
+====
+You might need to repeat the command until the desired condition is reached.
+====
+
+5.4) Verify that the service is present.
+// The type of the service is ClusterIP, thus it is not accessible from the outside
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get services -l app=helloworld
+NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+helloworld   ClusterIP   10.101.60.68   <none>        5000/TCP   3m
+----
+
+5.5) Create the gateway and virtual service to access the example application.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl apply -f istio-${ISTIO_VERSION}/samples/helloworld/helloworld-gateway.yaml
+gateway.networking.istio.io/helloworld-gateway created
+virtualservice.networking.istio.io/helloworld created
+----
+
+[NOTE]
+====
+The parameters of the gateway and virtual service resources will be covered in another exercise.
+====
+
+5.6) Verify that the gateway and virtual service resources are deployed.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get gateways,virtualservices
+NAME                                             AGE
+gateway.networking.istio.io/helloworld-gateway   60s
+
+NAME                                           GATEWAYS               HOSTS  AGE
+virtualservice.networking.istio.io/helloworld  ["helloworld-gateway"] ["*"]  60s
+----
+
+5.7) Get the URL path prefix for the application.
+// This item will be covered in another section.
+
+[source,bash]
+----
+[user@host istio]$ kubectl get virtualservice helloworld \
+  -o jsonpath='{.spec.http[0].match[0].uri}{"\n"}'
+{"exact":"/hello"}
+----
+
+////
+5.8) Verify the parameters of the virtual service resource.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get virtualservice helloworld -o yaml
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  ...output omitted...
+  name: helloworld
+  namespace: default
+  ...output omitted...
+spec:
+  gateways:
+  - helloworld-gateway  # <1>
+  hosts:
+  - '*'  # <2>
+  http:
+  - match:
+    - uri:
+        exact: /hello  # <3>
+    route:
+    - destination:
+        host: helloworld  # <4>
+        port:
+          number: 5000  # <5>
+----
+<1> The traffic will be handled by the `helloworld-gateway`.
+<2> The ingress traffic will match requests with any host HTTP header.
+<3> The requests will match if the `/hello` prefix is used.
+<4> The destination service is set to `helloworld`.
+<5> The destination port number is `5000`.
+////
+
+
+
+6) Generate traffic for the example application.
+
+6.1) Access the example application with `curl`.
+
+[source,bash]
+----
+[user@host kbe]$ curl -vk# "http://${GATEWAY_URL}/hello"
+*   Trying 192.168.59.20...
+* TCP_NODELAY set
+* Connected to 192.168.59.20 (192.168.59.20) port 80 (#0)
+> GET /hello HTTP/1.1
+> Host: 192.168.59.20
+> User-Agent: curl/7.61.1
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< content-type: text/html; charset=utf-8
+< content-length: 60
+< server: istio-envoy
+< date: Fri, 04 Feb 2022 02:48:11 GMT
+< x-envoy-upstream-service-time: 123
+<
+Hello version: v1, instance: helloworld-v1-776f57d5f6-mfkf7
+* Connection #0 to host 192.168.59.20 left intact
+----
+
+6.2) Check the commands contained in the `loadgen.sh` script.
+
+[source,bash]
+----
+[user@host istio]$ grep -v '^#' \
+  istio-${ISTIO_VERSION}/samples/helloworld/loadgen.sh
+
+while true; do curl -s -o /dev/null "http://$GATEWAY_URL/hello"; done
+----
+
+6.3) Generate traffic for the example application.
+
+[source,bash]
+----
+[user@host kbe]$ ./istio-${ISTIO_VERSION}/samples/helloworld/loadgen.sh
+...output omitted...
+----
+
+
+
+7) Access the Istio dashboard.
+
+7.1) Open another terminal and execute the following command to view the Istio Kiali dashboard.
+
+[source,bash]
+----
+[user@host kbe]$ istioctl dashboard kiali
+http://localhost:20001/kiali
+----
+
+[options="header", cols="^1a"]
+|===
+| Istio Kiali dashboard
+| image::img/istio/istio-001-dashboard.png[width="100%",align="center",alt="Istio Kiali dashboard"]
+|===
+
+7.2) Click on the applications, and select the default namespace.
+Click on the `helloworld` application name.
+
+[options="header", cols="^1a"]
+|===
+| k8s applications
+| image::img/istio/istio-002-applications.png[width="100%",align="center",alt="k8s applications"]
+|===
+
+7.3) The overview tab displays the connections between the Istio ingress gateway, the application service, and the pods that process the requests.
+
+[options="header", cols="^1a"]
+|===
+| Application overview
+| image::img/istio/istio-003-application-overview.png[width="100%",align="center",alt="Application overview"]
+|===
+
+7.4) Click on the application name, and then click on the **Inbound Metrics** tab.
+Wait one minute while the network traffic graphs are updated.
+
+[options="header", cols="^1a"]
+|===
+| Application inbound metrics
+| image::img/istio/istio-004-inbound-metrics.png[width="100%",align="center",alt="Application inbound metrics"]
+|===
+
+7.6) Click on the **Traces** tab to show the graph with data points for each processed request.
+Hover on any data point to view the duration of the processing.
+
+[options="header", cols="^1a"]
+|===
+| Application traces
+| image::img/istio/istio-005-traces.png[width="100%",align="center",alt="Application traces"]
+|===
+
+7.7) Click on **Workloads**, then click on the deployment name `helloworld-v1`.
+
+[options="header", cols="^1a"]
+|===
+| Kiali workloads
+| image::img/istio/istio-006-workloads.png[width="100%",align="center",alt="Kiali workloads"]
+|===
+
+7.8) Click on the **Logs** tab to display the logs for the pod containers.
+You can select the checkboxes to filter the logs for the `helloworld` application container or the `istio-proxy` container.
+
+[options="header", cols="^1a"]
+|===
+| Application logs
+| image::img/istio/istio-007-workloads-logs.png[width="100%",align="center",alt="Application logs"]
+|===
+
+7.9) Click on **Services**, then click on the `helloworld` service.
+The service topology is displayed.
+
+[options="header", cols="^1a"]
+|===
+| Application topology
+| image::img/istio/istio-008-application-topology.png[width="100%",align="center",alt="Application topology"]
+|===
+
+7.10) Click on the **Inbound Metrics** tab to display the metrics for the ingress traffic for this particular service.
+
+[options="header", cols="^1a"]
+|===
+| Service metrics
+| image::img/istio/istio-009-service-metrics.png[width="100%",align="center",alt="Service metrics"]
+|===
+
+[NOTE]
+====
+The `helloworld` application has only one service and all the ingress traffic is directed to it.
+There are complex applications that route different paths to different services.
+====
+
+
+
+8) Cleanup
+
+8.1) Close the browser window where the Istio Kiali dashboard is displayed.
+
+8.2) Press `Ctrl+C` on the terminal window where the `istioctl` command is running.
+
+[source,bash]
+----
+[user@host kbe]$ istioctl dashboard kiali
+http://localhost:20001/kiali
+^C
+----
+
+8.3) Press `Ctrl+C` on the terminal window where the `loadgen.sh` script is running.
+
+[source,bash]
+----
+[user@host kbe]$ ./istio-${ISTIO_VERSION}/samples/helloworld/loadgen.sh
+^C
+----
+
+8.4) Review the gateways and virtual services present in the current namespace.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get gateways
+NAME                 AGE
+helloworld-gateway   1h
+
+[user@host kbe]$ kubectl get virtualservices
+NAME         GATEWAYS                 HOSTS   AGE
+helloworld   ["helloworld-gateway"]   ["*"]   1h
+----
+
+8.5) Delete the gateway and virtual service resources.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl delete gateway helloworld-gateway
+gateway.networking.istio.io "helloworld-gateway" deleted
+
+[user@host kbe]$ kubectl delete virtualservice helloworld
+virtualservice.networking.istio.io "helloworld" deleted
+----
+
+8.6) Review the resources with the `app=helloworld` label.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get all -l app=helloworld
+NAME                                 READY   STATUS    RESTARTS   AGE
+pod/helloworld-v1-776f57d5f6-mfkf7   2/2     Running   0          1h
+pod/helloworld-v2-54df5f84b-wdx5n    2/2     Running   0          1h
+
+NAME                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+service/helloworld   ClusterIP   10.101.60.68   <none>        5000/TCP   1h
+
+NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/helloworld-v1   1/1     1            1           1h
+deployment.apps/helloworld-v2   1/1     1            1           1h
+
+NAME                                       DESIRED   CURRENT   READY   AGE
+replicaset.apps/helloworld-v1-776f57d5f6   1         1         1       1h
+replicaset.apps/helloworld-v2-54df5f84b    1         1         1       1h
+----
+
+8.7) Delete all the resources with the `app=helloworld` label.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl delete all -l app=helloworld
+pod "helloworld-v1-776f57d5f6-mfkf7" deleted
+pod "helloworld-v2-54df5f84b-wdx5n" deleted
+service "helloworld" deleted
+deployment.apps "helloworld-v1" deleted
+deployment.apps "helloworld-v2" deleted
+replicaset.apps "helloworld-v2-54df5f84b" deleted
+----
+
+8.8) Remove the label from the `default` namespace.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl label namespace default istio-injection-
+namespace/default labeled
+----
+
+This concludes the guided exercise.
+
+=== References
+
+* https://istio.io/v1.12/docs/setup/
+* https://github.com/istio/istio/tree/1.12.2
+* https://github.com/istio/istio/tree/1.12.2/samples/helloworld
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+[cols="^1a,^8a,^1a",options="footer",frame="none",grid="none",align="center",halign="center",valign="middle"]
+|===
+| link:../istio[Previous]
+| link:../../../[Home]
+| link:../install[Next]
+|===
