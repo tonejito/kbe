@@ -158,3 +158,9 @@ googleAnalytics = "UA-34425776-2"
   name = "MetalLB"
   url = "topics/metallb/metallb/"
   weight = "1"
+
+[[menu.main]]
+  parent = "topics"
+  name = "Istio"
+  url = "topics/istio/istio/"
+  weight = "2"
