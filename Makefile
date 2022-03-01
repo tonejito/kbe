@@ -34,6 +34,7 @@ run:
 	;
 
 container:
+	-docker rm ${HUGO_NAME}
 	docker run \
 	  -it --rm --name ${HUGO_NAME} \
 	  -v $(CURDIR):/src \
