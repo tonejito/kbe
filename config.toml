@@ -20,7 +20,6 @@ googleAnalytics = "UA-34425776-2"
   # watermark = "This is the watermark"
   annoying_banner_ad = true
 
-
 [[menu.main]]
   identifier = "try-out"
   name = "Try out!"

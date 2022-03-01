@@ -364,11 +364,28 @@ namespace/default labeled
 
 [source,bash]
 ----
-[user@host kbe]$ kubectl apply -f istio-${ISTIO_VERSION}/samples/helloworld/helloworld.yaml
+[user@host kbe]$ export ISTIO_VERSION=1.12.1
+
+[user@host kbe]$ kubectl apply -f \
+  istio-${ISTIO_VERSION}/samples/helloworld/helloworld.yaml
 service/helloworld created
 deployment.apps/helloworld-v1 created
 deployment.apps/helloworld-v2 created
 ----
+
+[NOTE]
+====
+You can use the resource manifest from GitHub if you don't have the Istio release archive files.
+
+[source,bash]
+----
+[user@host kbe]$ export ISTIO_VERSION=1.12.1
+
+[user@host kbe]$ kubectl apply -f \
+  https://github.com/istio/istio/raw/${ISTIO_VERSION}/samples/helloworld/helloworld.yaml
+...output omitted...
+----
+====
 
 5.3) Check that the deployment and pod are ready.
 
@@ -403,7 +420,8 @@ helloworld   ClusterIP   10.101.60.68   <none>        5000/TCP   3m
 
 [source,bash]
 ----
-[user@host kbe]$ kubectl apply -f istio-${ISTIO_VERSION}/samples/helloworld/helloworld-gateway.yaml
+[user@host kbe]$ kubectl apply -f \
+  istio-${ISTIO_VERSION}/samples/helloworld/helloworld-gateway.yaml
 gateway.networking.istio.io/helloworld-gateway created
 virtualservice.networking.istio.io/helloworld created
 ----
@@ -411,6 +429,17 @@ virtualservice.networking.istio.io/helloworld created
 [NOTE]
 ====
 The parameters of the gateway and virtual service resources will be covered in another exercise.
+
+You can use the resource manifest from GitHub if you don't have the Istio release archive files.
+
+[source,bash]
+----
+[user@host kbe]$ export ISTIO_VERSION=1.12.1
+
+[user@host kbe]$ kubectl apply -f \
+  https://github.com/istio/istio/raw/${ISTIO_VERSION}/samples/helloworld/helloworld-gateway.yaml
+...output omitted...
+----
 ====
 
 5.6) Verify that the gateway and virtual service resources are deployed.
@@ -434,6 +463,11 @@ virtualservice.networking.istio.io/helloworld  ["helloworld-gateway"] ["*"]  60s
   -o jsonpath='{.spec.http[0].match[0].uri}{"\n"}'
 {"exact":"/hello"}
 ----
+
+[NOTE]
+====
+The parameters of the virtual service resource will be covered in another exercise.
+====
 
 
 
@@ -463,7 +497,7 @@ Hello version: v1, instance: helloworld-v1-776f57d5f6-mfkf7
 * Connection #0 to host 192.168.59.20 left intact
 ----
 
-6.2) Check the commands contained in the `loadgen.sh` script.
+6.2) Inspect the commands contained in the `loadgen.sh` script.
 
 [source,bash]
 ----

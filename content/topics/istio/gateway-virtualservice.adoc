@@ -219,7 +219,7 @@ You can use the resource manifest from GitHub if you don't have the Istio releas
 [user@host kbe]$ export ISTIO_VERSION=1.12.1
 
 [user@host kbe]$ kubectl apply -f \
-    https://github.com/istio/istio/raw/${ISTIO_VERSION}/samples/bookinfo/platform/kube/bookinfo.yaml
+  https://github.com/istio/istio/raw/${ISTIO_VERSION}/samples/bookinfo/platform/kube/bookinfo.yaml
 ...output omitted...
 ----
 ====
@@ -299,6 +299,7 @@ The YAML indentation in this file is set to *two white spaces*.
 
 There is a `bookinfo-gateway.yaml` file in the KBE repository in case you want to check for syntax errors.
 
+* link:../../../specs/istio/bookinfo-gateway.yaml[specs/istio/bookinfo-gateway.yaml]
 * https://github.com/openshift-evangelists/kbe/raw/main/specs/istio/bookinfo-gateway.yaml
 ====
 
@@ -348,6 +349,7 @@ The YAML indentation in this file is set to *two white spaces*.
 
 There is a `bookinfo-virtualservice.yaml` file in the KBE repository in case you want to check for syntax errors.
 
+* link:../../../specs/istio/bookinfo-virtualservice.yaml[specs/istio/bookinfo-virtualservice.yaml]
 * https://github.com/openshift-evangelists/kbe/raw/main/specs/istio/bookinfo-virtualservice.yaml
 ====
 
@@ -518,6 +520,7 @@ The YAML indentation in this file is set to *two white spaces*.
 
 There is a `reviews-virtualservice.yaml` file in the KBE repository in case you want to check for syntax errors.
 
+* link:../../../specs/istio/reviews-virtualservice.yaml[specs/istio/reviews-virtualservice.yaml]
 * https://github.com/openshift-evangelists/kbe/raw/main/specs/istio/reviews-virtualservice.yaml
 ====
 
@@ -554,6 +557,7 @@ The YAML indentation in this file is set to *two white spaces*.
 
 There is a `reviews-destinationrule.yaml` file in the KBE repository in case you want to check for syntax errors.
 
+* link:../../../specs/istio/reviews-destinationrule.yaml[specs/istio/reviews-destinationrule.yaml]
 * https://github.com/openshift-evangelists/kbe/raw/main/specs/istio/reviews-destinationrule.yaml
 ====
 
