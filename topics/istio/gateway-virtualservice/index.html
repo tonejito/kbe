@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Kubernetes By Example</title>
+  <meta property="og:title" content="Kubernetes By Example" />
+  <meta name="twitter:title" content="Kubernetes By Example" />
+  <meta name="description" content="Guided Exercise: Configuring Istio Traffic Management In this exercise, you will configure the amount of traffic that is routed to the backend services using virtual services and destination rules.
+ Outcomes
+ You should be able to:
+   Deploy the book info application in the Kubernetes cluster.
+  Configure the gateway, virtual services, and destination rules to manage ingress traffic.
+   To perform this exercise, ensure that you have:">
+  <meta property="og:description" content="Guided Exercise: Configuring Istio Traffic Management In this exercise, you will configure the amount of traffic that is routed to the backend services using virtual services and destination rules.
+ Outcomes
+ You should be able to:
+   Deploy the book info application in the Kubernetes cluster.
+  Configure the gateway, virtual services, and destination rules to manage ingress traffic.
+   To perform this exercise, ensure that you have:">
+  <meta name="twitter:description" content="Guided Exercise: Configuring Istio Traffic Management In this exercise, you will configure the amount of traffic that is routed to the backend services using virtual services and destination rules. …">
+  <meta name="author" content=""/>
+  <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://tonejito.github.io/kbe/topics/istio/gateway-virtualservice/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kubernetes By Example" />
+
+  <meta name="generator" content="Hugo 0.91.2" />
+  <link rel="canonical" href="https://tonejito.github.io/kbe/topics/istio/gateway-virtualservice/" />
+  <link rel="alternate" href="https://tonejito.github.io/index.xml" type="application/rss+xml" title="Kubernetes By Example">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/main.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/pygment_highlights.css" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/highlight.min.css" />
+<link rel="stylesheet" type="text/css" href="https://tonejito.github.io/kbe/css/custom.css">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WNHKJNX');</script>
+  
+</head>
+
+  <body>
+    
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WNHKJNX"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
+  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white;background: #53b9fc;font-size:small;' role="alert">
+    <strong>Kubernetes By Example is evolving!</strong><br/>On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.<br/>Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE. 
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://tonejito.github.io/">Home</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/pods/">Pods</a>
+                
+                  <a href="/kbe/labels/">Labels</a>
+                
+                  <a href="/kbe/deployments/">Deployments</a>
+                
+                  <a href="/kbe/services/">Services</a>
+                
+                  <a href="/kbe/sd/">Service Discovery</a>
+                
+                  <a href="/kbe/pf/">Port Forward</a>
+                
+                  <a href="/kbe/healthz/">Health Checks</a>
+                
+                  <a href="/kbe/envs/">Environment Variables</a>
+                
+                  <a href="/kbe/ns/">Namespaces</a>
+                
+                  <a href="/kbe/volumes/">Volumes</a>
+                
+                  <a href="/kbe/pv/">Persistent Volumes</a>
+                
+                  <a href="/kbe/secrets/">Secrets</a>
+                
+                  <a href="/kbe/logging/">Logging</a>
+                
+                  <a href="/kbe/jobs/">Jobs</a>
+                
+                  <a href="/kbe/statefulset/">Stateful Sets</a>
+                
+                  <a href="/kbe/ic/">Init Containers</a>
+                
+                  <a href="/kbe/nodes/">Nodes</a>
+                
+                  <a href="/kbe/api/">API Server</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
+                
+                  <a href="/kbe/topics/istio/istio/">Istio</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Try out!" href="/kbe/diy/">Try out!</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="Kubernetes By Example" href="https://tonejito.github.io/">
+            <img class="avatar-img" src="https://tonejito.github.io/kbe//img/kbe-logo.png" alt="Kubernetes By Example" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  <div class="intro-header"></div>
+
+
+    
+  <div class="container" role="main">
+    <div class="sect1">
+<h2 id="_guided_exercise_configuring_istio_traffic_management">Guided Exercise: Configuring Istio Traffic Management</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this exercise, you will configure the amount of traffic that is routed to the backend services using virtual services and destination rules.</p>
+</div>
+<div class="paragraph">
+<p>Outcomes</p>
+</div>
+<div class="paragraph">
+<p>You should be able to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Deploy the book info application in the Kubernetes cluster.</p>
+</li>
+<li>
+<p>Configure the gateway, virtual services, and destination rules to manage ingress traffic.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To perform this exercise, ensure that you have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>kubectl</code>, and <code>minikube</code> executables version 1.24 or higher on a directory listed in <code>${PATH}</code>.</p>
+</li>
+<li>
+<p>The <code>istioctl</code> executable version 1.12.1 or higher on a directory listed in <code>${PATH}</code>.</p>
+</li>
+<li>
+<p>MetalLB installed in the cluster.
+You can consult the <a href="../../metallb/install">installation guided exercise</a>.</p>
+</li>
+<li>
+<p>Istio installed in the cluster.
+You can consult the <a href="../../istio/install">installation guided exercise</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Procedure instructions</p>
+</div>
+<div class="paragraph">
+<p>1) Start the minikube instance, and verify that Istio is installed.</p>
+</div>
+<div class="paragraph">
+<p>1.1) Start the minikube instance.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ minikube start
+...output omitted...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>1.2) Verify that the pods in the <code>metallb-system</code> namespace are running.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get pods -n metallb-system
+NAME                          READY   STATUS    RESTARTS   AGE
+controller-66bc445b99-2gv6w   1/1     Running   0          3d
+speaker-jxjdm                 1/1     Running   0          3d</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This guided exercise assumes that MetalLB is <a href="../../metallb/install">installed and configured</a>.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>1.3) Verify that MetalLB has the IP address range configured.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get configmap config -n metallb-system -o yaml
+apiVersion: v1
+data:
+  config: |
+    address-pools:
+    - name: default
+      protocol: layer2
+      addresses:
+      - 192.168.59.20-192.168.59.30
+...output omitted...</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If the IP address range for MetalLB is empty, review the troubleshooting section in the <a href="../../metallb/metallb">MetalLB lecture</a>.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>1.4) Verify that the deployments in the <code>istio-system</code> namespace are running.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get deployments -n istio-system
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+grafana                1/1     1            1           2d
+istio-egressgateway    1/1     1            1           2d
+istio-ingressgateway   1/1     1            1           2d
+istiod                 1/1     1            1           2d
+jaeger                 1/1     1            1           2d
+kiali                  1/1     1            1           2d
+prometheus             1/1     1            1           2d</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This guided exercise assumes that Istio is <a href="../../istio/install">installed and configured</a>.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>2) Retrieve the Istio ingress IP address and port.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This GE assumes that the IP address for the ingress load balancer service is provided by MetalLB.
+If MetalLB is not deployed, then the service internal IP address and node port number should be used instead.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>2.1) Get the Istio ingress IP address.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get service istio-ingressgateway \
+  -n istio-system \
+  -o jsonpath=&#39;{.status.loadBalancer.ingress[0].ip}{&#34;\n&#34;}&#39;
+192.168.59.20
+
+[user@host kbe]$ export INGRESS_HOST=&#34;192.168.59.20&#34;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can export the IP address using a single command.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ export INGRESS_HOST=$(kubectl get service \
+  istio-ingressgateway -n istio-system \
+  -o jsonpath=&#39;{.status.loadBalancer.ingress[0].ip}&#39;)</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>2.2) Get the Istio ingress port numbers for the HTTP and HTTPS endpoints.
+The service ports match the standard port numbers because MetalLB provided an IP address for the Istio load balancer service.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get service istio-ingressgateway \
+  -n istio-system \
+  -o jsonpath=&#39;{.spec.ports[?(@.name==&#34;http2&#34;)].port}{&#34;\n&#34;}&#39;
+80
+
+[user@host kbe]$ export INGRESS_PORT=&#34;80&#34;
+
+[user@host kbe]$ kubectl get service istio-ingressgateway \
+  -n istio-system \
+  -o jsonpath=&#39;{.spec.ports[?(@.name==&#34;https&#34;)].port}{&#34;\n&#34;}&#39;
+443
+
+[user@host kbe]$ export SECURE_INGRESS_PORT=&#34;443&#34;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can export the port numbers using a single command.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ export INGRESS_PORT=$(kubectl get service \
+  istio-ingressgateway -n istio-system \
+  -o jsonpath=&#39;{.spec.ports[?(@.name==&#34;http2&#34;)].port}&#39;)
+
+[user@host kbe]$ export SECURE_INGRESS_PORT=$(kubectl get service \
+  istio-ingressgateway -n istio-system \
+  -o jsonpath=&#39;{.spec.ports[?(@.name==&#34;https&#34;)].port}&#39;)</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>3) Deploy the book info application.</p>
+</div>
+<div class="paragraph">
+<p>3.1) Create a namespace and update the current context to use it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl create namespace bookinfo
+namespace/bookinfo created
+
+[user@host kbe]$ kubectl config set-context --current --namespace=bookinfo
+Context &#34;minikube&#34; modified.
+
+[user@host kbe]$ kubectl config get-contexts
+CURRENT   NAME       CLUSTER    AUTHINFO   NAMESPACE
+*         minikube   minikube   minikube   bookinfo</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>3.2) Enable the sidecar injection on the namespace.
+This allows Istio to add an <code>istio-proxy</code> container on each pod to control ingress and egress traffic.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl label namespace bookinfo istio-injection=enabled --overwrite
+namespace/bookinfo labeled</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>3.3) Deploy the <code>bookinfo</code> application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ export ISTIO_VERSION=1.12.1
+
+[user@host kbe]$ kubectl apply -f \
+ istio-${ISTIO_VERSION}/samples/bookinfo/platform/kube/bookinfo.yaml
+serviceaccount/bookinfo-productpage created
+service/productpage created
+deployment.apps/productpage-v1 created
+serviceaccount/bookinfo-details created
+deployment.apps/details-v1 created
+service/details created
+serviceaccount/bookinfo-reviews created
+deployment.apps/reviews-v1 created
+deployment.apps/reviews-v2 created
+deployment.apps/reviews-v3 created
+service/reviews created
+serviceaccount/bookinfo-ratings created
+deployment.apps/ratings-v1 created
+service/ratings created</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can use the resource manifest from GitHub if you don’t have the Istio release archive files.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ export ISTIO_VERSION=1.12.1
+
+[user@host kbe]$ kubectl apply -f \
+    https://github.com/istio/istio/raw/${ISTIO_VERSION}/samples/bookinfo/platform/kube/bookinfo.yaml
+...output omitted...</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>3.4) Verify that the deployments are ready, and the services are created.
+The pod <strong>ready</strong> status displays <code>2/2</code> indicating that there are two containers running on each pod.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get deployments,pods,services
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/details-v1       1/1     1            1           57s
+deployment.apps/productpage-v1   1/1     1            1           56s
+deployment.apps/ratings-v1       1/1     1            1           57s
+deployment.apps/reviews-v1       1/1     1            1           56s
+deployment.apps/reviews-v2       1/1     1            1           56s
+deployment.apps/reviews-v3       1/1     1            1           56s
+
+NAME                                  READY   STATUS    RESTARTS   AGE
+pod/details-v1-7fdb56cffb-xgqb9      2/2     Running   0          74s
+pod/productpage-v1-54777f49b-wq5nw   2/2     Running   0          74s
+pod/ratings-v1-79f6f7d9d5-mn2b8      2/2     Running   0          74s
+pod/reviews-v1-67cc5765c7-cswx8      2/2     Running   0          74s
+pod/reviews-v2-6cc9d468f7-48qtn      2/2     Running   0          74s
+pod/reviews-v3-6d78c4f789-5przh      2/2     Running   0          74s
+
+NAME                  TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+service/details       ClusterIP   10.107.161.186   &lt;none&gt;        9080/TCP   60s
+service/productpage   ClusterIP   10.108.47.152    &lt;none&gt;        9080/TCP   59s
+service/ratings       ClusterIP   10.99.191.190    &lt;none&gt;        9080/TCP   60s
+service/reviews       ClusterIP   10.107.90.88     &lt;none&gt;        9080/TCP   60s</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You might need to repeat the command until the desired condition is reached.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>3.5) List the IP address of the ingress host that you obtained previously.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ printenv INGRESS_HOST
+192.168.59.20</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>3.6) Create a file named <code>bookinfo-gateway.yaml</code> with the following Istio gateway resource manifest.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace the <code>192.168.59.20</code> string with your value for <code>INGRESS_HOST</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: bookinfo-gateway
+spec:
+  selector:
+    istio: ingressgateway  # <b class="conum">(1)</b>
+  servers:
+  - hosts:
+    - &#34;bookinfo.192.168.59.20.nip.io&#34;  # <b class="conum">(2)</b>
+    port:       # <b class="conum">(3)</b>
+      name: http
+      number: 80
+      protocol: HTTP</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Use the Istio default ingress gateway.</p>
+</li>
+<li>
+<p>DNS host name where the gateway will serve traffic.</p>
+</li>
+<li>
+<p>Port number of the proxy will listen for incoming connections.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The YAML indentation in this file is set to <strong>two white spaces</strong>.</p>
+</div>
+<div class="paragraph">
+<p>There is a <code>bookinfo-gateway.yaml</code> file in the KBE repository in case you want to check for syntax errors.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/openshift-evangelists/kbe/raw/main/specs/istio/bookinfo-gateway.yaml" class="bare">https://github.com/openshift-evangelists/kbe/raw/main/specs/istio/bookinfo-gateway.yaml</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>3.7) Create a file named <code>bookinfo-virtualservice.yaml</code> with the following Istio virtual service resource manifest.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace the <code>192.168.59.20</code> string with your value for <code>INGRESS_HOST</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: bookinfo
+spec:
+  gateways:
+  - bookinfo-gateway  # <b class="conum">(1)</b>
+  hosts:
+  - &#34;bookinfo.192.168.59.20.nip.io&#34;  # <b class="conum">(2)</b>
+  http:  # <b class="conum">(3)</b>
+  - match:  # <b class="conum">(4)</b>
+    - uri:
+        exact: /productpage
+    - uri:
+        prefix: /static
+    - uri:
+        exact: /login
+    - uri:
+        exact: /logout
+    - uri:
+        prefix: /api/v1/products
+    route:  # <b class="conum">(5)</b>
+    - destination:
+        host: productpage
+        port:
+          number: 9080</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Apply the virtual service rules to the specified gateway in the current namespace.</p>
+</li>
+<li>
+<p>DNS host name where the gateway will serve traffic.</p>
+</li>
+<li>
+<p>List of routing rules for the HTTP traffic.</p>
+</li>
+<li>
+<p>List of rules to match against incoming requests.</p>
+</li>
+<li>
+<p>The matching requests will be forwarded to this service and port number.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The YAML indentation in this file is set to <strong>two white spaces</strong>.</p>
+</div>
+<div class="paragraph">
+<p>There is a <code>bookinfo-virtualservice.yaml</code> file in the KBE repository in case you want to check for syntax errors.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/openshift-evangelists/kbe/raw/main/specs/istio/bookinfo-virtualservice.yaml" class="bare">https://github.com/openshift-evangelists/kbe/raw/main/specs/istio/bookinfo-virtualservice.yaml</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>3.8) Create the gateway and virtual service resources.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl apply -f bookinfo-gateway.yaml
+gateway.networking.istio.io/bookinfo-gateway created
+
+[user@host kbe]$ kubectl apply -f bookinfo-virtualservice.yaml
+virtualservice.networking.istio.io/bookinfo created</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>3.9) Verify that the resources are present in the cluster.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get gateways
+NAME               AGE
+bookinfo-gateway   60s
+
+[user@host kbe]$ kubectl get virtualservices
+NAME       GATEWAYS               HOSTS                               AGE
+bookinfo   [&#34;bookinfo-gateway&#34;]   [&#34;bookinfo.192.168.59.20.nip.io&#34;]   60s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>3.10) Verify that the service responds with <code>curl</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace the <code>192.168.59.20</code> string with your value for <code>INGRESS_HOST</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ printenv INGRESS_HOST
+192.168.59.20
+
+[user@host kbe]$ curl -vk# &#39;http://bookinfo.192.168.59.20.nip.io/productpage&#39; | \
+  egrep &#39;&lt;/?title&gt;&#39;
+*   Trying 192.168.59.20...
+* TCP_NODELAY set
+* Connected to bookinfo.192.168.59.20.nip.io (192.168.59.20) port 80 (#0)
+&gt; GET /productpage HTTP/1.1
+&gt; Host: bookinfo.192.168.59.20.nip.io
+&gt; User-Agent: curl/7.61.1
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+&lt; content-type: text/html; charset=utf-8
+&lt; content-length: 5183
+&lt; server: istio-envoy
+&lt; date: Tue, 22 Feb 2022 19:40:49 GMT
+&lt; x-envoy-upstream-service-time: 18
+&lt;
+{ [5183 bytes data]
+######################################################################### 100.0%
+* Connection #0 to host bookinfo.192.168.59.20.nip.io left intact
+
+    &lt;title&gt;Simple Bookstore App&lt;/title&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>3.11) Visit the service URL with a web browser to see the page.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code><uri>http://bookinfo.192.168.59.20.nip.io/productpage</uri></code></p>
+</li>
+<li>
+<p>Replace the <code>192.168.59.20</code> string with your value for <code>INGRESS_HOST</code>.</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Bookinfo application</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/virtualservice-003-bookinfo-ratings-v3.png" alt="Bookinfo application" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>4) Generate traffic and inspect the application topology on the Kiali dashboard.</p>
+</div>
+<div class="paragraph">
+<p>4.1) Open another terminal window and execute a command to generate traffic for the <code>bookinfo</code> application.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace the <code>192.168.59.20</code> string with your value for <code>INGRESS_HOST</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ printenv INGRESS_HOST
+192.168.59.20
+
+[user@host kbe]$ while true ; do sleep 0.1 ; curl -fsSLo /dev/null \
+  &#34;http://bookinfo.192.168.59.20.nip.io/productpage&#34; ; done ;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>4.2) Open another terminal window and execute <code>istioctl</code> to open the Kiali dashboard.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ istioctl dashboard kiali
+http://localhost:20001/kiali</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>4.3) Click <strong>Graph</strong>, then select the <code>bookinfo</code> namespace to view the topology.
+There are three versions of the <code>reviews</code> pods, two of which connect to the <code>ratings</code> service.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Bookinfo application topology</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/virtualservice-005-bookinfo-topology-kiali.png" alt="Bookinfo application topology" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>4.4) Click <strong>Services</strong>, then select the <code>bookinfo</code> namespace.
+Click on the <code>reviews</code> service to view the statistics.
+The service distributes all the traffic equally among the three backend pods (33% approximately).</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Reviews service traffic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/virtualservice-006-bookinfo-reviews-service-traffic.png" alt="Reviews service traffic" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>5) Create destination rules and adjust the traffic for each backend service.</p>
+</div>
+<div class="paragraph">
+<p>5.1) Refresh several times the browser window where the bookinfo web page is open.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code><uri>http://bookinfo.192.168.59.20.nip.io/productpage</uri></code></p>
+</li>
+<li>
+<p>Replace the <code>192.168.59.20</code> string with your value for <code>INGRESS_HOST</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The star rating for the books is different, this happens because every request is processed in a different pod of the <code>reviews</code> service.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Bookinfo ratings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/virtualservice-004-bookinfo-ratings.png" alt="Bookinfo ratings" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>5.2) Create a virtual service resource manifest that routes different traffic percentages to different pod versions.
+Create a file named <code>reviews-virtualservice.yaml</code> with the following Istio virtual service resource manifest.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: reviews
+spec:
+  hosts:
+  - reviews
+  http:
+  - route:
+    - weight: 10  # <b class="conum">(1)</b>
+      destination:
+        host: reviews
+        subset: v1
+    - weight: 30  # <b class="conum">(2)</b>
+      destination:
+        host: reviews
+        subset: v2
+    - weight: 60  # <b class="conum">(3)</b>
+      destination:
+        host: reviews
+        subset: v3</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>10% of the traffic will be redirected to <code>reviews</code> subset <code>v1</code>.</p>
+</li>
+<li>
+<p>30% of the traffic will be redirected to <code>reviews</code> subset <code>v2</code>.</p>
+</li>
+<li>
+<p>60% of the traffic will be redirected to <code>reviews</code> subset <code>v3</code>.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The YAML indentation in this file is set to <strong>two white spaces</strong>.</p>
+</div>
+<div class="paragraph">
+<p>There is a <code>reviews-virtualservice.yaml</code> file in the KBE repository in case you want to check for syntax errors.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/openshift-evangelists/kbe/raw/main/specs/istio/reviews-virtualservice.yaml" class="bare">https://github.com/openshift-evangelists/kbe/raw/main/specs/istio/reviews-virtualservice.yaml</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>5.3) Create a destination rule resource manifest with selectors for the different versions of the <code>reviews</code> pods.
+Create a file named <code>reviews-destinationrule.yaml</code> with the following Istio destination rule resource manifest.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: reviews
+spec:
+  host: reviews
+  subsets:
+  - name: v1  # <b class="conum">(1)</b>
+    labels:
+      version: v1
+  - name: v2  # <b class="conum">(2)</b>
+    labels:
+      version: v2
+  - name: v3  # <b class="conum">(3)</b>
+    labels:
+      version: v3</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The subset <code>v1</code> references pods with label <code>version: v1</code>.</p>
+</li>
+<li>
+<p>The subset <code>v2</code> references pods with label <code>version: v2</code>.</p>
+</li>
+<li>
+<p>The subset <code>v3</code> references pods with label <code>version: v3</code>.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The YAML indentation in this file is set to <strong>two white spaces</strong>.</p>
+</div>
+<div class="paragraph">
+<p>There is a <code>reviews-destinationrule.yaml</code> file in the KBE repository in case you want to check for syntax errors.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/openshift-evangelists/kbe/raw/main/specs/istio/reviews-destinationrule.yaml" class="bare">https://github.com/openshift-evangelists/kbe/raw/main/specs/istio/reviews-destinationrule.yaml</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>5.4) Create the virtualservice and destination rule resources.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl apply -f reviews-virtualservice.yaml
+virtualservice.networking.istio.io/reviews created
+
+[user@host kbe]$ kubectl apply -f reviews-destinationrule.yaml
+destinationrule.networking.istio.io/reviews created</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>5.5) Verify that the virtualservice and destination rule were created.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get virtualservices
+NAME       GATEWAYS               HOSTS                               AGE
+bookinfo   [&#34;bookinfo-gateway&#34;]   [&#34;bookinfo.192.168.59.20.nip.io&#34;]   1h
+reviews                           [&#34;reviews&#34;]                         60s
+
+[user@host kbe]$ kubectl get destinationrules
+NAME      HOST      AGE
+reviews   reviews   60s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>5.6) Wait for the Kiali dashboard window to refresh and view the traffic percentage on each version of the <code>reviews</code> pod.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Check the order of the pods, the image below displays them in a different order:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>reviews-v2</code> with <strong>27.4%</strong> of the traffic.</p>
+</li>
+<li>
+<p><code>reviews-v1</code> with  <strong>9.4%</strong> of the traffic.</p>
+</li>
+<li>
+<p><code>reviews-v3</code> with <strong>63.2%</strong> of the traffic.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Bookinfo reviews traffic split with destination rule selector</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/virtualservice-007-bookinfo-reviews-service-traffic-split-destinationrule.png" alt="Bookinfo reviews traffic split with destination rule selector" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>6) Cleanup</p>
+</div>
+<div class="paragraph">
+<p>6.1) Press <code>Ctrl+C</code> on the terminal window where the traffic generation command is running.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ while true ; do sleep 0.1 ; curl -fsSLo /dev/null \
+  &#34;http://bookinfo.192.168.59.20.nip.io/productpage&#34; ; done ;
+^C</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>6.2) Press <code>Ctrl+C</code> on the terminal window where <code>istioctl</code> is running.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ istioctl dashboard kiali
+http://localhost:20001/kiali
+^C</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>6.3) Remove the label from the <code>bookinfo</code> namespace.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[user@host kbe]$ kubectl label namespace bookinfo istio-injection-
+namespace/bookinfo labeled</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The dash at the end of the command is used to instruct <code>kubectl</code> to remove the label.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>6.4) Delete the <code>bookinfo</code> namespace.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[user@host kbe]$ kubectl delete namespace bookinfo
+namespace/bookinfo deleted</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>6.5) Update the current context for <code>kubectl</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[user@host kbe]$ kubectl config set-context --current --namespace=default
+Context &#34;minikube&#34; modified.
+
+[user@host kbe]$ kubectl config get-contexts
+CURRENT   NAME       CLUSTER    AUTHINFO   NAMESPACE
+*         minikube   minikube   minikube   default</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This concludes the guided exercise.</p>
+</div>
+<hr/>
+<div class="paragraph">
+<p>References</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://istio.io/v1.12/docs/examples/bookinfo/" class="bare">https://istio.io/v1.12/docs/examples/bookinfo/</a></p>
+</li>
+<li>
+<p><a href="https://github.com/istio/istio/tree/1.12.1/samples/bookinfo" class="bare">https://github.com/istio/istio/tree/1.12.1/samples/bookinfo</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/blog/2019/proxy/" class="bare">https://istio.io/v1.12/blog/2019/proxy/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/tasks/traffic-management/request-routing/" class="bare">https://istio.io/v1.12/docs/tasks/traffic-management/request-routing/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/tasks/traffic-management/traffic-shifting/" class="bare">https://istio.io/v1.12/docs/tasks/traffic-management/traffic-shifting/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/reference/config/networking/gateway/" class="bare">https://istio.io/v1.12/docs/reference/config/networking/gateway/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/reference/config/networking/virtual-service/" class="bare">https://istio.io/v1.12/docs/reference/config/networking/virtual-service/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/reference/config/networking/destination-rule/" class="bare">https://istio.io/v1.12/docs/reference/config/networking/destination-rule/</a></p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-none grid-none stretch">
+<colgroup>
+<col style="width: 10%;"/>
+<col style="width: 80%;"/>
+<col style="width: 10%;"/>
+</colgroup>
+<tfoot>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="paragraph">
+<p><a href="../ingress">Previous</a></p>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="paragraph">
+<p><a href="../../../">Home</a></p>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><div class="content"></div></td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+
+  </div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+          &nbsp;&bull;&nbsp;
+          2020
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://tonejito.github.io/">Kubernetes By Example</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.91.2</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://tonejito.github.io/kbe//js/main.js"></script>
+<script>
+
+$('.language-test').parent().css('display', 'none')
+
+
+var copybtns = {
+  fallbackCopyTextToClipboard: function (text) {
+    var txt = document.createElement("textarea");
+    txt.value = text;
+    
+    
+    txt.style.position = "fixed";
+    txt.style.top = "0";
+    txt.style.left = "0";
+  
+    document.body.appendChild(txt);
+    txt.focus();
+    txt.select();
+    txt.setSelectionRange(0, 99999);
+  
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+    } catch (err) {
+      console.error('Fallback: Unable to copy', err);
+    }
+  
+    document.body.removeChild(txt);
+  },
+  copyTextToClipboard: function (text) {
+    if (!navigator.clipboard) {
+      copybtns.fallbackCopyTextToClipboard(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+      
+    }, function(err) {
+      
+      copybtns.fallbackCopyTextToClipboard(text);
+    });
+  },
+  flash: function(btn, content){
+    
+    content.fadeTo(50, 0.25, function() { $(this).fadeTo(300, 1.0); });
+    
+    btn.fadeTo(50, 0.0, function() { $(this).fadeTo(900, 1.0); });
+  },
+  txtClick : function(){
+    var content = $(this);
+    var btn = content.prev('button');
+    
+    copybtns.flash(btn, content);
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  btnClick : function(){
+    var btn = $(this);
+    var content = $(btn.next().children()[0]);
+    
+    copybtns.flash(btn, content)
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  init : function() {
+    var buttonHTML = '<button type="button" data-toggle="tooltip" data-placement="top" title="Copy" class="copybtn btn btn-outline-dark"><img src="https:\/\/tonejito.github.io\/kbe\//img/Icon-Red_Hat-Media_and_documents-Paper_Stack_Blank-A-Black-RGB.png"/></button>';
+    
+    $('div.highlight').prepend(buttonHTML);
+    
+    $('button.copybtn').bind("click", copybtns.btnClick);
+    $('div.highlight pre').bind("click", copybtns.txtClick);
+  }
+}
+copybtns.init();
+</script>
+<script src="https://tonejito.github.io/kbe//js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-34425776-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+  </body>
+</html>
+

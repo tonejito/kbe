@@ -218,11 +218,40 @@ kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/mai
     
     <item>
       <title></title>
+      <link>https://tonejito.github.io/kbe/topics/istio/gateway-virtualservice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/topics/istio/gateway-virtualservice/</guid>
+      <description>Guided Exercise: Configuring Istio Traffic Management In this exercise, you will configure the amount of traffic that is routed to the backend services using virtual services and destination rules.
+ Outcomes
+ You should be able to:
+   Deploy the book info application in the Kubernetes cluster.
+  Configure the gateway, virtual services, and destination rules to manage ingress traffic.
+   To perform this exercise, ensure that you have:</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/topics/istio/ingress/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/topics/istio/ingress/</guid>
+      <description>Guided Exercise: Configuring Istio Ingress Resources In this exercise, you will configure the ingress resource to access the Kubernetes dashboard.
+ Outcomes
+ You should be able to:
+   Deploy the Kubernetes dashboard add-on in the minikube cluster.
+  Configure the ingress resource to access the application from outside the cluster.
+   To perform this exercise, ensure that you have:
+   The minikube, and kubectl executables version 1.</description>
+    </item>
+    
+    <item>
+      <title></title>
       <link>https://tonejito.github.io/kbe/topics/istio/install/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://tonejito.github.io/kbe/topics/istio/install/</guid>
-      <description>Guided Exercise: Installing Istio on a minikube cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
+      <description>Guided Exercise: Installing Istio on a Minikube Cluster In this exercise, you will install Istio on a minikube cluster.
  Outcomes
  You should be able to:
    Install Istio on the minikube cluster.
@@ -247,11 +276,22 @@ kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/mai
     
     <item>
       <title></title>
+      <link>https://tonejito.github.io/kbe/topics/istio/unused/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/topics/istio/unused/</guid>
+      <description> 
+
+  </description>
+    </item>
+    
+    <item>
+      <title></title>
       <link>https://tonejito.github.io/kbe/topics/metallb/install/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://tonejito.github.io/kbe/topics/metallb/install/</guid>
-      <description>Guided Exercise: Installing MetalLB on a minikube cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
+      <description>Guided Exercise: Installing Metallb on a Minikube Cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
  Outcomes
  You should be able to:
    Create a minikube instance.

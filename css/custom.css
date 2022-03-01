@@ -22,18 +22,79 @@ li > p
   max-width: 99%;
 }
 
-.admonitionblock
+.content
 {
+  width: 100%;
 }
 
-.note
+.halign-center
 {
+  text-align: center;
 }
 
-.warning
+.valign-top
 {
+  vertical-align: top;
 }
 
+.colist
+{
+  background-color: #f0f0f0;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  text-align: left;
+}
+
+li::marker
+{
+  font-weight: bold;
+}
+
+/* TODO: Add colour links for admonition blocks */
+.admonitionblock {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  text-align: left;
+}
+
+.admonitionblock.note {
+  /* csslint allow: adjoining-classes */
+  color: #3a87ad;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}
+
+.admonitionblock.warning {
+  /* csslint allow: adjoining-classes */
+  color: #c09853;
+  background-color: #fcf8e3;
+  border-color: #fbeed5;
+}
+
+.admonitionblock.danger {
+  /* csslint allow: adjoining-classes */
+  color: #b94a48;
+  background-color: #f2dede;
+  border-color: #eed3d7;
+}
+
+.admonitionblock.important {
+  /* csslint allow: adjoining-classes */
+  color: #b94a48;
+  background-color: #f2dede;
+  border-color: #eed3d7;
+}
+
+.admonitionblock.title {
+  font-weight: bold;
+  text-align: left;
+}
+
+/*
 .icon
 {
 }
@@ -45,3 +106,8 @@ li > p
 .content
 {
 }
+
+.paragraph
+{
+}
+*/

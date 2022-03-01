@@ -8,7 +8,7 @@
   <title>Kubernetes By Example</title>
   <meta property="og:title" content="Kubernetes By Example" />
   <meta name="twitter:title" content="Kubernetes By Example" />
-  <meta name="description" content="Guided Exercise: Installing Istio on a minikube cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
+  <meta name="description" content="Guided Exercise: Installing Istio on a Minikube Cluster In this exercise, you will install Istio on a minikube cluster.
  Outcomes
  You should be able to:
    Install Istio on the minikube cluster.
@@ -16,7 +16,7 @@
   Deploy the Istio add-ons.
   Create an example application to test the Istio installation.
    To perform this exercise, ensure that you have:">
-  <meta property="og:description" content="Guided Exercise: Installing Istio on a minikube cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
+  <meta property="og:description" content="Guided Exercise: Installing Istio on a Minikube Cluster In this exercise, you will install Istio on a minikube cluster.
  Outcomes
  You should be able to:
    Install Istio on the minikube cluster.
@@ -24,10 +24,10 @@
   Deploy the Istio add-ons.
   Create an example application to test the Istio installation.
    To perform this exercise, ensure that you have:">
-  <meta name="twitter:description" content="Guided Exercise: Installing Istio on a minikube cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
+  <meta name="twitter:description" content="Guided Exercise: Installing Istio on a Minikube Cluster In this exercise, you will install Istio on a minikube cluster.
  Outcomes
  You should be able to:
-   Install Istio on the minikube …">
+   Install Istio on the minikube cluster. …">
   <meta name="author" content=""/>
   <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
   <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
@@ -192,10 +192,10 @@
     
   <div class="container" role="main">
     <div class="sect1">
-<h2 id="_guided_exercise_installing_istio_on_a_minikube_cluster">Guided Exercise: Installing Istio on a minikube cluster</h2>
+<h2 id="_guided_exercise_installing_istio_on_a_minikube_cluster">Guided Exercise: Installing Istio on a Minikube Cluster</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this exercise, you will deploy the MetalLB add-on on a minikube cluster.</p>
+<p>In this exercise, you will install Istio on a minikube cluster.</p>
 </div>
 <div class="paragraph">
 <p>Outcomes</p>
@@ -278,7 +278,7 @@ However, the version is outdated and can’t be installed in recent versions of 
 </tbody></table>
 </div>
 <div class="paragraph">
-<p>1.2) Verify that the pods in the <code>metallb-system</code> are running.</p>
+<p>1.2) Verify that the pods in the <code>metallb-system</code> namespace are running.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -297,6 +297,37 @@ speaker-jxjdm                 1/1     Running   0          1h</code></pre>
 <td class="content">
 <div class="paragraph">
 <p>This guided exercise assumes that MetalLB is installed and configured.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>1.3) Verify that MetalLB has the IP address range configured.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get configmap config -n metallb-system -o yaml
+apiVersion: v1
+data:
+  config: |
+    address-pools:
+    - name: default
+      protocol: layer2
+      addresses:
+      - 192.168.59.20-192.168.59.30
+...output omitted...</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If the IP address range for MetalLB is empty, review the troubleshooting section in the <a href="../../metallb/metallb">MetalLB lecture</a>.</p>
 </div>
 </td>
 </tr>
@@ -332,7 +363,7 @@ speaker-jxjdm                 1/1     Running   0          1h</code></pre>
 </tbody></table>
 </div>
 <div class="paragraph">
-<p>2.2) Extract the archive.
+<p>2.2) Extract the Istio release archive.
 Delete the archive after extracting because it is not needed anymore.</p>
 </div>
 <div class="listingblock">
@@ -1120,6 +1151,20 @@ replicaset.apps &#34;helloworld-v2-54df5f84b&#34; deleted</code></pre>
 namespace/default labeled</code></pre>
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The dash at the end of the command is used to instruct <code>kubectl</code> to remove the label.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
 <div class="paragraph">
 <p>This concludes the guided exercise.</p>
 </div>
@@ -1154,7 +1199,7 @@ namespace/default labeled</code></pre>
 <p><a href="../../../">Home</a></p>
 </div></div></td>
 <td class="tableblock halign-center valign-top"><div class="content"><div class="paragraph">
-<p><a href="../install">Next</a></p>
+<p><a href="../ingress">Next</a></p>
 </div></div></td>
 </tr>
 </tfoot>
