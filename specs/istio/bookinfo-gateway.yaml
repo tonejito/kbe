@@ -1,0 +1,15 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: bookinfo-gateway
+spec:
+  selector:
+    istio: ingressgateway  # <1>
+  servers:
+  - hosts:
+    - "bookinfo.192.168.59.20.nip.io"  # <2>
+    port:       # <3>
+      name: http
+      number: 80
+      protocol: HTTP

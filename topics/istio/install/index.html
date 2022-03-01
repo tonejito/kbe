@@ -65,7 +65,7 @@
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white;background: #53b9fc;font-size:small;' role="alert">
+  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small; height: 0em; display: none; visibility: hidden;' role="alert">
     <strong>Kubernetes By Example is evolving!</strong><br/>On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.<br/>Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE. 
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
@@ -688,11 +688,37 @@ namespace/default labeled</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl apply -f istio-${ISTIO_VERSION}/samples/helloworld/helloworld.yaml
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ export ISTIO_VERSION=1.12.1
+
+[user@host kbe]$ kubectl apply -f \
+  istio-${ISTIO_VERSION}/samples/helloworld/helloworld.yaml
 service/helloworld created
 deployment.apps/helloworld-v1 created
 deployment.apps/helloworld-v2 created</code></pre>
 </div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can use the resource manifest from GitHub if you don’t have the Istio release archive files.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ export ISTIO_VERSION=1.12.1
+
+[user@host kbe]$ kubectl apply -f \
+  https://github.com/istio/istio/raw/${ISTIO_VERSION}/samples/helloworld/helloworld.yaml
+...output omitted...</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</tbody></table>
 </div>
 <div class="paragraph">
 <p>5.3) Check that the deployment and pod are ready.</p>
@@ -738,7 +764,8 @@ helloworld   ClusterIP   10.101.60.68   &lt;none&gt;        5000/TCP   3m</code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl apply -f istio-${ISTIO_VERSION}/samples/helloworld/helloworld-gateway.yaml
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl apply -f \
+  istio-${ISTIO_VERSION}/samples/helloworld/helloworld-gateway.yaml
 gateway.networking.istio.io/helloworld-gateway created
 virtualservice.networking.istio.io/helloworld created</code></pre>
 </div>
@@ -752,6 +779,18 @@ virtualservice.networking.istio.io/helloworld created</code></pre>
 <td class="content">
 <div class="paragraph">
 <p>The parameters of the gateway and virtual service resources will be covered in another exercise.</p>
+</div>
+<div class="paragraph">
+<p>You can use the resource manifest from GitHub if you don’t have the Istio release archive files.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ export ISTIO_VERSION=1.12.1
+
+[user@host kbe]$ kubectl apply -f \
+  https://github.com/istio/istio/raw/${ISTIO_VERSION}/samples/helloworld/helloworld-gateway.yaml
+...output omitted...</code></pre>
+</div>
 </div>
 </td>
 </tr>
@@ -779,6 +818,20 @@ virtualservice.networking.istio.io/helloworld  [&#34;helloworld-gateway&#34;] [&
   -o jsonpath=&#39;{.spec.http[0].match[0].uri}{&#34;\n&#34;}&#39;
 {&#34;exact&#34;:&#34;/hello&#34;}</code></pre>
 </div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The parameters of the virtual service resource will be covered in another exercise.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
 </div>
 <div class="paragraph">
 <p>6) Generate traffic for the example application.</p>
@@ -809,7 +862,7 @@ Hello version: v1, instance: helloworld-v1-776f57d5f6-mfkf7
 </div>
 </div>
 <div class="paragraph">
-<p>6.2) Check the commands contained in the <code>loadgen.sh</code> script.</p>
+<p>6.2) Inspect the commands contained in the <code>loadgen.sh</code> script.</p>
 </div>
 <div class="listingblock">
 <div class="content">

@@ -29,9 +29,7 @@
       <guid>https://tonejito.github.io/kbe/topics/metallb/metallb/</guid>
       <description>MetalLB MetalLB is a load balancer suitable for local environments, it is included as an add-on in minikube.
    https://metallb.universe.tf/
-         Home
- Next
-      </description>
+   Troubleshooting [user@host kbe]$ curl -vk# &amp;#34;http://192.168.59.20:80/&amp;#34; * Trying 192.168.59.20... * TCP_NODELAY set * connect to 192.168.59.20 port 80 failed: Connection refused * Failed to connect to 192.168.59.20 port 80: Connection refused * Closing connection 0 curl: (7) Failed to connect to 192.168.59.20 port 80: Connection refused [user@host kbe]$ nc -vz 192.</description>
     </item>
     
   </channel>
