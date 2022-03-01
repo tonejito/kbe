@@ -1,6 +1,6 @@
 ifndef::backend-docbook5,backend-docbook45[:imagesdir: ../../..]
 
-== Guided Exercise: Installing MetalLB on a minikube cluster
+== Guided Exercise: Installing Metallb on a Minikube Cluster
 
 In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
 
@@ -339,7 +339,7 @@ If the external IP address shows a `<pending>` value, then you have a problem wi
 < Accept-Ranges: bytes
 <
 { [615 bytes data]
-#################################################################### 100.0%
+######################################################################### 100.0%
 * Connection #0 to host 192.168.59.20 left intact
 
 <title>Welcome to nginx!</title>
