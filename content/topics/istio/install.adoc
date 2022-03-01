@@ -1,8 +1,8 @@
 ifndef::backend-docbook5,backend-docbook45[:imagesdir: ../../..]
 
-== Guided Exercise: Installing Istio on a minikube cluster
+== Guided Exercise: Installing Istio on a Minikube Cluster
 
-In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
+In this exercise, you will install Istio on a minikube cluster.
 
 Outcomes
 
@@ -59,7 +59,7 @@ Procedure instructions
 Istio requires 4 vCPUs and 8GB of RAM to work in minikube.
 ====
 
-1.2) Verify that the pods in the `metallb-system` are running.
+1.2) Verify that the pods in the `metallb-system` namespace are running.
 
 [source,bash]
 ----
@@ -72,6 +72,27 @@ speaker-jxjdm                 1/1     Running   0          1h
 [WARNING]
 ====
 This guided exercise assumes that MetalLB is installed and configured.
+====
+
+1.3) Verify that MetalLB has the IP address range configured.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get configmap config -n metallb-system -o yaml
+apiVersion: v1
+data:
+  config: |
+    address-pools:
+    - name: default
+      protocol: layer2
+      addresses:
+      - 192.168.59.20-192.168.59.30
+...output omitted...
+----
+
+[WARNING]
+====
+If the IP address range for MetalLB is empty, review the troubleshooting section in the link:../../metallb/metallb[MetalLB lecture].
 ====
 
 
@@ -94,7 +115,7 @@ This guided exercise assumes that MetalLB is installed and configured.
 You can also clone the Istio source repository and checkout the appropriate tag.
 ====
 
-2.2) Extract the archive.
+2.2) Extract the Istio release archive.
 Delete the archive after extracting because it is not needed anymore.
 
 [source,bash]
@@ -414,41 +435,6 @@ virtualservice.networking.istio.io/helloworld  ["helloworld-gateway"] ["*"]  60s
 {"exact":"/hello"}
 ----
 
-////
-5.8) Verify the parameters of the virtual service resource.
-
-[source,bash]
-----
-[user@host kbe]$ kubectl get virtualservice helloworld -o yaml
-apiVersion: networking.istio.io/v1beta1
-kind: VirtualService
-metadata:
-  ...output omitted...
-  name: helloworld
-  namespace: default
-  ...output omitted...
-spec:
-  gateways:
-  - helloworld-gateway  # <1>
-  hosts:
-  - '*'  # <2>
-  http:
-  - match:
-    - uri:
-        exact: /hello  # <3>
-    route:
-    - destination:
-        host: helloworld  # <4>
-        port:
-          number: 5000  # <5>
-----
-<1> The traffic will be handled by the `helloworld-gateway`.
-<2> The ingress traffic will match requests with any host HTTP header.
-<3> The requests will match if the `/hello` prefix is used.
-<4> The destination service is set to `helloworld`.
-<5> The destination port number is `5000`.
-////
-
 
 
 6) Generate traffic for the example application.
@@ -677,6 +663,11 @@ replicaset.apps "helloworld-v2-54df5f84b" deleted
 namespace/default labeled
 ----
 
+[NOTE]
+====
+The dash at the end of the command is used to instruct `kubectl` to remove the label.
+====
+
 This concludes the guided exercise.
 
 === References
@@ -691,5 +682,5 @@ This concludes the guided exercise.
 |===
 | link:../istio[Previous]
 | link:../../../[Home]
-| link:../install[Next]
+| link:../ingress[Next]
 |===
