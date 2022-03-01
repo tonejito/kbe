@@ -22,6 +22,7 @@ This is a hands-on introduction to Kubernetes. Browse the examples:
 There are other topics that include guided exercises:
 
 - [MetalLB](topics/metallb/metallb/)
+- [Istio](topics/istio/istio/)
 
 Want to try it out yourself? You can run all this on Red Hat's distribution of
 Kubernetes, OpenShift. Follow the instructions [here](diy/) to quickly access an online environment.
