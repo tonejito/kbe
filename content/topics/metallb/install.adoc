@@ -1,4 +1,17 @@
+---
+description: Guided Exercise - Installing Metallb on a Minikube Cluster
+---
+
 ifndef::backend-docbook5,backend-docbook45[:imagesdir: ../../..]
+
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
+|===
+| link:../metallb[⏪]
+| link:../../../[🏠]
+| {nbsp}
+|===
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 == Guided Exercise: Installing Metallb on a Minikube Cluster
 
@@ -415,15 +428,16 @@ This concludes the guided exercise.
 The MetalLB installation is required for other guided exercises.
 ====
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
 === References
 
 - https://metallb.universe.tf/installation/[MetalLB installation documentation]
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-[cols="^1a,^8a,^1a",options="footer",frame="none",grid="none",align="center",halign="center",valign="middle"]
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
 |===
-| link:../metallb[Previous]
-| link:../../../[Home]
-| link:../install[Next]
+| link:../metallb[⏪]
+| link:../../../[🏠]
+| {nbsp}
 |===

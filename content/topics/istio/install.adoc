@@ -1,4 +1,17 @@
+---
+description: Guided Exercise - Installing Istio on a Minikube Cluster
+---
+
 ifndef::backend-docbook5,backend-docbook45[:imagesdir: ../../..]
+
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
+|===
+| link:../istio[⏪]
+| link:../../../[🏠]
+| link:../ingress-control[⏩]
+|===
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 == Guided Exercise: Installing Istio on a Minikube Cluster
 
@@ -428,7 +441,7 @@ virtualservice.networking.istio.io/helloworld created
 
 [NOTE]
 ====
-The parameters of the gateway and virtual service resources will be covered in another exercise.
+The parameters of the gateway and virtual service resources will be covered in the link:../../traffic-management[traffic management] section.
 
 You can use the resource manifest from GitHub if you don't have the Istio release archive files.
 
@@ -455,7 +468,6 @@ virtualservice.networking.istio.io/helloworld  ["helloworld-gateway"] ["*"]  60s
 ----
 
 5.7) Get the URL path prefix for the application.
-// This item will be covered in another section.
 
 [source,bash]
 ----
@@ -466,7 +478,7 @@ virtualservice.networking.istio.io/helloworld  ["helloworld-gateway"] ["*"]  60s
 
 [NOTE]
 ====
-The parameters of the virtual service resource will be covered in another exercise.
+The parameters of the virtual service resource will be covered in the link:../../traffic-management[traffic management] section.
 ====
 
 
@@ -704,17 +716,22 @@ The dash at the end of the command is used to instruct `kubectl` to remove the l
 
 This concludes the guided exercise.
 
+[NOTE]
+====
+The Istio installation is required for other guided exercises.
+====
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
 === References
 
 * https://istio.io/v1.12/docs/setup/
 * https://github.com/istio/istio/tree/1.12.2
 * https://github.com/istio/istio/tree/1.12.2/samples/helloworld
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-[cols="^1a,^8a,^1a",options="footer",frame="none",grid="none",align="center",halign="center",valign="middle"]
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
 |===
-| link:../istio[Previous]
-| link:../../../[Home]
-| link:../ingress[Next]
+| link:../istio[⏪]
+| link:../../../[🏠]
+| link:../ingress-control[⏩]
 |===

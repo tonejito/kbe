@@ -1,4 +1,17 @@
+---
+description: Istio is an ingress controller and a service mesh implementation for Kubernetes
+---
+
 ifndef::backend-docbook5,backend-docbook45[:imagesdir: ../../..]
+
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
+|===
+| {nbsp}
+| link:../../../[🏠]
+| link:../install[⏩]
+|===
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 == Istio
 
@@ -8,9 +21,9 @@ Istio is an ingress controller and a service mesh implementation for Kubernetes.
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-[cols="^1a,^8a,^1a",options="footer",frame="none",grid="none",align="center",halign="center",valign="middle"]
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
 |===
-|
-| link:../../../[Home]
-| link:../install[Next]
+| {nbsp}
+| link:../../../[🏠]
+| link:../install[⏩]
 |===

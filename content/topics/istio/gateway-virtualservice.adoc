@@ -1,4 +1,17 @@
+---
+description: Guided Exercise - Configuring Istio Traffic Management
+---
+
 ifndef::backend-docbook5,backend-docbook45[:imagesdir: ../../..]
+
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
+|===
+| link:../traffic-management[⏪]
+| link:../../../[🏠]
+| {nbsp}
+|===
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 == Guided Exercise: Configuring Istio Traffic Management
 
@@ -661,7 +674,6 @@ This concludes the guided exercise.
 
 References
 
-* https://istio.io/v1.12/docs/examples/bookinfo/
 * https://github.com/istio/istio/tree/1.12.1/samples/bookinfo
 * https://istio.io/v1.12/blog/2019/proxy/
 * https://istio.io/v1.12/docs/tasks/traffic-management/request-routing/
@@ -671,9 +683,9 @@ References
 * https://istio.io/v1.12/docs/reference/config/networking/destination-rule/
 
 
-[cols="^1a,^8a,^1a",options="footer",frame="none",grid="none",align="center",halign="center",valign="middle"]
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
 |===
-| link:../ingress[Previous]
-| link:../../../[Home]
-| // link:../gateway-virtualservice[Next]
+| link:../traffic-management[⏪]
+| link:../../../[🏠]
+| {nbsp}
 |===

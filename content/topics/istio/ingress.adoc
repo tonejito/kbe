@@ -1,6 +1,19 @@
+---
+description: Guided Exercise - Configuring Istio Ingress Control
+---
+
 ifndef::backend-docbook5,backend-docbook45[:imagesdir: ../../..]
 
-== Guided Exercise: Configuring Istio Ingress Resources
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
+|===
+| link:../ingress-control[⏪]
+| link:../../../[🏠]
+| link:../traffic-management[⏩]
+|===
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+== Guided Exercise: Configuring Istio Ingress Control
 
 In this exercise, you will configure the ingress resource to access the Kubernetes dashboard.
 
@@ -531,9 +544,9 @@ References
 * https://github.com/kubernetes/dashboard/blob/v2.3.1/docs/user/access-control/creating-sample-user.md
 * https://github.com/kubernetes-sigs/metrics-server/tree/v0.4.2
 
-[cols="^1a,^8a,^1a",options="footer",frame="none",grid="none",align="center",halign="center",valign="middle"]
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
 |===
-| link:../install[Previous]
-| link:../../../[Home]
-| link:../gateway-virtualservice[Next]
+| link:../ingress-control[⏪]
+| link:../../../[🏠]
+| link:../traffic-management[⏩]
 |===
