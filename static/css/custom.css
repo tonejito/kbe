@@ -1,5 +1,19 @@
 /* custom.css */
 
+.center
+{
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.frame-none
+{
+  border: 0px !important;
+  border-collapse: collapse !important;
+  border-style: hidden !important;
+}
+
 li
 {
   line-height: unset !important;
