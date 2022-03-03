@@ -11,14 +11,14 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://tonejito.github.io/kbe/topics/metallb/install/</guid>
-      <description>Guided Exercise: Installing Metallb on a Minikube Cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
+      <description>⏪
+ 🏠
+       Guided Exercise: Installing Metallb on a Minikube Cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
  Outcomes
  You should be able to:
    Create a minikube instance.
   Get the DHCP network parameters of the minikube VM driver.
-  Enable and configure the MetalLB minikube add-on.
-  Create an example deployment and LoadBalancer service.
-  Access the service with the external IP address provided by MetalLB.</description>
+  Enable and configure the MetalLB minikube add-on.</description>
     </item>
     
     <item>
@@ -27,9 +27,13 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://tonejito.github.io/kbe/topics/metallb/metallb/</guid>
-      <description>MetalLB MetalLB is a load balancer suitable for local environments, it is included as an add-on in minikube.
+      <description>      🏠
+ ⏩
+     MetalLB MetalLB is a load balancer suitable for local environments, it is included as an add-on in minikube.
    https://metallb.universe.tf/
-   Troubleshooting [user@host kbe]$ curl -vk# &amp;#34;http://192.168.59.20:80/&amp;#34; * Trying 192.168.59.20... * TCP_NODELAY set * connect to 192.168.59.20 port 80 failed: Connection refused * Failed to connect to 192.168.59.20 port 80: Connection refused * Closing connection 0 curl: (7) Failed to connect to 192.168.59.20 port 80: Connection refused [user@host kbe]$ nc -vz 192.</description>
+          🏠
+ ⏩
+      </description>
     </item>
     
   </channel>

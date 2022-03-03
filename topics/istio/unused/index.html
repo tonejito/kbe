@@ -8,15 +8,9 @@
   <title>Kubernetes By Example</title>
   <meta property="og:title" content="Kubernetes By Example" />
   <meta name="twitter:title" content="Kubernetes By Example" />
-  <meta name="description" content=" 
-
-  ">
-  <meta property="og:description" content=" 
-
-  ">
-  <meta name="twitter:description" content=" 
-
-  ">
+  <meta name="description" content="Troubleshooting MetalLB [user@host kbe]$ curl -vk# &#34;http://192.168.59.20:80/&#34; * Trying 192.168.59.20... * TCP_NODELAY set * connect to 192.168.59.20 port 80 failed: Connection refused * Failed to connect to 192.168.59.20 port 80: Connection refused * Closing connection 0 curl: (7) Failed to connect to 192.168.59.20 port 80: Connection refused [user@host kbe]$ nc -vz 192.168.59.20 80 Ncat: Version 7.70 ( https://nmap.org/ncat ) Ncat: Connection refused.   [user@host kbe]$ kubectl get configmap config -n metallb-system -o yaml apiVersion: v1 data: config: | address-pools: - name: default protocol: layer2 addresses: - - kind: ConfigMap .">
+  <meta property="og:description" content="Troubleshooting MetalLB [user@host kbe]$ curl -vk# &#34;http://192.168.59.20:80/&#34; * Trying 192.168.59.20... * TCP_NODELAY set * connect to 192.168.59.20 port 80 failed: Connection refused * Failed to connect to 192.168.59.20 port 80: Connection refused * Closing connection 0 curl: (7) Failed to connect to 192.168.59.20 port 80: Connection refused [user@host kbe]$ nc -vz 192.168.59.20 80 Ncat: Version 7.70 ( https://nmap.org/ncat ) Ncat: Connection refused.   [user@host kbe]$ kubectl get configmap config -n metallb-system -o yaml apiVersion: v1 data: config: | address-pools: - name: default protocol: layer2 addresses: - - kind: ConfigMap .">
+  <meta name="twitter:description" content="Troubleshooting MetalLB [user@host kbe]$ curl -vk# &#34;http://192.168.59.20:80/&#34; * Trying 192.168.59.20... * TCP_NODELAY set * connect to 192.168.59.20 port 80 failed: Connection refused * Failed …">
   <meta name="author" content=""/>
   <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
   <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
@@ -54,7 +48,7 @@
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small; height: 0em; display: none; visibility: hidden;' role="alert">
+  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white;background: #53b9fc;font-size:small;' role="alert">
     <strong>Kubernetes By Example is evolving!</strong><br/>On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.<br/>Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE. 
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
@@ -180,11 +174,114 @@
 
     
   <div class="container" role="main">
-    <hr/>
+    <div id="preamble">
+<div class="sectionbody">
+<hr/>
+</div>
+</div>
+<div class="sect1">
+<h2 id=""> </h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p></p><hr/><p></p>
 </div>
 <hr/>
+<div class="sect2">
+<h3 id="_troubleshooting_metallb">Troubleshooting MetalLB</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ curl -vk# &#34;http://192.168.59.20:80/&#34;
+*   Trying 192.168.59.20...
+* TCP_NODELAY set
+* connect to 192.168.59.20 port 80 failed: Connection refused
+* Failed to connect to 192.168.59.20 port 80: Connection refused
+* Closing connection 0
+curl: (7) Failed to connect to 192.168.59.20 port 80: Connection refused
+
+[user@host kbe]$ nc -vz 192.168.59.20 80
+Ncat: Version 7.70 ( https://nmap.org/ncat )
+Ncat: Connection refused.</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get configmap config -n metallb-system -o yaml
+apiVersion: v1
+data:
+  config: |
+    address-pools:
+    - name: default
+      protocol: layer2
+      addresses:
+      - -
+kind: ConfigMap
+...output omitted...</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl edit configmap config -n metallb-system
+configmap/config edited</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl rollout restart deployment controller -n metallb-system
+deployment.apps/controller restarted
+
+[user@host kbe]$ kubectl rollout restart daemonset speaker -n metallb-system
+daemonset.apps/speaker restarted</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[user@host kbe]$ kubectl get pods -n metallb-system
+NAME                        READY   STATUS    RESTARTS   AGE
+controller-6884978f-l5q4w   1/1     Running   0          20s
+speaker-qzxtr               1/1     Running   0          10s</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ nc -vz 192.168.59.20 80
+Ncat: Version 7.70 ( https://nmap.org/ncat )
+Ncat: Connected to 192.168.59.20 80.
+Ncat: 0 bytes sent, 0 bytes received in 0.01 seconds.</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[root@host ~]# arp -d 192.168.59.20
+
+[root@host ~]# arp -d 192.168.59.20
+No ARP entry for 192.168.59.20
+
+[root@host ~]# arping -c 4 -I vboxnet2 192.168.59.20
+ARPING 192.168.59.20 from 192.168.59.1 vboxnet2
+Unicast reply from 192.168.59.20 [08:00:27:56:DE:F2]  2.460ms
+Unicast reply from 192.168.59.20 [08:00:27:56:DE:F2]  3.484ms
+Unicast reply from 192.168.59.20 [08:00:27:56:DE:F2]  1.016ms
+Unicast reply from 192.168.59.20 [08:00:27:56:DE:F2]  1.061ms
+Sent 4 probes (1 broadcast(s))
+Received 4 response(s)
+
+[root@anhernan ~]# arp -an
+? (192.168.59.20) at 08:00:27:56:de:f2 [ether] on vboxnet2
+...output omitted...
+
+[user@host kbe]$ kubectl rollout restart deployment istio-ingressgateway -n istio-system
+deployment.apps/istio-ingressgateway restarted
+
+[user@host kbe]$ kubectl logs -f daemonset/speaker -n metallb-system
+{&#34;branch&#34;:&#34;HEAD&#34;,&#34;caller&#34;:&#34;main.go:80&#34;,&#34;commit&#34;:&#34;v0.9.6&#34;,&#34;msg&#34;:&#34;MetalLB speaker starting version 0.9.6 (commit v0.9.6, branch HEAD)&#34;,&#34;ts&#34;:&#34;2022-03-01T01:14:42.375782224Z&#34;,&#34;version&#34;:&#34;0.9.6&#34;}
+...output omitted...</code></pre>
+</div>
+</div>
+<hr/>
+<hr/>
+</div>
+</div>
+</div>
 
   </div>
 

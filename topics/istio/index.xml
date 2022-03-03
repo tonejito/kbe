@@ -11,12 +11,30 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://tonejito.github.io/kbe/topics/istio/gateway-virtualservice/</guid>
-      <description>Guided Exercise: Configuring Istio Traffic Management In this exercise, you will configure the amount of traffic that is routed to the backend services using virtual services and destination rules.
+      <description>⏪
+ 🏠
+       Guided Exercise: Configuring Istio Traffic Management In this exercise, you will configure the amount of traffic that is routed to the backend services using virtual services and destination rules.
  Outcomes
  You should be able to:
    Deploy the book info application in the Kubernetes cluster.
-  Configure the gateway, virtual services, and destination rules to manage ingress traffic.
-   To perform this exercise, ensure that you have:</description>
+  Configure the gateway, virtual services, and destination rules to manage ingress traffic.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/topics/istio/ingress-control/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/topics/istio/ingress-control/</guid>
+      <description>    ⏪
+ 🏠
+ ⏩
+     Istio Ingress Control  References
+   https://istio.io/v1.12/docs/examples/microservices-istio/istio-ingress-gateway/
+       ⏪
+ 🏠
+ ⏩
+      </description>
     </item>
     
     <item>
@@ -25,13 +43,15 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://tonejito.github.io/kbe/topics/istio/ingress/</guid>
-      <description>Guided Exercise: Configuring Istio Ingress Resources In this exercise, you will configure the ingress resource to access the Kubernetes dashboard.
+      <description>⏪
+ 🏠
+ ⏩
+     Guided Exercise: Configuring Istio Ingress Control In this exercise, you will configure the ingress resource to access the Kubernetes dashboard.
  Outcomes
  You should be able to:
    Deploy the Kubernetes dashboard add-on in the minikube cluster.
   Configure the ingress resource to access the application from outside the cluster.
-   To perform this exercise, ensure that you have:
-   The minikube, and kubectl executables version 1.</description>
+   To perform this exercise, ensure that you have:</description>
     </item>
     
     <item>
@@ -40,14 +60,16 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://tonejito.github.io/kbe/topics/istio/install/</guid>
-      <description>Guided Exercise: Installing Istio on a Minikube Cluster In this exercise, you will install Istio on a minikube cluster.
+      <description>⏪
+ 🏠
+ ⏩
+     Guided Exercise: Installing Istio on a Minikube Cluster In this exercise, you will install Istio on a minikube cluster.
  Outcomes
  You should be able to:
    Install Istio on the minikube cluster.
   Get the Istio ingress service endpoint.
   Deploy the Istio add-ons.
-  Create an example application to test the Istio installation.
-   To perform this exercise, ensure that you have:</description>
+  Create an example application to test the Istio installation.</description>
     </item>
     
     <item>
@@ -56,10 +78,30 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://tonejito.github.io/kbe/topics/istio/istio/</guid>
-      <description>Istio Istio is an ingress controller and a service mesh implementation for Kubernetes.
+      <description>      🏠
+ ⏩
+     Istio Istio is an ingress controller and a service mesh implementation for Kubernetes.
    https://istio.io/v1.12/docs/
-         Home
- Next
+          🏠
+ ⏩
+      </description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/topics/istio/traffic-management/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/topics/istio/traffic-management/</guid>
+      <description>    ⏪
+ 🏠
+ ⏩
+     Istio Traffic Management  References
+   https://istio.io/v1.12/docs/concepts/traffic-management/
+  https://istio.io/v1.12/docs/examples/microservices-istio/bookinfo-kubernetes/
+       ⏪
+ 🏠
+ ⏩
       </description>
     </item>
     
@@ -69,9 +111,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://tonejito.github.io/kbe/topics/istio/unused/</guid>
-      <description> 
-
-  </description>
+      <description>Troubleshooting MetalLB [user@host kbe]$ curl -vk# &amp;#34;http://192.168.59.20:80/&amp;#34; * Trying 192.168.59.20... * TCP_NODELAY set * connect to 192.168.59.20 port 80 failed: Connection refused * Failed to connect to 192.168.59.20 port 80: Connection refused * Closing connection 0 curl: (7) Failed to connect to 192.168.59.20 port 80: Connection refused [user@host kbe]$ nc -vz 192.168.59.20 80 Ncat: Version 7.70 ( https://nmap.org/ncat ) Ncat: Connection refused.   [user@host kbe]$ kubectl get configmap config -n metallb-system -o yaml apiVersion: v1 data: config: | address-pools: - name: default protocol: layer2 addresses: - - kind: ConfigMap .</description>
     </item>
     
   </channel>

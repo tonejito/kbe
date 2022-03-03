@@ -8,26 +8,9 @@
   <title>Kubernetes By Example</title>
   <meta property="og:title" content="Kubernetes By Example" />
   <meta name="twitter:title" content="Kubernetes By Example" />
-  <meta name="description" content="Guided Exercise: Installing Istio on a Minikube Cluster In this exercise, you will install Istio on a minikube cluster.
- Outcomes
- You should be able to:
-   Install Istio on the minikube cluster.
-  Get the Istio ingress service endpoint.
-  Deploy the Istio add-ons.
-  Create an example application to test the Istio installation.
-   To perform this exercise, ensure that you have:">
-  <meta property="og:description" content="Guided Exercise: Installing Istio on a Minikube Cluster In this exercise, you will install Istio on a minikube cluster.
- Outcomes
- You should be able to:
-   Install Istio on the minikube cluster.
-  Get the Istio ingress service endpoint.
-  Deploy the Istio add-ons.
-  Create an example application to test the Istio installation.
-   To perform this exercise, ensure that you have:">
-  <meta name="twitter:description" content="Guided Exercise: Installing Istio on a Minikube Cluster In this exercise, you will install Istio on a minikube cluster.
- Outcomes
- You should be able to:
-   Install Istio on the minikube cluster. …">
+  <meta name="description" content="Guided Exercise - Installing Istio on a Minikube Cluster">
+  <meta property="og:description" content="Guided Exercise - Installing Istio on a Minikube Cluster">
+  <meta name="twitter:description" content="Guided Exercise - Installing Istio on a Minikube Cluster">
   <meta name="author" content=""/>
   <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
   <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
@@ -65,7 +48,7 @@
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small; height: 0em; display: none; visibility: hidden;' role="alert">
+  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white;background: #53b9fc;font-size:small;' role="alert">
     <strong>Kubernetes By Example is evolving!</strong><br/>On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.<br/>Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE. 
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
@@ -191,7 +174,28 @@
 
     
   <div class="container" role="main">
-    <div class="sect1">
+    <table class="tableblock frame-none grid-none stretch">
+<colgroup>
+<col style="width: 10%;"/>
+<col style="width: 80%;"/>
+<col style="width: 10%;"/>
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="paragraph">
+<p><a href="../istio">⏪</a></p>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="paragraph">
+<p><a href="../../../">🏠</a></p>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="paragraph">
+<p><a href="../ingress-control">⏩</a></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<div class="sect1">
 <h2 id="_guided_exercise_installing_istio_on_a_minikube_cluster">Guided Exercise: Installing Istio on a Minikube Cluster</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -778,7 +782,7 @@ virtualservice.networking.istio.io/helloworld created</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The parameters of the gateway and virtual service resources will be covered in another exercise.</p>
+<p>The parameters of the gateway and virtual service resources will be covered in the <a href="../../traffic-management">traffic management</a> section.</p>
 </div>
 <div class="paragraph">
 <p>You can use the resource manifest from GitHub if you don’t have the Istio release archive files.</p>
@@ -827,7 +831,7 @@ virtualservice.networking.istio.io/helloworld  [&#34;helloworld-gateway&#34;] [&
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The parameters of the virtual service resource will be covered in another exercise.</p>
+<p>The parameters of the virtual service resource will be covered in the <a href="../../traffic-management">traffic management</a> section.</p>
 </div>
 </td>
 </tr>
@@ -1221,6 +1225,21 @@ namespace/default labeled</code></pre>
 <div class="paragraph">
 <p>This concludes the guided exercise.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The Istio installation is required for other guided exercises.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<hr/>
 <div class="sect2">
 <h3 id="_references">References</h3>
 <div class="ulist">
@@ -1236,26 +1255,25 @@ namespace/default labeled</code></pre>
 </li>
 </ul>
 </div>
-<hr/>
 <table class="tableblock frame-none grid-none stretch">
 <colgroup>
 <col style="width: 10%;"/>
 <col style="width: 80%;"/>
 <col style="width: 10%;"/>
 </colgroup>
-<tfoot>
+<tbody>
 <tr>
 <td class="tableblock halign-center valign-top"><div class="content"><div class="paragraph">
-<p><a href="../istio">Previous</a></p>
+<p><a href="../istio">⏪</a></p>
 </div></div></td>
 <td class="tableblock halign-center valign-top"><div class="content"><div class="paragraph">
-<p><a href="../../../">Home</a></p>
+<p><a href="../../../">🏠</a></p>
 </div></div></td>
 <td class="tableblock halign-center valign-top"><div class="content"><div class="paragraph">
-<p><a href="../ingress">Next</a></p>
+<p><a href="../ingress-control">⏩</a></p>
 </div></div></td>
 </tr>
-</tfoot>
+</tbody>
 </table>
 </div>
 </div>
