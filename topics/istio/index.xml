@@ -22,23 +22,6 @@
     
     <item>
       <title></title>
-      <link>https://tonejito.github.io/kbe/topics/istio/ingress-control/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://tonejito.github.io/kbe/topics/istio/ingress-control/</guid>
-      <description>    ⏪
- 🏠
- ⏩
-     Istio Ingress Control  References
-   https://istio.io/v1.12/docs/examples/microservices-istio/istio-ingress-gateway/
-       ⏪
- 🏠
- ⏩
-      </description>
-    </item>
-    
-    <item>
-      <title></title>
       <link>https://tonejito.github.io/kbe/topics/istio/ingress/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
@@ -83,24 +66,6 @@
      Istio Istio is an ingress controller and a service mesh implementation for Kubernetes.
    https://istio.io/v1.12/docs/
           🏠
- ⏩
-      </description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://tonejito.github.io/kbe/topics/istio/traffic-management/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://tonejito.github.io/kbe/topics/istio/traffic-management/</guid>
-      <description>    ⏪
- 🏠
- ⏩
-     Istio Traffic Management  References
-   https://istio.io/v1.12/docs/concepts/traffic-management/
-  https://istio.io/v1.12/docs/examples/microservices-istio/bookinfo-kubernetes/
-       ⏪
- 🏠
  ⏩
       </description>
     </item>
