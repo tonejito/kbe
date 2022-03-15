@@ -199,11 +199,8 @@
 <h2 id="_istio_traffic_management">Istio Traffic Management</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Istio implements support for the Kubernetes ingress resource, but the functionality is limited.
-To take advantage of all the capabilities presented by Istio</p>
-</div>
-<div class="paragraph">
-<p>Istio implements various CRDs to handle different aspects of the traffic management.</p>
+<p>Istio implements support for the standard Kubernetes ingress resource, but the functionality is limited.
+The full traffic management features of Istio can be configured with the following CRDs.</p>
 </div>
 <div class="ulist compact">
 <ul class="compact">
@@ -221,17 +218,18 @@ To take advantage of all the capabilities presented by Istio</p>
 <div class="sect2">
 <h3 id="_gateway">Gateway</h3>
 <div class="paragraph">
-<p>The Gateway resource specifies what happens when the traffic is entering or leaving the cluster.</p>
+<p>The gateway resource specifies what happens when the traffic is entering or leaving the cluster.
+This resource has a set of hostnames to match against incoming traffic and a list of network ports that are exposed to network traffic.</p>
 </div>
 <div class="paragraph">
-<p>This resource specifies a set of hostnames to match against incoming traffic and a list of network ports that are exposed to network traffic.</p>
+<p>The gateway resource has the following fields on the YAML manifest.</p>
 </div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1"><code>selector</code></dt>
 <dd>
-<p>The selector specifies the Istio ingress gateway to use for this gateway resource.
-The gateway configuration will be applied to the proxy running on a pod with the specified label.</p>
+<p>The selector specifies the Istio ingress gateway to use for this resource.
+The gateway configuration will be applied to the envoy proxy running on a pod with the specified label.</p>
 <div class="admonitionblock note">
 <table>
 <tbody><tr>
@@ -242,6 +240,13 @@ The gateway configuration will be applied to the proxy running on a pod with the
 <div class="paragraph">
 <p>The default ingress gateway has the <code>istio=ingressgateway</code> label applied.</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get pods -l &#39;istio=ingressgateway&#39; -n istio-system
+NAME                                    READY   STATUS    RESTARTS     AGE
+istio-ingressgateway-78f69bd5db-s5pjz   1/1     Running   1 (1d ago)   4d</code></pre>
+</div>
+</div>
 </td>
 </tr>
 </tbody></table>
@@ -249,12 +254,27 @@ The gateway configuration will be applied to the proxy running on a pod with the
 </dd>
 <dt class="hdlist1"><code>servers</code></dt>
 <dd>
-<p>The servers section is a list of host and ports that will be matched against incoming HTTP traffic.</p>
+<p>The servers section is a list of host and ports that will be matched against incoming HTTP traffic.
+The host can be set to a specific DNS name, wildcards such as <code>*.example.com</code> are supported, and it can be defined as <code>&#39;*&#39;</code> to match all hostnames.</p>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>There are other configurations for TLS and SNI that can be applied to this resource, but they are outside the scope of this section.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>There are other configurations for TLS and SNI that can be applied to this resource, but they are outside the scope of this section.</p>
+<p>The following is an example of an gateway resource manifest.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -269,7 +289,7 @@ spec:
   servers:
   - hosts:
     - &#34;bookinfo.192.168.59.20.nip.io&#34;  # <b class="conum">(2)</b>
-    port:       # <b class="conum">(3)</b>
+    port:  # <b class="conum">(3)</b>
       name: http
       number: 80
       protocol: HTTP</code></pre>
@@ -284,7 +304,7 @@ spec:
 <p>DNS host name where the gateway will serve traffic.</p>
 </li>
 <li>
-<p>Port number of the proxy will listen for incoming connections.</p>
+<p>Port number where the proxy will listen for incoming connections.</p>
 </li>
 </ol>
 </div>
@@ -292,18 +312,21 @@ spec:
 <div class="sect2">
 <h3 id="_virtual_service">Virtual Service</h3>
 <div class="paragraph">
-<p>The gateway resource defined the network properties of the load balancer (host and port), the virtual service defines rules to forward the traffic to a backend service if the match conditions are met.</p>
+<p>The virtual service resource defines a set of rules to match the HTTP traffic and the backend service name and port number to forward the traffic if the request match.</p>
+</div>
+<div class="paragraph">
+<p>The virtual service resource has the following fields on the YAML manifest.</p>
 </div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1"><code>gateways</code></dt>
 <dd>
-<p>Specifies the ingress gateway that will handle the incoming traffic.</p>
+<p>Specifies the Istio gateway that will handle the incoming traffic.</p>
 </dd>
 <dt class="hdlist1"><code>hosts</code></dt>
 <dd>
-<p>Match the rule if it is sent to the specific DNS name, wildcards such as <code>*.example.com</code> are supported.
-It can be defined as <code>&#39;*&#39;</code> to match all hostnames.</p>
+<p>List of host names to match the HTTP traffic.
+The host can be set to a specific DNS name, wildcards such as <code>*.example.com</code> are supported, and it can be defined as <code>&#39;*&#39;</code> to match all hostnames.</p>
 </dd>
 <dt class="hdlist1"><code>http</code></dt>
 <dd>
@@ -319,6 +342,9 @@ It can be defined as <code>&#39;*&#39;</code> to match all hostnames.</p>
 Each route can have a weight to configure which percentage of the traffic should be forwarded to a given destination.</p>
 </dd>
 </dl>
+</div>
+<div class="paragraph">
+<p>The following is an example of an virtual service resource manifest.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -371,7 +397,7 @@ spec:
 </ol>
 </div>
 <div class="paragraph">
-<p>The virtual service resource can also work with destination rules to specify different subsets or service versions, and route part of the traffic to them.</p>
+<p>The virtual service resource can also work with <a href="#_destination_rule">destination rules</a> to specify different subsets or service versions, and route part of the traffic to them.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -412,14 +438,36 @@ spec:
 </li>
 </ol>
 </div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The total sum of the route weights should be 100, otherwise the admission hook will raise a validation error when creating or patching the resource.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl edit virtualservice/reviews -n bookinfo
+error: virtualservices.networking.istio.io &#34;reviews&#34; could not be patched:
+admission webhook &#34;validation.istio.io&#34; denied the request:
+configuration is invalid: total destination weight 90 != 100</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_destination_rule">Destination Rule</h3>
 <div class="paragraph">
-<p>This resource defines configurations that take place after the routing has been performed.</p>
+<p>This resource defines configurations that take place after the routing has been performed, and you can specify a subset of the service pods by matching a set of labels to differentiate service versions.</p>
 </div>
 <div class="paragraph">
-<p>The configurations here can be applied to the load balancer, and you can specify a subset of the service pods by matching against a known set of labels to differentiate service versions.</p>
+<p>The destination rule resource has the following fields on the YAML manifest.</p>
 </div>
 <div class="dlist">
 <dl>

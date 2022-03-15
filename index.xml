@@ -285,11 +285,13 @@ kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/mai
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://tonejito.github.io/kbe/topics/istio/istio/</guid>
-      <description>🏠
+      <description>      🏠
  ⏩
      Istio Istio is an ingress controller and a service mesh implementation for Kubernetes.
    https://istio.io/v1.12/docs/
-   What is a sidecar container? Kubernetes defines the pod as the minimum unit that can be created and managed. A pod can execute one or more containers which are executed in a shared context (network, namespaces, and volumes).</description>
+          🏠
+ ⏩
+      </description>
     </item>
     
     <item>
@@ -301,12 +303,11 @@ kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/mai
       <description>⏪
  🏠
  ⏩
-     Istio Traffic Management Istio implements support for the Kubernetes ingress resource, but the functionality is limited. To take advantage of all the capabilities presented by Istio
- Istio implements various CRDs to handle different aspects of the traffic management.
+     Istio Traffic Management Istio implements support for the standard Kubernetes ingress resource, but the functionality is limited. The full traffic management features of Istio can be configured with the following CRDs.
   Gateway
   Virtual service
   Destination rule
-   Gateway The Gateway resource specifies what happens when the traffic is entering or leaving the cluster.</description>
+   Gateway The gateway resource specifies what happens when the traffic is entering or leaving the cluster.</description>
     </item>
     
     <item>
