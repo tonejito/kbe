@@ -198,6 +198,162 @@
 <div class="sect1">
 <h2 id="_istio_ingress_control">Istio Ingress Control</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Istio implements the <a href="https://kubernetes.io/docs/concepts/services-networking/ingress/">Kubernetes ingress</a> resource to expose a service and make it accessible from outside the cluster.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The general recommendation is to use Istio gateway, and virtual service resources to allow a more complete control over the traffic.
+That content is covered in the <a href="../traffic-management">traffic management</a> section.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="sect2">
+<h3 id="_ingress">Ingress</h3>
+<div class="paragraph">
+<p>The Kubernetes ingress resource has a set of rules to match the incoming HTTP traffic to route the request to a backend service.
+Each rule matches a DNS name and a set of paths to forward the traffic to a backend service.</p>
+</div>
+<div class="paragraph">
+<p>The ingress resource has the following fields on the YAML manifest.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>rules</code></dt>
+<dd>
+<p>List of rules to match against incoming HTTP traffic.</p>
+</dd>
+<dt class="hdlist1"><code>host</code></dt>
+<dd>
+<p>Match the rule if it is sent to the specific DNS name, wildcards such as <code>*.example.com</code> are supported.
+It can be defined as <code>&#39;*&#39;</code> to match all hostnames.</p>
+</dd>
+<dt class="hdlist1"><code>paths</code></dt>
+<dd>
+<p>List of URL paths that will be matched against HTTP requests.</p>
+</dd>
+<dt class="hdlist1"><code>pathType</code></dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>The value <code>Exact</code> will match the provided path as is.</p>
+</li>
+<li>
+<p>The value <code>Prefix</code> will match the provided path if it begins with the specified prefix.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1"><code>backend</code></dt>
+<dd>
+<p>Specifies the service that will receive the traffic.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The following is an example of an ingress resource manifest.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+  annotations:
+    kubernetes.io/ingress.class: istio  # <b class="conum">(1)</b>
+spec:
+  rules:  # <b class="conum">(2)</b>
+  - host: dashboard.192.168.59.20.nip.io  # <b class="conum">(3)</b>
+    http:
+      paths:  # <b class="conum">(4)</b>
+      - path: /
+        pathType: Prefix  # <b class="conum">(5)</b>
+        backend:  # <b class="conum">(6)</b>
+          service:
+            name: kubernetes-dashboard
+            port:
+              number: 80</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Specifies that Istio will handle this ingress resource.</p>
+</li>
+<li>
+<p>Set of rules to be applied against incoming HTTP traffic.</p>
+</li>
+<li>
+<p>DNS host name where the ingress will serve traffic.</p>
+</li>
+<li>
+<p>List of paths to match HTTP traffic.</p>
+</li>
+<li>
+<p>Type of match that should be applied to the path.</p>
+</li>
+<li>
+<p>Backend service name and port number.</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="_ingress_class">Ingress Class</h4>
+<div class="paragraph">
+<p>The annotation is required to tell the Istio gateway controller that it should handle this ingress resource, otherwise it will be ignored.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>kubernetes.io/ingress.class</code> annotation was deprecated in Kubernetes 1.22+.
+However, Istio does not support the <code>ingressClassName</code> field unless you also modify the Istio ingress class.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">---
+apiVersion: networking.k8s.io/v1beta1
+kind: IngressClass
+metadata:
+  name: istio
+spec:
+  controller: istio.io/ingress-controller
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  ingressClassName: istio
+  ...output omitted...</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
 <hr/>
 <div class="paragraph">
 <p>References</p>
@@ -205,7 +361,31 @@
 <div class="ulist">
 <ul>
 <li>
+<p><a href="https://kubernetes.io/docs/concepts/services-networking/ingress/" class="bare">https://kubernetes.io/docs/concepts/services-networking/ingress/</a></p>
+</li>
+<li>
+<p><a href="https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/#using-multiple-ingress-controllers" class="bare">https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/#using-multiple-ingress-controllers</a></p>
+</li>
+<li>
+<p><a href="https://kubernetes.io/docs/reference/labels-annotations-taints/#ingressclass-kubernetes-io-is-default-class" class="bare">https://kubernetes.io/docs/reference/labels-annotations-taints/#ingressclass-kubernetes-io-is-default-class</a></p>
+</li>
+<li>
+<p><a href="https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/" class="bare">https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/reference/config/annotations/" class="bare">https://istio.io/v1.12/docs/reference/config/annotations/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/tasks/traffic-management/ingress/kubernetes-ingress/" class="bare">https://istio.io/v1.12/docs/tasks/traffic-management/ingress/kubernetes-ingress/</a></p>
+</li>
+<li>
 <p><a href="https://istio.io/v1.12/docs/examples/microservices-istio/istio-ingress-gateway/" class="bare">https://istio.io/v1.12/docs/examples/microservices-istio/istio-ingress-gateway/</a></p>
+</li>
+<li>
+<p><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#ingress-v1-networking-k8s-io" class="bare">https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#ingress-v1-networking-k8s-io</a></p>
+</li>
+<li>
+<p><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#ingressclass-v1-networking-k8s-io" class="bare">https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#ingressclass-v1-networking-k8s-io</a></p>
 </li>
 </ul>
 </div>
@@ -229,6 +409,8 @@
 </tr>
 </tbody>
 </table>
+</div>
+</div>
 </div>
 </div>
 

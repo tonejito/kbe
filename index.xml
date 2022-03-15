@@ -233,6 +233,19 @@ kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/mai
     
     <item>
       <title></title>
+      <link>https://tonejito.github.io/kbe/topics/istio/ingress-control/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/topics/istio/ingress-control/</guid>
+      <description>⏪
+ 🏠
+ ⏩
+     Istio Ingress Control Istio implements the Kubernetes ingress resource to expose a service and make it accessible from outside the cluster.
+   Note  The general recommendation is to use Istio gateway, and virtual service resources to allow a more complete control over the traffic. That content is covered in the traffic management section.</description>
+    </item>
+    
+    <item>
+      <title></title>
       <link>https://tonejito.github.io/kbe/topics/istio/ingress/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
@@ -272,13 +285,28 @@ kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/mai
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://tonejito.github.io/kbe/topics/istio/istio/</guid>
-      <description>      🏠
+      <description>🏠
  ⏩
      Istio Istio is an ingress controller and a service mesh implementation for Kubernetes.
    https://istio.io/v1.12/docs/
-          🏠
+   What is a sidecar container? Kubernetes defines the pod as the minimum unit that can be created and managed. A pod can execute one or more containers which are executed in a shared context (network, namespaces, and volumes).</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/topics/istio/traffic-management/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/topics/istio/traffic-management/</guid>
+      <description>⏪
+ 🏠
  ⏩
-      </description>
+     Istio Traffic Management Istio implements support for the Kubernetes ingress resource, but the functionality is limited. To take advantage of all the capabilities presented by Istio
+ Istio implements various CRDs to handle different aspects of the traffic management.
+  Gateway
+  Virtual service
+  Destination rule
+   Gateway The Gateway resource specifies what happens when the traffic is entering or leaving the cluster.</description>
     </item>
     
     <item>

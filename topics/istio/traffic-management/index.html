@@ -198,6 +198,282 @@
 <div class="sect1">
 <h2 id="_istio_traffic_management">Istio Traffic Management</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Istio implements support for the Kubernetes ingress resource, but the functionality is limited.
+To take advantage of all the capabilities presented by Istio</p>
+</div>
+<div class="paragraph">
+<p>Istio implements various CRDs to handle different aspects of the traffic management.</p>
+</div>
+<div class="ulist compact">
+<ul class="compact">
+<li>
+<p>Gateway</p>
+</li>
+<li>
+<p>Virtual service</p>
+</li>
+<li>
+<p>Destination rule</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_gateway">Gateway</h3>
+<div class="paragraph">
+<p>The Gateway resource specifies what happens when the traffic is entering or leaving the cluster.</p>
+</div>
+<div class="paragraph">
+<p>This resource specifies a set of hostnames to match against incoming traffic and a list of network ports that are exposed to network traffic.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>selector</code></dt>
+<dd>
+<p>The selector specifies the Istio ingress gateway to use for this gateway resource.
+The gateway configuration will be applied to the proxy running on a pod with the specified label.</p>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The default ingress gateway has the <code>istio=ingressgateway</code> label applied.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+</dd>
+<dt class="hdlist1"><code>servers</code></dt>
+<dd>
+<p>The servers section is a list of host and ports that will be matched against incoming HTTP traffic.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>There are other configurations for TLS and SNI that can be applied to this resource, but they are outside the scope of this section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: bookinfo-gateway
+spec:
+  selector:
+    istio: ingressgateway  # <b class="conum">(1)</b>
+  servers:
+  - hosts:
+    - &#34;bookinfo.192.168.59.20.nip.io&#34;  # <b class="conum">(2)</b>
+    port:       # <b class="conum">(3)</b>
+      name: http
+      number: 80
+      protocol: HTTP</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Use the Istio default ingress gateway.</p>
+</li>
+<li>
+<p>DNS host name where the gateway will serve traffic.</p>
+</li>
+<li>
+<p>Port number of the proxy will listen for incoming connections.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_virtual_service">Virtual Service</h3>
+<div class="paragraph">
+<p>The gateway resource defined the network properties of the load balancer (host and port), the virtual service defines rules to forward the traffic to a backend service if the match conditions are met.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>gateways</code></dt>
+<dd>
+<p>Specifies the ingress gateway that will handle the incoming traffic.</p>
+</dd>
+<dt class="hdlist1"><code>hosts</code></dt>
+<dd>
+<p>Match the rule if it is sent to the specific DNS name, wildcards such as <code>*.example.com</code> are supported.
+It can be defined as <code>&#39;*&#39;</code> to match all hostnames.</p>
+</dd>
+<dt class="hdlist1"><code>http</code></dt>
+<dd>
+<p>List of rules to match against incoming HTTP traffic.</p>
+</dd>
+<dt class="hdlist1"><code>match</code></dt>
+<dd>
+<p>Specifies the URI to perform a case-sensitive match for either the <code>exact</code> path, treat the path as a <code>prefix</code>, or provide a <code>regex</code> for matching.</p>
+</dd>
+<dt class="hdlist1"><code>route</code></dt>
+<dd>
+<p>Specifies the backend service host and port number that will process the request.
+Each route can have a weight to configure which percentage of the traffic should be forwarded to a given destination.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: bookinfo
+spec:
+  gateways:
+  - bookinfo-gateway  # <b class="conum">(1)</b>
+  hosts:
+  - &#34;bookinfo.192.168.59.20.nip.io&#34;  # <b class="conum">(2)</b>
+  http:  # <b class="conum">(3)</b>
+  - match:  # <b class="conum">(4)</b>
+    - uri:
+        exact: /productpage
+    - uri:
+        prefix: /static
+    - uri:
+        exact: /login
+    - uri:
+        exact: /logout
+    - uri:
+        prefix: /api/v1/products
+    route:  # <b class="conum">(5)</b>
+    - destination:
+        host: productpage
+        port:
+          number: 9080</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Apply the virtual service rules to the specified gateway in the current namespace.</p>
+</li>
+<li>
+<p>DNS host name where the gateway will serve traffic.</p>
+</li>
+<li>
+<p>List of routing rules for the HTTP traffic.</p>
+</li>
+<li>
+<p>List of rules to match against incoming requests.</p>
+</li>
+<li>
+<p>The matching requests will be forwarded to this service and port number.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The virtual service resource can also work with destination rules to specify different subsets or service versions, and route part of the traffic to them.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: reviews
+spec:
+  hosts:
+  - reviews
+  http:
+  - route:
+    - weight: 10  # <b class="conum">(1)</b>
+      destination:
+        host: reviews
+        subset: v1
+    - weight: 30  # <b class="conum">(2)</b>
+      destination:
+        host: reviews
+        subset: v2
+    - weight: 60  # <b class="conum">(3)</b>
+      destination:
+        host: reviews
+        subset: v3</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>10% of the traffic will be redirected to <code>reviews</code> subset <code>v1</code>.</p>
+</li>
+<li>
+<p>30% of the traffic will be redirected to <code>reviews</code> subset <code>v2</code>.</p>
+</li>
+<li>
+<p>60% of the traffic will be redirected to <code>reviews</code> subset <code>v3</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_destination_rule">Destination Rule</h3>
+<div class="paragraph">
+<p>This resource defines configurations that take place after the routing has been performed.</p>
+</div>
+<div class="paragraph">
+<p>The configurations here can be applied to the load balancer, and you can specify a subset of the service pods by matching against a known set of labels to differentiate service versions.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>host</code></dt>
+<dd>
+<p>The name of the backend service on the Kubernetes cluster.</p>
+</dd>
+<dt class="hdlist1"><code>subsets</code></dt>
+<dd>
+<p>Defines the service subset, this can be used to distribute traffic between different versions of the service.</p>
+</dd>
+<dt class="hdlist1"><code>labels</code></dt>
+<dd>
+<p>The labels to match the destination pod.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The following resource definition specifies that there are three versions of the service and that different percentages of the traffic will be routed to each one.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: reviews
+spec:
+  host: reviews
+  subsets:
+  - name: v1  # <b class="conum">(1)</b>
+    labels:
+      version: v1
+  - name: v2  # <b class="conum">(2)</b>
+    labels:
+      version: v2
+  - name: v3  # <b class="conum">(3)</b>
+    labels:
+      version: v3</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The subset <code>v1</code> references pods with label <code>version: v1</code>.</p>
+</li>
+<li>
+<p>The subset <code>v2</code> references pods with label <code>version: v2</code>.</p>
+</li>
+<li>
+<p>The subset <code>v3</code> references pods with label <code>version: v3</code>.</p>
+</li>
+</ol>
+</div>
 <hr/>
 <div class="paragraph">
 <p>References</p>
@@ -206,6 +482,24 @@
 <ul>
 <li>
 <p><a href="https://istio.io/v1.12/docs/concepts/traffic-management/" class="bare">https://istio.io/v1.12/docs/concepts/traffic-management/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/tasks/traffic-management/ingress/ingress-control/" class="bare">https://istio.io/v1.12/docs/tasks/traffic-management/ingress/ingress-control/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/reference/config/networking/gateway/" class="bare">https://istio.io/v1.12/docs/reference/config/networking/gateway/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/reference/config/networking/virtual-service/" class="bare">https://istio.io/v1.12/docs/reference/config/networking/virtual-service/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/reference/config/networking/destination-rule/" class="bare">https://istio.io/v1.12/docs/reference/config/networking/destination-rule/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/ops/best-practices/traffic-management/" class="bare">https://istio.io/v1.12/docs/ops/best-practices/traffic-management/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/ops/common-problems/network-issues" class="bare">https://istio.io/v1.12/docs/ops/common-problems/network-issues</a></p>
 </li>
 <li>
 <p><a href="https://istio.io/v1.12/docs/examples/microservices-istio/bookinfo-kubernetes/" class="bare">https://istio.io/v1.12/docs/examples/microservices-istio/bookinfo-kubernetes/</a></p>
@@ -232,6 +526,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 </div>
 
