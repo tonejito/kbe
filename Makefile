@@ -50,7 +50,8 @@ release:
 	  -it --rm --name ${HUGO_NAME}-release \
 	  -v $(CURDIR):/src \
 	  ${HUGO_IMAGE} \
-	    --baseURL ${SITE_URL} --theme ${HUGO_THEME}
+	    --baseURL ${SITE_URL} --theme ${HUGO_THEME} \
+	    --buildDrafts --buildExpired --buildFuture
 	$(MAKE) -C public -f ../Makefile do_release
 
 do_release:
