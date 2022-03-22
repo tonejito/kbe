@@ -27,13 +27,10 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://tonejito.github.io/kbe/topics/metallb/metallb/</guid>
-      <description>      🏠
+      <description>🏠
  ⏩
-     MetalLB MetalLB is a load balancer suitable for local environments, it is included as an add-on in minikube.
-   https://metallb.universe.tf/
-          🏠
- ⏩
-      </description>
+     MetalLB The Kubernetes clusters deployed in cloud environments use the functionality from the provider to dynamically provision managed load balancers for the services of type LoadBalancer. MetalLB implements the load balancer functionality for local or bare metal Kubernetes clusters that are not deployed in cloud environments.
+ Kubernetes Service Types Kubernetes has three types of services:</description>
     </item>
     
   </channel>

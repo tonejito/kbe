@@ -208,7 +208,123 @@
 </li>
 </ul>
 </div>
+<div class="sect2">
+<h3 id="_what_is_a_sidecar_container">What is a sidecar container?</h3>
+<div class="paragraph">
+<p>Kubernetes defines the pod as the minimum unit that can be created and managed.
+A pod can execute one or more containers which are executed in a shared context (network, namespaces, and volumes).</p>
+</div>
+<div class="paragraph">
+<p>Using a single container per pod is a common use case in which the application has all of the resources assigned to the pod.</p>
+</div>
+<div class="paragraph">
+<p>Sometimes the application consists of multiple containers that are related to each other and need to share resources like network or storage.
+One container can serve the network requests, while the other container is caching the operations in a shared volume for faster response.</p>
+</div>
+<div class="paragraph">
+<p>A <em>sidecar container</em> is a pattern designed to have an extra container inside a pod that handles a set of specialized operations in order to add features to an existing application without altering it.</p>
+</div>
+<div class="paragraph">
+<p>The term resembles the sidecar attached to a motorcycle, in the same way the sidecar container is attached to the pod and connected to the application.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_what_is_a_service_mesh">What is a Service Mesh?</h3>
+<div class="paragraph">
+<p>The term <em>service mesh</em> refers to a technology used to manage communication between the microservices in an application.</p>
+</div>
+<div class="paragraph">
+<p>The service mesh provides components such as traffic management, retry logic, metrics, and security.</p>
+</div>
+<div class="paragraph">
+<p>Those components can be added to the application via a sidecar container that implements all extra features and serves as a proxy for the ingress and egress traffic of the pod.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_what_is_istio">What is Istio?</h3>
+<div class="paragraph">
+<p>Istio is an implementation of a service mesh that injects a sidecar container on the target pods to handle the ingress and egress traffic and route the requests accordingly.
+&lt;!--
+Istio uses the envoy proxy containers to process the ingress and egress traffic of a pod.
+-→
+Istio creates a control plane that centralizes service mesh capabilities and a data plane that creates the structure of the mesh.</p>
+</div>
+<div class="paragraph">
+<p>The data plane controls communications between services by injecting sidecar containers that capture traffic between microservices.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_istio_control_plane">The Istio control plane</h3>
+<div class="paragraph">
+<p>The control plane is the connection between all the envoy sidecar proxies and istiod.
+The control plane is responsible for injecting the envoy proxies as sidecar containers in the target pods, it also manages the configuration of all the envoy proxies.
+The control plane does not directly handle the network traffic in the mesh.
+Once the configuration is processed, it is distributed to every sidecar proxy so they never have to contact the istiod process for information.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_istio_data_plane">The Istio data plane</h3>
+<div class="paragraph">
+<p>The data plane is the connection between all the sidecar proxies that forms the service mesh.
+The ingress traffic directed to a pod is intercepted by the sidecar proxy, where the routing rules are evaluated and the request is directed to the application container.
+For egress requests, the sidecar intercepts the traffic, applies routing the rules, and sends the request to the desired service.</p>
+</div>
 <hr/>
+<div class="paragraph">
+<p>References</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://istio.io/v1.12/docs/" class="bare">https://istio.io/v1.12/docs/</a></p>
+</li>
+<li>
+<p><a href="https://developers.redhat.com/topics/service-mesh" class="bare">https://developers.redhat.com/topics/service-mesh</a></p>
+</li>
+<li>
+<p><a href="https://developers.redhat.com/books/introducing-istio-service-mesh-microservices" class="bare">https://developers.redhat.com/books/introducing-istio-service-mesh-microservices</a></p>
+</li>
+<li>
+<p><a href="https://developers.redhat.com/e-books/introducing-istio-service-mesh-microservices/old" class="bare">https://developers.redhat.com/e-books/introducing-istio-service-mesh-microservices/old</a></p>
+</li>
+<li>
+<p><a href="https://www.oreilly.com/library/view/introducing-istio-service/9781492052630/ch01.html" class="bare">https://www.oreilly.com/library/view/introducing-istio-service/9781492052630/ch01.html</a></p>
+</li>
+<li>
+<p><a href="https://developers.redhat.com/courses/service-mesh/istio-introduction/" class="bare">https://developers.redhat.com/courses/service-mesh/istio-introduction/</a></p>
+</li>
+<li>
+<p><a href="https://developers.redhat.com/devnation/deep-dive/istio" class="bare">https://developers.redhat.com/devnation/deep-dive/istio</a></p>
+</li>
+<li>
+<p><a href="https://developers.redhat.com/blog/2018/04/25/book-released-istio-service-mesh-microservices" class="bare">https://developers.redhat.com/blog/2018/04/25/book-released-istio-service-mesh-microservices</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/setup/additional-setup/config-profiles/" class="bare">https://istio.io/v1.12/docs/setup/additional-setup/config-profiles/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/setup/additional-setup/sidecar-injection/" class="bare">https://istio.io/v1.12/docs/setup/additional-setup/sidecar-injection/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/setup/install/istioctl/" class="bare">https://istio.io/v1.12/docs/setup/install/istioctl/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/reference/commands/istioctl/" class="bare">https://istio.io/v1.12/docs/reference/commands/istioctl/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/reference/config/annotations/" class="bare">https://istio.io/v1.12/docs/reference/config/annotations/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/reference/config/labels/" class="bare">https://istio.io/v1.12/docs/reference/config/labels/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/reference/config/networking/" class="bare">https://istio.io/v1.12/docs/reference/config/networking/</a></p>
+</li>
+<li>
+<p><a href="https://istio.io/v1.12/docs/ops/best-practices/deployment/" class="bare">https://istio.io/v1.12/docs/ops/best-practices/deployment/</a></p>
+</li>
+</ul>
+</div>
 <table class="tableblock frame-none grid-none stretch">
 <colgroup>
 <col style="width: 10%;"/>
@@ -229,6 +345,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 </div>
 
