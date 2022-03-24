@@ -17,6 +17,7 @@ googleAnalytics = "UA-34425776-2"
   commit = false
   rss = false
   custom_css = ["css/custom.css"]
+  # watermark = "This is the watermark"
   annoying_banner_ad = true
 
 
