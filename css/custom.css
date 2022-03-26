@@ -125,3 +125,44 @@ li::marker
 {
 }
 */
+
+.watermark-container
+{
+  width: 99%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.watermark {
+  opacity: 0.2;
+  font-size: 3em;
+  color: black;
+  /* background: #c0c0c0; */
+  background: '#ccc';
+  /* display: flex; */
+  position: fixed;
+  cursor: default;
+  user-select: none;
+  right: 1em;
+  bottom: 1em;
+  /* top: 4.5em; */
+  /* left: 2em; */
+  margin-left: auto;
+  margin-right: auto;
+  /* float: left; */
+  /*
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  */
+  /* transform: rotate(30deg); */
+  text-align: center;
+}
+
+.not-visible
+{
+  height: 0em;
+  display: none;
+  visibility: hidden;
+}

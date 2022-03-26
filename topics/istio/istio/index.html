@@ -48,12 +48,20 @@
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white;background: #53b9fc;font-size:small;' role="alert">
-    <strong>Kubernetes By Example is evolving!</strong><br/>On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.<br/>Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE. 
+
+  
+  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small;' role="alert">
+    <strong>Kubernetes By Example is evolving!</strong>
+    <br/>
+    On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.
+    <br/>
+    Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE.
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
+  
+
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
@@ -199,75 +207,507 @@
 <h2 id="_istio">Istio</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Istio is an ingress controller and a service mesh implementation for Kubernetes.</p>
+<p>Istio is an ingress controller and a service mesh implementation for Kubernetes.
+It abstracts the traffic management logic from the application by using a sidecar container that manages all the incoming and outgoing network traffic for a pod.</p>
 </div>
-<div class="ulist">
-<ul>
+<div class="paragraph">
+<p>Before istio, applications had to manage all the advanced network operations, retry logic and resiliency, adding complexity to the main logic.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Before Istio: Application with all the traffic managment logic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/istio-pod-container.png" alt="Before Istio" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Istio injects a sidecar container that intercepts the ingress and egress traffic, controlling the communication between the application, the clients and the Kubernetes services.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">After Istio: Application with sidecar container</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/istio-pod-sidecar-container-envoy.png" alt="After Istio" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Istio implements the following features:</p>
+</div>
+<div class="ulist compact">
+<ul class="compact">
 <li>
-<p><a href="https://istio.io/v1.12/docs/" class="bare">https://istio.io/v1.12/docs/</a></p>
+<p>Inter-service communication</p>
+</li>
+<li>
+<p>Service discovery</p>
+</li>
+<li>
+<p>Load balancing</p>
+</li>
+<li>
+<p>Resiliency</p>
+</li>
+<li>
+<p>Metrics</p>
+</li>
+<li>
+<p>Tracing</p>
+</li>
+<li>
+<p>Fault injection</p>
+</li>
+<li>
+<p>Mutual TLS</p>
 </li>
 </ul>
 </div>
 <div class="sect2">
 <h3 id="_what_is_a_sidecar_container">What is a sidecar container?</h3>
 <div class="paragraph">
-<p>Kubernetes defines the pod as the minimum unit that can be created and managed.
-A pod can execute one or more containers which are executed in a shared context (network, namespaces, and volumes).</p>
+<p>The <em>sidecar container</em> is an extra container that is added to a pod, this extra container handles a set of specialized operations to add features to an existing application without altering it.
+The pattern name is inspired in the sidecar that is attached to a motorcycle, because the sidecar container is attached to the pod and connected to the main application.</p>
 </div>
 <div class="paragraph">
-<p>Using a single container per pod is a common use case in which the application has all of the resources assigned to the pod.</p>
+<p>Kubernetes defines the pod as the minimum unit that can be created and managed.
+A pod can execute one or more containers in a context where namespaces, network, and volumes are shared between them.
+Using a single container per pod is a common use case in which the application has all of the resources assigned to the pod.</p>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Pod with a single container</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/istio-pod-single-container.png" alt="Pod with a single container" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Sometimes the application consists of multiple containers that are related to each other and need to share resources like network or storage.
-One container can serve the network requests, while the other container is caching the operations in a shared volume for faster response.</p>
+The Istio sidecar container manages the network traffic, and the main container has the application logic.</p>
 </div>
-<div class="paragraph">
-<p>A <em>sidecar container</em> is a pattern designed to have an extra container inside a pod that handles a set of specialized operations in order to add features to an existing application without altering it.</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Pod with a sidecar container</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/istio-pod-sidecar-container.png" alt="Pod with a sidecar container" width="100%"/>
 </div>
-<div class="paragraph">
-<p>The term resembles the sidecar attached to a motorcycle, in the same way the sidecar container is attached to the pod and connected to the application.</p>
-</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_what_is_a_service_mesh">What is a Service Mesh?</h3>
 <div class="paragraph">
-<p>The term <em>service mesh</em> refers to a technology used to manage communication between the microservices in an application.</p>
-</div>
-<div class="paragraph">
-<p>The service mesh provides components such as traffic management, retry logic, metrics, and security.</p>
-</div>
-<div class="paragraph">
-<p>Those components can be added to the application via a sidecar container that implements all extra features and serves as a proxy for the ingress and egress traffic of the pod.</p>
+<p>The term <em>service mesh</em> refers to a technology used to manage communication between the microservices in an application.
+It provides components such as traffic management, retry logic, metrics, and security.
+Those components can be added to the application via a sidecar container that implements all extra features and serves as a proxy for the ingress and egress traffic of the pod.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_what_is_istio">What is Istio?</h3>
+<h3 id="_istio_components">Istio components</h3>
 <div class="paragraph">
-<p>Istio is an implementation of a service mesh that injects a sidecar container on the target pods to handle the ingress and egress traffic and route the requests accordingly.
-&lt;!--
-Istio uses the envoy proxy containers to process the ingress and egress traffic of a pod.
--→
-Istio creates a control plane that centralizes service mesh capabilities and a data plane that creates the structure of the mesh.</p>
+<p>Istio has two main components, a control plane that manages the configuration and a data plane that handles the communication between services.</p>
 </div>
-<div class="paragraph">
-<p>The data plane controls communications between services by injecting sidecar containers that capture traffic between microservices.</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Istio control plane and data plane</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock text-center">
+<div class="content">
+<img src="../../../img/istio/istio-control-plane-data-plane.png" alt="Istio control plane and data plane" width="100%"/>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Control plane</dt>
+<dd>
+<p>The control plane injects the sidecar containers in the application pods.
+It also manages the envoy proxies by sending the configuration updates as needed.
+The envoy proxies do not need to contact the Istio control plane after they are configured.</p>
+</dd>
+<dt class="hdlist1">Data plane</dt>
+<dd>
+<p>All envoy proxies are interconnected in the service mesh.
+Each proxy intercepts the network traffic directed to a pod and applies routing rules and redirects the ingress request to the application container, or egress request to the appropriate service.</p>
+</dd>
+</dl>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_istio_control_plane">The Istio control plane</h3>
+<h3 id="_istio_installation_options">Istio installation options</h3>
 <div class="paragraph">
-<p>The control plane is the connection between all the envoy sidecar proxies and istiod.
-The control plane is responsible for injecting the envoy proxies as sidecar containers in the target pods, it also manages the configuration of all the envoy proxies.
-The control plane does not directly handle the network traffic in the mesh.
-Once the configuration is processed, it is distributed to every sidecar proxy so they never have to contact the istiod process for information.</p>
+<p>There are various methods to install MetalLB in a Kubernetes cluster.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Install the Istio release with the <a href="https://istio.io/v1.12/docs/setup/install/istioctl/"><code>istioctl</code> tool</a>.</p>
+</li>
+<li>
+<p>Add the <a href="https://istio-release.storage.googleapis.com/charts">chart repository</a> and deploy the <code>istio/base</code>, <code>istio/istiod</code> charts with <code>helm</code>. You can enable the ingress gateway by installing the <code>istio/gateway</code> chart.</p>
+</li>
+<li>
+<p>Install with the <a href="https://istio.io/v1.12/docs/setup/install/multicluster/">Multicluster deployment model</a> to set up Istio in multiple Kubernetes clusters.</p>
+</li>
+<li>
+<p>Install the <a href="https://istio.io/v1.12/docs/setup/install/operator/">Istio Operator</a> with <code>istioctl</code> or <code>helm</code>.</p>
+</li>
+<li>
+<p>Enable the <code>istio-provisioner</code>, and <code>istio</code> add-ons in minikube.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Minikube provides Istio as an add-on.
+However, the version is outdated and can’t be installed in recent versions of Kubernetes.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_istio_data_plane">The Istio data plane</h3>
+<h3 id="_istio_installation_profiles">Istio installation profiles</h3>
 <div class="paragraph">
-<p>The data plane is the connection between all the sidecar proxies that forms the service mesh.
-The ingress traffic directed to a pod is intercepted by the sidecar proxy, where the routing rules are evaluated and the request is directed to the application container.
-For egress requests, the sidecar intercepts the traffic, applies routing the rules, and sends the request to the desired service.</p>
+<p>Istio can be installed with different features turned on or off depending on the environment that will be deployed.</p>
+</div>
+<div class="paragraph">
+<p>You can execute <code>istioctl profile dump</code> to inspect the details of the current profile.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Default</dt>
+<dd>
+<p>Enables the default settings, it is recommended for production deployments.</p>
+</dd>
+<dt class="hdlist1">Demo</dt>
+<dd>
+<p>Enables features to demonstrate tracing and the example applications.
+It requires many resources.</p>
+</dd>
+<dt class="hdlist1">Minimal</dt>
+<dd>
+<p>Only install the control plane components to manage an external cluster.</p>
+</dd>
+<dt class="hdlist1">External</dt>
+<dd>
+<p>Install the components on a cluster that will be managed with an external control plane.</p>
+</dd>
+<dt class="hdlist1">Empty</dt>
+<dd>
+<p>It is an empty profile with all features disabled, it can be used to create custom configurations.</p>
+</dd>
+<dt class="hdlist1">Preview</dt>
+<dd>
+<p>Enables experimental features that are not stable.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_istio_add_ons">Istio add-ons</h3>
+<div class="paragraph">
+<p>The add-ons for Istio are installed from <a href="https://github.com/istio/istio/tree/1.12.1/samples/addons">the <code>samples/addons</code> directory</a> of the Istio release archive.</p>
+</div>
+<div class="ulist compact">
+<ul class="compact">
+<li>
+<p>Kiali</p>
+</li>
+<li>
+<p>Grafana</p>
+</li>
+<li>
+<p>Prometheus</p>
+</li>
+<li>
+<p>Jaeger</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_installing_istio_in_minikube">Installing Istio in Minikube</h3>
+<div class="paragraph">
+<p>Istio requires at least 4 vCPUs and 8 GB of RAM to run correctly in minikube.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ minikube start --cpus=4 --memory=8g
+...output omitted...</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The Istio minikube add-on is outdated and can’t be installed in recent versions of Kubernetes.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>Download the Istio release archive from GitHub, and install the <code>istioctl</code> tool.
+Then verify if the cluster meets the installation requirements.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ istioctl experimental precheck
+✔ No issues found when checking the cluster. Istio is safe to install or upgrade!
+  To get started, check out https://istio.io/latest/docs/setup/getting-started/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Install Istio in the Kubernetes cluster using the appropriate profile for your deployment.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ istioctl install --set profile=demo -y
+✔ Istio core installed
+✔ Istiod installed
+✔ Egress gateways installed
+✔ Ingress gateways installed
+✔ Installation complete
+Making this installation the default for injection and validation.
+
+Thank you for installing Istio 1.12.
+Please take a few minutes to tell us about your install/upgrade experience!
+https://forms.gle/FegQbc9UvePd4Z9z7</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_istio_ingress_gateway_endpoint">Istio Ingress Gateway Endpoint</h3>
+<div class="paragraph">
+<p>The Istio ingress gateway endpoint depends on the configuration of the underlying service.
+Istio provides ports for HTTP and HTTPS connections.</p>
+</div>
+<div class="paragraph">
+<p>The Istio <a href="../../istio/install">installation guided exercise</a> uses MetalLB to manage the ingress gateway load balancer service endpoint.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get services -n istio-system
+NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                                 AGE
+istio-egressgateway    ClusterIP      10.111.169.103   &lt;none&gt;          80/TCP,443/TCP                          5m
+istio-ingressgateway   LoadBalancer   10.97.37.96      192.168.59.20   80:32031/TCP,443:31872/TCP,...          5m
+istiod                 ClusterIP      10.103.227.204   &lt;none&gt;          443/TCP,15010/TCP,15012/TCP,15014/TCP   6m</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If Istio was installed using <code>helm</code>, then the ingress and egress resources are in the <code>istio-ingress</code> namespace.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Node port</dt>
+<dd>
+<p>The IP address of a node, and a port number.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">export INGRESS_HOST=$(kubectl get node ${NODE_NAME} \
+  -o jsonpath=&#39;{.status.addresses[?(@.type==&#34;InternalIP&#34;)].address}&#39;)
+
+export INGRESS_PORT=$(kubectl get service ${INGRESS_SERVICE} \
+  -n ${INGRESS_NAMESPACE} \
+  -o jsonpath=&#39;{.spec.ports[?(@.name==&#34;http2&#34;)].nodePort}&#39;)
+
+export SECURE_INGRESS_PORT=$(kubectl get service ${INGRESS_SERVICE} \
+  -n ${INGRESS_NAMESPACE} \
+  -o jsonpath=&#39;{.spec.ports[?(@.name==&#34;https&#34;)].nodePort}&#39;)</code></pre>
+</div>
+</div>
+</dd>
+<dt class="hdlist1">Load balancer</dt>
+<dd>
+<p>The IP address of a load balancer is provided by the cloud controller.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">export INGRESS_HOST=$(kubectl get service ${INGRESS_SERVICE} \
+  -n ${INGRESS_NAMESPACE} -o jsonpath=&#39;{.status.loadBalancer.ingress[0].ip}&#39;)
+
+export INGRESS_PORT=$(kubectl get service ${INGRESS_SERVICE} \
+  -n ${INGRESS_NAMESPACE} -o jsonpath=&#39;{.spec.ports[?(@.name==&#34;http2&#34;)].port}&#39;)
+
+export SECURE_INGRESS_PORT=$(kubectl get service ${INGRESS_SERVICE} \
+  -n ${INGRESS_NAMESPACE} -o jsonpath=&#39;{.spec.ports[?(@.name==&#34;https&#34;)].port}&#39;)</code></pre>
+</div>
+</div>
+</dd>
+<dt class="hdlist1">External name</dt>
+<dd>
+<p>The endpoint is published as a DNS CNAME record.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">export INGRESS_HOSTNAME=$(kubectl get service ${INGRESS_SERVICE} \
+  -n ${INGRESS_NAMESPACE} \
+  -o jsonpath=&#39;{.status.loadBalancer.ingress[0].hostname}&#39;)</code></pre>
+</div>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sidecar_container_injection">Sidecar Container Injection</h3>
+<div class="paragraph">
+<p>The <code>istio-proxy</code> sidecar container can be manually injected in different ways.
+The YAML resource manifest can be modified with <code>istioctl</code> to add the <code>istio-proxy</code> container to the pod definition.
+You can create the resource using the modified YAML manifest.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ istioctl kube-inject -f deployment.yaml \
+  -o deployment-injected.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Another option is to modify and apply the YAML resource manifest in a single step.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl apply -f &lt;(istioctl kube-inject -f resource.yaml)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also modify a resource that already exists on the cluster by exporting it to YAML, pipe the output to <code>istioctl</code> to inject the sidecar container definition, and then apply the patched resource to update.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get deployment -o yaml | \
+  istioctl kube-inject -f - | kubectl apply -f -</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_enable_automatic_sidecar_injection">Enable automatic sidecar injection</h4>
+<div class="paragraph">
+<p>Istio can automatically inject the sidecar container definition into the pods of a namespace.
+You have to apply a label to the namespace to enable this feature.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl label namespace default \
+  istio-injection=enabled --overwrite
+namespace/default labeled</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>New pods will have the <code>istio-proxy</code> container after the label is applied to the namespace.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get pods -l app=nginx \
+  -o jsonpath=&#39;{.items[0].spec.containers.*.name}{&#34;\n&#34;}&#39;
+nginx istio-proxy</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can roll out an existing deployment to deploy new pods.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl rollout restart deployment nginx
+deployment.apps/nginx restarted</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Remove the label from the namespace to disable the automatic sidecar injection for new pods.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl label namespace default istio-injection-
+namespace/default labeled</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The dash at the end of the command is used to instruct <code>kubectl</code> to remove the label.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
 </div>
 <hr/>
 <div class="paragraph">
@@ -279,49 +719,34 @@ For egress requests, the sidecar intercepts the traffic, applies routing the rul
 <p><a href="https://istio.io/v1.12/docs/" class="bare">https://istio.io/v1.12/docs/</a></p>
 </li>
 <li>
-<p><a href="https://developers.redhat.com/topics/service-mesh" class="bare">https://developers.redhat.com/topics/service-mesh</a></p>
+<p><a href="https://istio.io/v1.12/docs/setup/platform-setup/" class="bare">https://istio.io/v1.12/docs/setup/platform-setup/</a></p>
 </li>
 <li>
-<p><a href="https://developers.redhat.com/books/introducing-istio-service-mesh-microservices" class="bare">https://developers.redhat.com/books/introducing-istio-service-mesh-microservices</a></p>
-</li>
-<li>
-<p><a href="https://developers.redhat.com/e-books/introducing-istio-service-mesh-microservices/old" class="bare">https://developers.redhat.com/e-books/introducing-istio-service-mesh-microservices/old</a></p>
-</li>
-<li>
-<p><a href="https://www.oreilly.com/library/view/introducing-istio-service/9781492052630/ch01.html" class="bare">https://www.oreilly.com/library/view/introducing-istio-service/9781492052630/ch01.html</a></p>
-</li>
-<li>
-<p><a href="https://developers.redhat.com/courses/service-mesh/istio-introduction/" class="bare">https://developers.redhat.com/courses/service-mesh/istio-introduction/</a></p>
-</li>
-<li>
-<p><a href="https://developers.redhat.com/devnation/deep-dive/istio" class="bare">https://developers.redhat.com/devnation/deep-dive/istio</a></p>
-</li>
-<li>
-<p><a href="https://developers.redhat.com/blog/2018/04/25/book-released-istio-service-mesh-microservices" class="bare">https://developers.redhat.com/blog/2018/04/25/book-released-istio-service-mesh-microservices</a></p>
-</li>
-<li>
-<p><a href="https://istio.io/v1.12/docs/setup/additional-setup/config-profiles/" class="bare">https://istio.io/v1.12/docs/setup/additional-setup/config-profiles/</a></p>
-</li>
-<li>
-<p><a href="https://istio.io/v1.12/docs/setup/additional-setup/sidecar-injection/" class="bare">https://istio.io/v1.12/docs/setup/additional-setup/sidecar-injection/</a></p>
-</li>
-<li>
-<p><a href="https://istio.io/v1.12/docs/setup/install/istioctl/" class="bare">https://istio.io/v1.12/docs/setup/install/istioctl/</a></p>
+<p><a href="https://istio.io/v1.12/docs/setup/install/" class="bare">https://istio.io/v1.12/docs/setup/install/</a></p>
 </li>
 <li>
 <p><a href="https://istio.io/v1.12/docs/reference/commands/istioctl/" class="bare">https://istio.io/v1.12/docs/reference/commands/istioctl/</a></p>
 </li>
 <li>
-<p><a href="https://istio.io/v1.12/docs/reference/config/annotations/" class="bare">https://istio.io/v1.12/docs/reference/config/annotations/</a></p>
-</li>
-<li>
-<p><a href="https://istio.io/v1.12/docs/reference/config/labels/" class="bare">https://istio.io/v1.12/docs/reference/config/labels/</a></p>
-</li>
-<li>
-<p><a href="https://istio.io/v1.12/docs/reference/config/networking/" class="bare">https://istio.io/v1.12/docs/reference/config/networking/</a></p>
+<p><a href="https://istio.io/v1.12/docs/reference/config/" class="bare">https://istio.io/v1.12/docs/reference/config/</a></p>
 </li>
 <li>
 <p><a href="https://istio.io/v1.12/docs/ops/best-practices/deployment/" class="bare">https://istio.io/v1.12/docs/ops/best-practices/deployment/</a></p>
+</li>
+<li>
+<p><a href="https://github.com/istio/istio/tree/1.12.1/samples/addons" class="bare">https://github.com/istio/istio/tree/1.12.1/samples/addons</a></p>
+</li>
+<li>
+<p><a href="https://kubebyexample.com/en/concept/pods" class="bare">https://kubebyexample.com/en/concept/pods</a></p>
+</li>
+<li>
+<p><a href="https://kubebyexample.com/en/learning-paths/operator-framework/kubernetes-api-fundamentals/side-car-pattern" class="bare">https://kubebyexample.com/en/learning-paths/operator-framework/kubernetes-api-fundamentals/side-car-pattern</a></p>
+</li>
+<li>
+<p><a href="https://developers.redhat.com/books/introducing-istio-service-mesh-microservices" class="bare">https://developers.redhat.com/books/introducing-istio-service-mesh-microservices</a></p>
+</li>
+<li>
+<p><a href="https://bit.ly/istio-intro" class="bare">https://bit.ly/istio-intro</a></p>
 </li>
 </ul>
 </div>
@@ -345,6 +770,7 @@ For egress requests, the sidecar intercepts the traffic, applies routing the rul
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 </div>
 </div>
@@ -479,6 +905,8 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
+
+
 
   </body>
 </html>

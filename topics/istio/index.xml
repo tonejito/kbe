@@ -76,9 +76,8 @@
       <guid>https://tonejito.github.io/kbe/topics/istio/istio/</guid>
       <description>🏠
  ⏩
-     Istio Istio is an ingress controller and a service mesh implementation for Kubernetes.
-   https://istio.io/v1.12/docs/
-   What is a sidecar container? Kubernetes defines the pod as the minimum unit that can be created and managed. A pod can execute one or more containers which are executed in a shared context (network, namespaces, and volumes).</description>
+     Istio Istio is an ingress controller and a service mesh implementation for Kubernetes. It abstracts the traffic management logic from the application by using a sidecar container that manages all the incoming and outgoing network traffic for a pod.
+ Before istio, applications had to manage all the advanced network operations, retry logic and resiliency, adding complexity to the main logic.</description>
     </item>
     
     <item>
