@@ -528,7 +528,12 @@ Take note of the lower and upper address bounds.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ kubectl get configmap/config -n metallb-system -o yaml
+kind: ConfigMap
 apiVersion: v1
+metadata:
+  namespace: metallb-system
+  name: config
+  ...output omitted...
 data:
   config: |
     address-pools:
@@ -536,7 +541,6 @@ data:
       protocol: layer2
       addresses:
       - 192.168.59.20-192.168.59.30
-kind: ConfigMap
 ...output omitted...</code></pre>
 </div>
 </div>
