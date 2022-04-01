@@ -263,7 +263,12 @@ The load balancer IP address range for MetalLB must not overlap with the DHCP IP
 [source,bash]
 ----
 [user@host kbe]$ kubectl get configmap/config -n metallb-system -o yaml
+kind: ConfigMap
 apiVersion: v1
+metadata:
+  namespace: metallb-system
+  name: config
+  ...output omitted...
 data:
   config: |
     address-pools:
@@ -271,7 +276,6 @@ data:
       protocol: layer2
       addresses:
       - 192.168.59.20-192.168.59.30
-kind: ConfigMap
 ...output omitted...
 ----
 
