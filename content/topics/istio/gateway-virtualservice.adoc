@@ -681,6 +681,11 @@ References
 * https://istio.io/v1.12/docs/reference/config/networking/gateway/
 * https://istio.io/v1.12/docs/reference/config/networking/virtual-service/
 * https://istio.io/v1.12/docs/reference/config/networking/destination-rule/
+* https://istio.io/v1.12/docs/examples/bookinfo/
+* https://istio.io/v1.12/docs/examples/microservices-istio/add-istio/
+* https://istio.io/v1.12/docs/examples/microservices-istio/enable-istio-all-microservices/
+* https://istio.io/v1.12/docs/examples/microservices-istio/istio-ingress-gateway/
+* https://istio.io/v1.12/docs/setup/additional-setup/gateway/
 
 
 [cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
