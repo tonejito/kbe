@@ -1,0 +1,247 @@
+---
+description: Istio Traffic Management
+draft: true
+---
+
+ifndef::backend-docbook5,backend-docbook45[:imagesdir: ../../..]
+
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
+|===
+| link:../ingress[⏪]
+| link:../../../[🏠]
+| link:../gateway-virtualservice[⏩]
+|===
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+== Istio Traffic Management
+
+Istio implements support for the standard Kubernetes ingress resource, but the functionality is limited.
+The full traffic management features of Istio can be configured with the following CRDs.
+
+[compact]
+* Gateway
+* Virtual service
+* Destination rule
+
+=== Gateway
+
+The gateway resource specifies what happens when the traffic is entering or leaving the cluster.
+This resource has a set of hostnames to match against incoming traffic and a list of network ports that are exposed to network traffic.
+
+The gateway resource has the following fields on the YAML manifest.
+
+`selector`::
+The selector specifies the Istio ingress gateway to use for this resource.
+The gateway configuration will be applied to the envoy proxy running on a pod with the specified label.
++
+[NOTE]
+====
+The default ingress gateway has the `istio=ingressgateway` label applied.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get pods -l 'istio=ingressgateway' -n istio-system
+NAME                                    READY   STATUS    RESTARTS     AGE
+istio-ingressgateway-78f69bd5db-s5pjz   1/1     Running   1 (1d ago)   4d
+----
+====
+
+`servers`::
+The servers section is a list of host and ports that will be matched against incoming HTTP traffic.
+The host can be set to a specific DNS name, wildcards such as `\*.example.com` are supported, and it can be defined as `'*'` to match all hostnames.
++
+[NOTE]
+====
+There are other configurations for TLS and SNI that can be applied to this resource, but they are outside the scope of this section.
+====
+
+The following is an example of an gateway resource manifest.
+
+[source,yaml]
+----
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: bookinfo-gateway
+spec:
+  selector:
+    istio: ingressgateway  # <1>
+  servers:
+  - hosts:
+    - "bookinfo.192.168.59.20.nip.io"  # <2>
+    port:  # <3>
+      name: http
+      number: 80
+      protocol: HTTP
+----
+<1> Use the Istio default ingress gateway.
+<2> DNS host name where the gateway will serve traffic.
+<3> Port number where the proxy will listen for incoming connections.
+
+=== Virtual Service
+
+The virtual service resource defines a set of rules to match the HTTP traffic and the backend service name and port number to forward the traffic if the request match.
+
+The virtual service resource has the following fields on the YAML manifest.
+
+`gateways`::
+Specifies the Istio gateway that will handle the incoming traffic.
+
+`hosts`::
+List of host names to match the HTTP traffic.
+The host can be set to a specific DNS name, wildcards such as `\*.example.com` are supported, and it can be defined as `'*'` to match all hostnames.
+
+`http`::
+List of rules to match against incoming HTTP traffic.
+
+`match`::
+Specifies the URI to perform a case-sensitive match for either the `exact` path, treat the path as a `prefix`, or provide a `regex` for matching.
+
+`route`::
+Specifies the backend service host and port number that will process the request.
+Each route can have a weight to configure which percentage of the traffic should be forwarded to a given destination.
+
+The following is an example of an virtual service resource manifest.
+
+[source,yaml]
+----
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: bookinfo
+spec:
+  gateways:
+  - bookinfo-gateway  # <1>
+  hosts:
+  - "bookinfo.192.168.59.20.nip.io"  # <2>
+  http:  # <3>
+  - match:  # <4>
+    - uri:
+        exact: /productpage
+    - uri:
+        prefix: /static
+    - uri:
+        exact: /login
+    - uri:
+        exact: /logout
+    - uri:
+        prefix: /api/v1/products
+    route:  # <5>
+    - destination:
+        host: productpage
+        port:
+          number: 9080
+----
+<1> Apply the virtual service rules to the specified gateway in the current namespace.
+<2> DNS host name where the gateway will serve traffic.
+<3> List of routing rules for the HTTP traffic.
+<4> List of rules to match against incoming requests.
+<5> The matching requests will be forwarded to this service and port number.
+
+The virtual service resource can also work with link:#_destination_rule[destination rules] to specify different subsets or service versions, and route part of the traffic to them.
+
+[source,yaml]
+----
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: reviews
+spec:
+  hosts:
+  - reviews
+  http:
+  - route:
+    - weight: 10  # <1>
+      destination:
+        host: reviews
+        subset: v1
+    - weight: 30  # <2>
+      destination:
+        host: reviews
+        subset: v2
+    - weight: 60  # <3>
+      destination:
+        host: reviews
+        subset: v3
+----
+<1> 10% of the traffic will be redirected to `reviews` subset `v1`.
+<2> 30% of the traffic will be redirected to `reviews` subset `v2`.
+<3> 60% of the traffic will be redirected to `reviews` subset `v3`.
+
+[NOTE]
+====
+The total sum of the route weights should be 100, otherwise the admission hook will raise a validation error when creating or patching the resource.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl edit virtualservice/reviews -n bookinfo
+error: virtualservices.networking.istio.io "reviews" could not be patched:
+admission webhook "validation.istio.io" denied the request:
+configuration is invalid: total destination weight 90 != 100
+----
+====
+
+=== Destination Rule
+
+This resource defines configurations that take place after the routing has been performed, and you can specify a subset of the service pods by matching a set of labels to differentiate service versions.
+
+The destination rule resource has the following fields on the YAML manifest.
+
+`host`::
+The name of the backend service on the Kubernetes cluster.
+
+`subsets`::
+Defines the service subset, this can be used to distribute traffic between different versions of the service.
+
+`labels`::
+The labels to match the destination pod.
+
+The following resource definition specifies that there are three versions of the service and that different percentages of the traffic will be routed to each one.
+
+[source,yaml]
+----
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: reviews
+spec:
+  host: reviews
+  subsets:
+  - name: v1  # <1>
+    labels:
+      version: v1
+  - name: v2  # <2>
+    labels:
+      version: v2
+  - name: v3  # <3>
+    labels:
+      version: v3
+----
+<1> The subset `v1` references pods with label `version: v1`.
+<2> The subset `v2` references pods with label `version: v2`.
+<3> The subset `v3` references pods with label `version: v3`.
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+References
+
+* https://istio.io/v1.12/docs/concepts/traffic-management/
+* https://istio.io/v1.12/docs/tasks/traffic-management/ingress/ingress-control/
+* https://istio.io/v1.12/docs/reference/config/networking/gateway/
+* https://istio.io/v1.12/docs/reference/config/networking/virtual-service/
+* https://istio.io/v1.12/docs/reference/config/networking/destination-rule/
+* https://istio.io/v1.12/docs/ops/best-practices/traffic-management/
+* https://istio.io/v1.12/docs/ops/common-problems/network-issues
+* https://istio.io/v1.12/docs/examples/microservices-istio/bookinfo-kubernetes/
+
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
+|===
+| link:../ingress[⏪]
+| link:../../../[🏠]
+| link:../gateway-virtualservice[⏩]
+|===
