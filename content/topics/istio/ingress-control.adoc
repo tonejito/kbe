@@ -27,6 +27,8 @@ That content is covered in the link:../traffic-management[traffic management] se
 === Ingress
 
 The Kubernetes ingress resource has a set of rules to match the incoming HTTP traffic to route the request to a backend service.
+// TechEditor: [standards] ⁠back end, back-end n. Two words. Refers to software that performs the final stages of a process, or to tasks that are not visible to the user. For example, "each back end provides a set of calls." adj. Hyphenate. For example, "when the back-end database processes a search operation …" Do not use "backend."
+// Please check for all other instances throughout all sections, I wont comment out again.
 Each rule matches a DNS name and a set of paths to forward the traffic to a backend service.
 
 The ingress resource has the following fields on the YAML manifest.
@@ -49,6 +51,7 @@ List of URL paths that will be matched against HTTP requests.
 Specifies the service that will receive the traffic.
 
 The following is an example of an ingress resource manifest.
+// TechEditor: [style] When introducing a list or a procedure, use "following" with a noun. Complete the following (Complete the following steps) (The following command/code block is)
 
 [source,yaml]
 ----

@@ -26,7 +26,7 @@ You should be able to:
 
 To perform this exercise, ensure that you have:
 
-* The `minikube`, and `kubectl` executables version 1.24 or higher on a directory listed in `PATH`.
+* The `minikube`, and `kubectl` executables version 1.24 or later on a directory listed in `PATH`.
 * MetalLB installed in the cluster.
 You can consult the link:../../metallb/install[installation guided exercise].
 * Istio installed in the cluster.
@@ -34,7 +34,7 @@ You can consult the link:../../istio/install[installation guided exercise].
 
 [NOTE]
 ====
-The minikube Istio add-on is outdated and can't be installed in recent versions of Kubernetes.
+The minikube Istio add-on is outdated and cannot be installed in recent versions of Kubernetes.
 ====
 
 Procedure instructions
@@ -82,7 +82,7 @@ data:
 
 [WARNING]
 ====
-If the IP address range for MetalLB is empty, review the troubleshooting section in the link:../../metallb/metallb[MetalLB lecture].
+If the IP address range for MetalLB is empty, then review the troubleshooting section in the link:../../metallb/metallb[MetalLB lecture].
 ====
 
 1.4) Verify that the deployments in the `istio-system` namespace are running.
@@ -243,7 +243,7 @@ If MetalLB is not deployed, then the service internal IP address and node port n
 
 [NOTE]
 ====
-You can export the IP address using a single command.
+You can export the IP address by using a single command.
 
 [source,bash]
 ----
@@ -275,7 +275,7 @@ The service ports match the standard port numbers because MetalLB provided an IP
 
 [NOTE]
 ====
-You can export the port numbers using a single command.
+You can export the port numbers by using a single command.
 
 [source,bash]
 ----
@@ -295,6 +295,7 @@ You can export the port numbers using a single command.
 
 4.1) Enable the sidecar injection for the `kubernetes-dashboard` namespace.
 This allows Istio to add an `istio-proxy` container on each pod to control ingress and egress traffic.
+// TechEditor: [standards] Avoid stating that a product or feature allows the user to do something. Focus instead on what the user does. See https://stylepedia.net/style/5.0/#Avoiding_Slang_Metaphors-MisleadingLanguage-Anthropomorphism
 
 [source,bash]
 ----
@@ -382,7 +383,7 @@ NAME                   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
 kubernetes-dashboard   ClusterIP   10.98.184.102   <none>        80/TCP    20h
 ----
 
-5.3) Create a file named `dashboard-ingress.yaml` with the following content.
+5.3) Create a file called `dashboard-ingress.yaml` with the following content.
 
 * Replace the `192.168.59.20` string with your value for `INGRESS_HOST`.
 
@@ -498,7 +499,7 @@ You should deploy any Kubernetes dashboard instance that is exposed to the netwo
 
 
 
-6) Cleanup.
+6) Clean up.
 
 6.1) Delete the Kubernetes dashboard ingress resource.
 

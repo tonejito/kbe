@@ -28,14 +28,14 @@ You should be able to:
 
 To perform this exercise, ensure that you have:
 
-* The `kubectl`, and `minikube` executables version 1.24 or higher on a directory listed in `${PATH}`.
+* The `kubectl`, and `minikube` executables version 1.24 or later on a directory listed in `${PATH}`.
 * MetalLB installed in the cluster.
 You can consult the link:../../metallb/install[installation guided exercise].
 
 [NOTE]
 ====
 Minikube provides Istio as an add-on.
-However, the version is outdated and can't be installed in recent versions of Kubernetes.
+However, the version is outdated and cannot be installed in recent versions of Kubernetes.
 
 ////
 [source,bash]
@@ -105,7 +105,7 @@ data:
 
 [WARNING]
 ====
-If the IP address range for MetalLB is empty, review the troubleshooting section in the link:../../metallb/metallb[MetalLB lecture].
+If the IP address range for MetalLB is empty then review the troubleshooting section in the link:../../metallb/metallb[MetalLB lecture].
 ====
 
 
@@ -129,7 +129,7 @@ You can also clone the Istio source repository and checkout the appropriate tag.
 ====
 
 2.2) Extract the Istio release archive.
-Delete the archive after extracting because it is not needed anymore.
+Delete the archive after extracting because it is not needed any more.
 
 [source,bash]
 ----
@@ -163,7 +163,9 @@ export PATH="${PATH}:${HOME}/bin"
 The argument to the `echo` command is enclosed in single quotes to prevent shell expansion of the variables.
 ====
 
-2.5) Verify that the shell is able to find the `istioctl` executable, and check the version of the tool.
+2.5) Verify that the shell can find the `istioctl` executable, and check the version of the tool.
+// TechEditor: [standards] Prefer the most concise language, "can" rather than "is able to"  - - FIXED
+// TechEditor: [terminology] Avoid the use of "check." Use a verb that describes exactly what you mean, e.g., review, verify, inspect, validate, determine...
 
 [source,bash]
 ----
@@ -233,7 +235,8 @@ When istio is installed using `helm`, two namespaces are created: `istio-system`
 
 3.1) Get the services in the `istio-system` namespace.
 The external IP address is provided by MetalLB since the ingress gateway service type is LoadBalancer.
-This closely match what you might get when deploying on a cloud environment.
+// TechEditor: [standards] s/since/because/ in RH tech pubs. Only use "since" in a temporal sense.
+This closely matches what you might get when deploying on a cloud environment.
 
 [source,bash]
 ----
@@ -246,7 +249,7 @@ istiod                 ClusterIP      10.103.227.204   <none>          15010/TCP
 
 [NOTE]
 ====
-If Istio was installed using `helm`, then the ingress and egress resources are in the `istio-ingress` namespace.
+If Istio was installed by using `helm`, then the ingress and egress resources are in the `istio-ingress` namespace.
 ====
 
 3.2) Get the Istio ingress IP address.
@@ -263,7 +266,7 @@ If Istio was installed using `helm`, then the ingress and egress resources are i
 
 [NOTE]
 ====
-You can export the IP address using a single command.
+You can export the IP address by using a single command.
 
 [source,bash]
 ----
@@ -295,7 +298,7 @@ The service ports match the standard port numbers because MetalLB provided an IP
 
 [NOTE]
 ====
-You can export the port numbers using a single command.
+You can export the port numbers by using a single command.
 
 [source,bash]
 ----
@@ -366,6 +369,7 @@ You might need to repeat the command until the desired condition is reached.
 
 5.1) Enable the sidecar injection for the `default` namespace.
 This allows Istio to add an `istio-proxy` container on each pod to control ingress and egress traffic.
+// TechEditor: [style] Anthropomorphism: Avoid stating that a product asks or allows the user to do something. See https://stylepedia.net/style/5.0/#Avoiding_Slang_Metaphors-MisleadingLanguage-Anthropomorphism
 
 [source,bash]
 ----
@@ -388,7 +392,7 @@ deployment.apps/helloworld-v2 created
 
 [NOTE]
 ====
-You can use the resource manifest from GitHub if you don't have the Istio release archive files.
+You can use the resource manifest from GitHub if you do not have the Istio release archive files.
 
 [source,bash]
 ----
@@ -399,8 +403,8 @@ You can use the resource manifest from GitHub if you don't have the Istio releas
 ...output omitted...
 ----
 ====
-
 5.3) Check that the deployment and pod are ready.
+// TechEditor: [terminology] Avoid the use of "check." Use a verb that describes exactly what you mean, e.g., review, verify, inspect, validate, determine...
 
 [source,bash]
 ----
@@ -443,7 +447,7 @@ virtualservice.networking.istio.io/helloworld created
 ====
 The parameters of the gateway and virtual service resources will be covered in the link:../../traffic-management[traffic management] section.
 
-You can use the resource manifest from GitHub if you don't have the Istio release archive files.
+You can use the resource manifest from GitHub if you do not have the Istio release archive files.
 
 [source,bash]
 ----
@@ -517,7 +521,9 @@ Hello version: v1, instance: helloworld-v1-776f57d5f6-mfkf7
   istio-${ISTIO_VERSION}/samples/helloworld/loadgen.sh
 
 while true; do curl -s -o /dev/null "http://$GATEWAY_URL/hello"; done
-----
+// TechEditor: [proofread] the dashes below are throwing everything off here, not sure how it is rendering because I cannot see the rendered content.
+// I am going to remove them for now so I can keep adding in inline comments, please check this out.
+
 
 6.3) Generate traffic for the example application.
 
@@ -589,7 +595,7 @@ Hover on any data point to view the duration of the processing.
 |===
 
 7.8) Click on the **Logs** tab to display the logs for the pod containers.
-You can select the checkboxes to filter the logs for the `helloworld` application container or the `istio-proxy` container.
+You can select the check boxes to filter the logs for the `helloworld` application container or the `istio-proxy` container.
 
 [options="header", cols="^1a"]
 |===
@@ -622,7 +628,7 @@ There are complex applications that route different paths to different services.
 
 
 
-8) Cleanup
+8) Clean up
 
 8.1) Close the browser window where the Istio Kiali dashboard is displayed.
 

@@ -37,8 +37,9 @@ The LoadBalancer service uses the cloud controller manager to request a managed 
 +
 [NOTE]
 ====
-Bare metal and local clusters such as minikube don't have this functionality and load balancer services will always get a `<pending>` value for the external IP address.
+Bare metal and local clusters such as minikube do not have this functionality and load balancer services always get a `<pending>` value for the external IP address.
 ====
+// TechEditor: [standards] We do not use contractions and avoid the term "will" wherever possible - - FIXED
 
 === MetalLB Features
 
@@ -57,9 +58,9 @@ This method operates in the network layer of the OSI model (layer 3).
 The administrator has to provide the following items to configure MetalLB with BGP:
 +
 [compact]
-* IP address of the router
-* The AS (Autonomous System) number of the router
-* A private AS number to be used by MetalLB
+* The IP address of the router.
+* The AS (Autonomous System) number of the router.
+* A private AS number to be used by MetalLB.
 * The IP address range CIDR prefix to be used by MetalLB.
 +
 +
@@ -80,16 +81,18 @@ speaker::
 Manages the advertisement of the IP address associated with them.
 The speaker daemon set will run a pod on every node
 +
-When configured in layer 2 mode, the speaker application will send Gratuitous ARP messages for IPv4 addresses and Unsolicited Neighbor Advertisement for IPv6.
+When configured in layer 2 mode, the speaker application will send Gratuitous ARP messages for IPv4 addresses and Unsolicited Neighbour Advertisement for IPv6.
 If the configuration is in layer 3, then speaker will send BGP advertisements.
+// TechEditor: [standards] Avoid future tense (or using the term "will") whenever possible.
 
 === MetalLB installation options
 
-There are various methods to install MetalLB in a Kubernetes cluster
+There are various methods to install MetalLB in a Kubernetes cluster:
 
 * Apply the YAML manifests from the https://github.com/metallb/metallb/tree/v0.12.1/manifests[MetalLB repository].
 
-* Install with `kustomize` and referencing the https://github.com/metallb/metallb/raw/v0.12.1/manifests/kustomization.yaml[`kustomization.yaml` file in the source repository].
+* Install with `kustomize` and reference the https://github.com/metallb/metallb/raw/v0.12.1/manifests/kustomization.yaml[`kustomization.yaml` file in the source repository]
+// TechEditor: [misc] Should this be in brackets or is this a mistake? file in the source repository]
 
 * Add the https://metallb.github.io/metallb[chart repository] and deploy the `metallb/metallb` chart with `helm`.
 
@@ -101,6 +104,7 @@ There are various methods to install MetalLB in a Kubernetes cluster
 
 Minikube clusters have the option to install MetalLB as an add-on.
 To install MetalLB on minikube, check if the add-on is listed.
+// TechEditor: [terminology] Avoid the use of "check." Use a verb that describes exactly what you mean, e.g., review, verify, inspect, validate, determine...
 
 [source,bash]
 ----
@@ -126,6 +130,7 @@ Enable the MetalLB add-on to install the tool.
 ----
 
 Configure the add-on with the range of IP addresses that MetalLB will use for the load balancer services.
+// TechEditor: [standards] Avoid future tense (or using the term "will") whenever possible. For example, future tense ("The screen will display...") does not read as well as the present tense ("The screen displays...").
 
 [source,bash]
 ----
@@ -219,7 +224,8 @@ curl: (7) Failed to connect to 192.168.59.20 port 80: Connection refused
 ----
 ////
 
-You can verify if the TCP connection to the service can be established using `netcat`.
+You can verify if the TCP connection to the service can be established by using `netcat`.
+// TechEditor: [standards] Using - IBM Style Guide: To avoid ambiguity, replace this gerund with either "by using" or "that uses." To refer to something "using" one thing or another is often ambiguous. - - FIXED
 
 [source,bash]
 ----
@@ -262,7 +268,8 @@ configmap/config edited
 You can also extract the resource as YAML, edit the file and apply the resource again to commit the changes.
 ====
 
-After the IP address range is configured, the components need to be rolled out to apply the changes.
+After the IP address range is configured, the components must be rolled out to apply the changes.
+// TechEditor: [standards] prefer "must" over "need to" - - FIXED
 
 [source,bash]
 ----

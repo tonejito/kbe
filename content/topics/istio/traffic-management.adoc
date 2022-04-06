@@ -48,7 +48,7 @@ istio-ingressgateway-78f69bd5db-s5pjz   1/1     Running   1 (1d ago)   4d
 ====
 
 `servers`::
-The servers section is a list of host and ports that will be matched against incoming HTTP traffic.
+The servers section is a list of host and ports that are matched against incoming HTTP traffic.
 The host can be set to a specific DNS name, wildcards such as `\*.example.com` are supported, and it can be defined as `'*'` to match all hostnames.
 +
 [NOTE]
@@ -83,11 +83,13 @@ spec:
 === Virtual Service
 
 The virtual service resource defines a set of rules to match the HTTP traffic and the backend service name and port number to forward the traffic if the request match.
+// TechEditor: [style] Can we reword this a little, it is a bit confusing to read. Perhaps breakdown the sentence?
+// Suggest: The virtual service resource defines a set of rules. These rules match the HTTP traffic and the backend service name and port number, they forward the traffic if the requests match.
 
 The virtual service resource has the following fields on the YAML manifest.
 
 `gateways`::
-Specifies the Istio gateway that will handle the incoming traffic.
+Specifies the Istio gateway that handles the incoming traffic.
 
 `hosts`::
 List of host names to match the HTTP traffic.
@@ -103,7 +105,8 @@ Specifies the URI to perform a case-sensitive match for either the `exact` path,
 Specifies the backend service host and port number that will process the request.
 Each route can have a weight to configure which percentage of the traffic should be forwarded to a given destination.
 
-The following is an example of an virtual service resource manifest.
+The following is an example of a virtual service resource manifest.
+// TechEditor: [style] When introducing a list or a procedure, use "following" with a noun. Complete the following (Complete the following steps) (The following command/code block is)
 
 [source,yaml]
 ----
@@ -139,7 +142,7 @@ spec:
 <2> DNS host name where the gateway will serve traffic.
 <3> List of routing rules for the HTTP traffic.
 <4> List of rules to match against incoming requests.
-<5> The matching requests will be forwarded to this service and port number.
+<5> The matching requests are forwarded to this service and port number.
 
 The virtual service resource can also work with link:#_destination_rule[destination rules] to specify different subsets or service versions, and route part of the traffic to them.
 

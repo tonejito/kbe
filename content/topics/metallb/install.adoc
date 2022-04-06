@@ -29,8 +29,8 @@ You should be able to:
 
 To perform this exercise, ensure that you have:
 
-* The `kubectl`, and `minikube` executables version 1.22 or higher on a directory listed in `${PATH}`.
-* VirtualBox version 6.1 or higher.
+* The `kubectl`, and `minikube` executables version 1.22 or later on a directory listed in `${PATH}`.
+* VirtualBox version 6.1 or later.
 * The current user is in the `vboxusers` system group.
 
 MetalLB is distributed as a `minikube` add-on.
@@ -192,6 +192,7 @@ Take note of the lower and upper address bounds.
 3) Enable the MetalLB minikube add-on.
 
 3.1) Check if `metallb` is listed on the available add-ons for minikube.
+// TechEditor: [terminology] Avoid the use of "check." Use a verb that describes exactly what you mean, e.g., review, verify, inspect, validate, determine...
 
 [source,bash]
 ----
@@ -332,6 +333,7 @@ If the external IP address shows a `<pending>` value, then you have a problem wi
 5) Access the example application.
 
 5.1) Check that the service responds with `curl`.
+// TechEditor: [terminology] Avoid the use of "check." Use a verb that describes exactly what you mean, e.g., review, verify, inspect, validate, determine...
 
 [source,bash]
 ----
@@ -390,7 +392,7 @@ NAME                              DESIRED   CURRENT   READY   AGE
 replicaset.apps/nginx-f66b485df   1         1         1       2m10s
 ----
 
-6) Cleanup
+6) Clean up
 
 6.1) Remove the resources created.
 

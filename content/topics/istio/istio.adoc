@@ -16,11 +16,11 @@ ifndef::backend-docbook5,backend-docbook45[:imagesdir: ../../..]
 == Istio
 
 Istio is an ingress controller and a service mesh implementation for Kubernetes.
-It abstracts the traffic management logic from the application by using a sidecar container that manages all the incoming and outgoing network traffic for a pod.
+It abstracts the traffic management logic from the application by using a side car container that manages all the incoming and outgoing network traffic for a pod.
 
 // === What is Istio?
 
-Before istio, applications had to manage all the advanced network operations, retry logic and resiliency, adding complexity to the main logic.
+Before Istio, applications managed all the advanced network operations, retry logic and resiliency, which added complexity to the main logic.
 
 [options="header", cols="^1a"]
 |===
@@ -28,7 +28,8 @@ Before istio, applications had to manage all the advanced network operations, re
 | image::img/istio/istio-pod-container.png[width="100%",align="center",alt="Before Istio"]
 |===
 
-Istio injects a sidecar container that intercepts the ingress and egress traffic, controlling the communication between the application, the clients and the Kubernetes services.
+Istio injects a side car container that intercepts the ingress and egress traffic, controlling the communication between the application, the clients and the Kubernetes services.
+// TechEditor: [misc] Not sure about sidecar or side car. Spell check suggests separating them, which I have been doing. It seems like it may be a standard term as "sidecar"? Can you confirm? I wont correct anymore just incase
 
 [options="header", cols="^1a"]
 |===
@@ -118,7 +119,7 @@ There are various methods to install MetalLB in a Kubernetes cluster.
 [NOTE]
 ====
 Minikube provides Istio as an add-on.
-However, the version is outdated and can't be installed in recent versions of Kubernetes.
+However, the version is outdated and cannot be installed in recent versions of Kubernetes.
 
 ////
 [source,bash]
@@ -151,10 +152,10 @@ Enables features to demonstrate tracing and the example applications.
 It requires many resources.
 
 Minimal::
-Only install the control plane components to manage an external cluster.
+Only installs the control plane components to manage an external cluster.
 
 External::
-Install the components on a cluster that will be managed with an external control plane.
+Installs the components on a cluster that will be managed with an external control plane.
 
 Empty::
 It is an empty profile with all features disabled, it can be used to create custom configurations.
@@ -184,7 +185,7 @@ Istio requires at least 4 vCPUs and 8 GB of RAM to run correctly in minikube.
 
 [NOTE]
 ====
-The Istio minikube add-on is outdated and can't be installed in recent versions of Kubernetes.
+The Istio minikube add-on is outdated and cannot be installed in recent versions of Kubernetes.
 ====
 
 Download the Istio release archive from GitHub, and install the `istioctl` tool.
@@ -197,7 +198,7 @@ Then verify if the cluster meets the installation requirements.
   To get started, check out https://istio.io/latest/docs/setup/getting-started/
 ----
 
-Install Istio in the Kubernetes cluster using the appropriate profile for your deployment.
+Install Istio in the Kubernetes cluster by using the appropriate profile for your deployment.
 
 [source,bash]
 ----
@@ -286,7 +287,7 @@ This closely matches what you might get when deploying on a cloud environment.
 
 The `istio-proxy` sidecar container can be manually injected in different ways.
 The YAML resource manifest can be modified with `istioctl` to add the `istio-proxy` container to the pod definition.
-You can create the resource using the modified YAML manifest.
+You can create the resource by using the modified YAML manifest.
 
 [source,bash]
 ----
@@ -368,14 +369,14 @@ References
 * https://bit.ly/istio-intro
 
 ////
-* https://dn.dev/containers-tutorial 
-* https://dn.dev/kube-tutorial 
-* https://dn.dev/openshift-tutorial 
+* https://dn.dev/containers-tutorial
+* https://dn.dev/kube-tutorial
+* https://dn.dev/openshift-tutorial
 * https://dn.dev/istio-tutorial (our focus today)
-* https://dn.dev/knative-tutorial 
-* https://dn.dev/quarkus-tutorial 
-* https://dn.dev/kafka-tutorial 
-* https://dn.dev/tekton-tutorial 
+* https://dn.dev/knative-tutorial
+* https://dn.dev/quarkus-tutorial
+* https://dn.dev/kafka-tutorial
+* https://dn.dev/tekton-tutorial
 * https://dn.dev/argo-tutorial
 * https://dn.dev/helm-tutorial
 * https://bit.ly/kubernetes-tutorial
