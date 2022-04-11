@@ -33,7 +33,7 @@ The gateway resource has the following fields on the YAML manifest.
 
 `selector`::
 The selector specifies the Istio ingress gateway to use for this resource.
-The gateway configuration will be applied to the envoy proxy running on a pod with the specified label.
+The gateway configuration is applied to the envoy proxy running on a pod with the specified label.
 +
 [NOTE]
 ====
@@ -77,14 +77,16 @@ spec:
       protocol: HTTP
 ----
 <1> Use the Istio default ingress gateway.
-<2> DNS host name where the gateway will serve traffic.
-<3> Port number where the proxy will listen for incoming connections.
+<2> DNS host name where the ingress serves traffic.
+<3> Port number where the proxy listen for incoming connections.
 
 === Virtual Service
 
-The virtual service resource defines a set of rules to match the HTTP traffic and the backend service name and port number to forward the traffic if the request match.
+The virtual service resource defines a set of rules.
+These rules match the HTTP traffic and the backend service name and port number, they forward the traffic if the requests match.
 // TechEditor: [style] Can we reword this a little, it is a bit confusing to read. Perhaps breakdown the sentence?
 // Suggest: The virtual service resource defines a set of rules. These rules match the HTTP traffic and the backend service name and port number, they forward the traffic if the requests match.
+// CD: Fixed, thanks for the suggestion.
 
 The virtual service resource has the following fields on the YAML manifest.
 
@@ -102,11 +104,12 @@ List of rules to match against incoming HTTP traffic.
 Specifies the URI to perform a case-sensitive match for either the `exact` path, treat the path as a `prefix`, or provide a `regex` for matching.
 
 `route`::
-Specifies the backend service host and port number that will process the request.
+Specifies the back-end service host and port number that process the request.
 Each route can have a weight to configure which percentage of the traffic should be forwarded to a given destination.
 
-The following is an example of a virtual service resource manifest.
+The following code listing is an example of a virtual service resource manifest.
 // TechEditor: [style] When introducing a list or a procedure, use "following" with a noun. Complete the following (Complete the following steps) (The following command/code block is)
+// CD: Fixed
 
 [source,yaml]
 ----
@@ -139,7 +142,7 @@ spec:
           number: 9080
 ----
 <1> Apply the virtual service rules to the specified gateway in the current namespace.
-<2> DNS host name where the gateway will serve traffic.
+<2> DNS host name where the ingress serves traffic.
 <3> List of routing rules for the HTTP traffic.
 <4> List of rules to match against incoming requests.
 <5> The matching requests are forwarded to this service and port number.
@@ -171,13 +174,13 @@ spec:
         host: reviews
         subset: v3
 ----
-<1> 10% of the traffic will be redirected to `reviews` subset `v1`.
-<2> 30% of the traffic will be redirected to `reviews` subset `v2`.
-<3> 60% of the traffic will be redirected to `reviews` subset `v3`.
+<1> 10% of the traffic is redirected to `reviews` subset `v1`.
+<2> 30% of the traffic is redirected to `reviews` subset `v2`.
+<3> 60% of the traffic is redirected to `reviews` subset `v3`.
 
 [NOTE]
 ====
-The total sum of the route weights should be 100, otherwise the admission hook will raise a validation error when creating or patching the resource.
+The total sum of the route weights should be 100, otherwise the admission hook has a validation error when creating or patching the resource.
 
 [source,bash]
 ----
@@ -195,7 +198,7 @@ This resource defines configurations that take place after the routing has been 
 The destination rule resource has the following fields on the YAML manifest.
 
 `host`::
-The name of the backend service on the Kubernetes cluster.
+The name of the back-end service on the Kubernetes cluster.
 
 `subsets`::
 Defines the service subset, this can be used to distribute traffic between different versions of the service.
@@ -203,7 +206,7 @@ Defines the service subset, this can be used to distribute traffic between diffe
 `labels`::
 The labels to match the destination pod.
 
-The following resource definition specifies that there are three versions of the service and that different percentages of the traffic will be routed to each one.
+The following resource definition specifies that there are three versions of the service and that different percentages of the traffic are routed to each one.
 
 [source,yaml]
 ----
