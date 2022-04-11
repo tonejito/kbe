@@ -91,7 +91,7 @@ You might need to repeat the command until the desired condition is reached.
 
 2) Get the IP address range for the DHCP server.
 
-2.1) Check the driver on which the minikube VM is created.
+2.1) List the driver on which the minikube VM is created.
 This guided exercise assumes that the VM driver is provided by VirtualBox.
 
 [source,bash]
@@ -106,11 +106,13 @@ This guided exercise assumes that the VM driver is provided by VirtualBox.
 
 [WARNING]
 ====
-The instructions on this step will be different if another VM driver is used.
+The instructions on this step are different if another VM driver is used.
+// TechEditor: [standards] Avoid future tense (or using the term "will") whenever possible.
+// CD: Fixed future tense ("will") use
 ====
 
 ////
-2.2) Check the VirtualBox host-only network that the minikube VM is connected to.
+2.2) List the VirtualBox host-only network that the minikube VM is connected to.
 
 [source,bash]
 ----
@@ -131,7 +133,7 @@ nic2="hostonly"
 | image::img/metallb/metallb-001-virtualbox-minikube.png[width="100%",align="center",alt="VirtualBox console"]
 |===
 
-2.3) Scroll down on the right panel, and check the configuration parameters of the second network adapter to see on which host-only adapter the VM is connected to.
+2.3) Scroll down on the right panel, and verify the configuration parameters of the second network adapter to see on which host-only adapter the VM is connected to.
 Take note of the host-only `vboxnet` adapter that the VM is connected to.
 
 [options="header", cols="^1a"]
@@ -141,7 +143,7 @@ Take note of the host-only `vboxnet` adapter that the VM is connected to.
 |===
 
 ////
-2.5) Check the available IP ranges for the VirtualBox host-only network.
+2.5) Verify the available IP range for the VirtualBox host-only network.
 
 [source,bash]
 ----
@@ -191,7 +193,7 @@ Take note of the lower and upper address bounds.
 
 3) Enable the MetalLB minikube add-on.
 
-3.1) Check if `metallb` is listed on the available add-ons for minikube.
+3.1) Verify that `metallb` is listed on the available add-ons for minikube.
 // TechEditor: [terminology] Avoid the use of "check." Use a verb that describes exactly what you mean, e.g., review, verify, inspect, validate, determine...
 
 [source,bash]
@@ -293,7 +295,7 @@ data:
 deployment.apps/nginx created
 ----
 
-4.2) Check that the deployment and pod are ready.
+4.2) Verify that the deployment and pod are ready.
 
 [source,bash]
 ----
@@ -332,7 +334,7 @@ If the external IP address shows a `<pending>` value, then you have a problem wi
 
 5) Access the example application.
 
-5.1) Check that the service responds with `curl`.
+5.1) Verify that the service responds with `curl`.
 // TechEditor: [terminology] Avoid the use of "check." Use a verb that describes exactly what you mean, e.g., review, verify, inspect, validate, determine...
 
 [source,bash]
