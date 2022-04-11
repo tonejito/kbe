@@ -15,9 +15,12 @@ ifndef::backend-docbook5,backend-docbook45[:imagesdir: ../../..]
 
 == Guided Exercise: Configuring Istio Traffic Management
 
-In this exercise, you will configure the amount of traffic that is routed to the backend services using virtual services and destination rules.
+In this exercise, you will configure the amount of traffic that is routed to the back-end services by using virtual services and destination rules.
 // TechEditor: [standards] back end n. Two words. Refers to software that performs the final stages of a process, or to tasks that are not visible to the user. For example, "each back end provides a set of calls." adj. Hyphenate. For example, "when the back-end database processes a search operation …" Do not use "backend."
+// CD: Fixed
 // TechEditor: [standards] Using - IBM Style Guide: To avoid ambiguity, replace this gerund with either "by using" or "that uses." To refer to something "using" one thing or another is often ambiguous.
+// CD: Fixed
+
 Outcomes
 
 You should be able to:
@@ -27,9 +30,10 @@ You should be able to:
 
 To perform this exercise, ensure that you have:
 
-* The `kubectl`, and `minikube` executables version 1.24 or higher on a directory listed in `${PATH}`.
-* The `istioctl` executable version 1.12.1 or higher on a directory listed in `${PATH}`.
+* The `kubectl`, and `minikube` executables version 1.24 or later on a directory listed in `${PATH}`.
+* The `istioctl` executable version 1.12.1 or later on a directory listed in `${PATH}`.
 // TechEditor: [standards] When referring to product versions and so on, use "earlier" or "later." - Not higher
+// CD: Fixed
 * MetalLB installed in the cluster.
 You can consult the link:../../metallb/install[installation guided exercise].
 * Istio installed in the cluster.
@@ -193,9 +197,9 @@ CURRENT   NAME       CLUSTER    AUTHINFO   NAMESPACE
 *         minikube   minikube   minikube   bookinfo
 ----
 
-3.2) Enable the side car injection on the namespace.
-This allows Istio to add an `istio-proxy` container on each pod to control ingress and egress traffic.
+3.2) Enable the sidecar injection for the `bookinfo` namespace to add an `istio-proxy` container on each pod to control ingress and egress traffic.
 // TechEditor: [standards] Avoid stating that a product or feature allows the user to do something. Focus instead on what the user does. See https://stylepedia.net/style/5.0/#Avoiding_Slang_Metaphors-MisleadingLanguage-Anthropomorphism
+// CD: Fixed
 
 [source,bash]
 ----
@@ -283,7 +287,9 @@ You might need to repeat the command until the desired condition is reached.
 192.168.59.20
 ----
 
-3.6) Create a file named `bookinfo-gateway.yaml` with the following Istio gateway resource manifest.
+3.6) Create a file called `bookinfo-gateway.yaml` with the following Istio gateway resource manifest.
+// TechEditor: [style] Called not named
+// CD: Fixed
 
 * Replace the `192.168.59.20` string with your value for `INGRESS_HOST`.
 
@@ -305,10 +311,10 @@ spec:
       number: 80
       protocol: HTTP
 ----
-// <1> The gateway will be applied to the proxy running on a pod with label `istio=ingressgateway`. This is the default ingress gateway for Istio.
+// <1> The gateway configuration is applied to the proxy running on a pod with label `istio=ingressgateway`. This is the default ingress gateway for Istio.
 <1> Use the Istio default ingress gateway.
-<2> DNS host name where the gateway will serve traffic.
-<3> Port number of the proxy will listen for incoming connections.
+<2> DNS host name where the gateway serves traffic.
+<3> Port number of the proxy listen for incoming connections.
 
 [NOTE]
 ====
@@ -320,8 +326,9 @@ There is a `bookinfo-gateway.yaml` file in the KBE repository in case you want t
 * https://github.com/openshift-evangelists/kbe/raw/main/specs/istio/bookinfo-gateway.yaml
 ====
 
-3.7) Create a file named `bookinfo-virtualservice.yaml` with the following Istio virtual service resource manifest.
+3.7) Create a file called `bookinfo-virtualservice.yaml` with the following Istio virtual service resource manifest.
 // TechEditor: [style] Called not named
+// CD: Fixed
 
 * Replace the `192.168.59.20` string with your value for `INGRESS_HOST`.
 
@@ -356,10 +363,10 @@ spec:
           number: 9080
 ----
 <1> Apply the virtual service rules to the specified gateway in the current namespace.
-<2> DNS host name where the gateway will serve traffic.
+<2> DNS host name where the gateway serves traffic.
 <3> List of routing rules for the HTTP traffic.
 <4> List of rules to match against incoming requests.
-<5> The matching requests will be forwarded to this service and port number.
+<5> The matching requests are be forwarded to this service and port number.
 
 [NOTE]
 ====
@@ -503,6 +510,7 @@ The star rating for the books is different, this happens because every request i
 
 5.2) Create a virtual service resource manifest that routes different traffic percentages to different pod versions.
 Create a file called `reviews-virtualservice.yaml` with the following Istio virtual service resource manifest.
+// TechEditor: [style] Called not named - FIXED
 
 [source,yaml]
 ----
@@ -529,9 +537,9 @@ spec:
         host: reviews
         subset: v3
 ----
-<1> 10% of the traffic will be redirected to `reviews` subset `v1`.
-<2> 30% of the traffic will be redirected to `reviews` subset `v2`.
-<3> 60% of the traffic will be redirected to `reviews` subset `v3`.
+<1> 10% of the traffic is redirected to `reviews` subset `v1`.
+<2> 30% of the traffic is redirected to `reviews` subset `v2`.
+<3> 60% of the traffic is redirected to `reviews` subset `v3`.
 
 [NOTE]
 ====
@@ -545,6 +553,7 @@ There is a `reviews-virtualservice.yaml` file in the KBE repository in case you 
 
 5.3) Create a destination rule resource manifest with selectors for the different versions of the `reviews` pods.
 Create a file called `reviews-destinationrule.yaml` with the following Istio destination rule resource manifest.
+// TechEditor: [style] Called not named - FIXED
 
 [source,yaml]
 ----
@@ -609,7 +618,7 @@ reviews   reviews   60s
 
 [WARNING]
 ====
-Check the order of the pods, the image below displays them in a different order:
+Verify the order of the pods in the dashboard window, the image below displays them in a different order:
 
 * `reviews-v2` with *27.4%* of the traffic.
 * `reviews-v1` with  *9.4%* of the traffic.
