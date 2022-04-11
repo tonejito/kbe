@@ -26,10 +26,11 @@ That content is covered in the link:../traffic-management[traffic management] se
 
 === Ingress
 
-The Kubernetes ingress resource has a set of rules to match the incoming HTTP traffic to route the request to a backend service.
+The Kubernetes ingress resource has a set of rules to match the incoming HTTP traffic to route the request to a back-end service.
 // TechEditor: [standards] ⁠back end, back-end n. Two words. Refers to software that performs the final stages of a process, or to tasks that are not visible to the user. For example, "each back end provides a set of calls." adj. Hyphenate. For example, "when the back-end database processes a search operation …" Do not use "backend."
 // Please check for all other instances throughout all sections, I wont comment out again.
-Each rule matches a DNS name and a set of paths to forward the traffic to a backend service.
+// CD: Fixed
+Each rule matches a DNS name and a set of paths to forward the traffic to a back-end service.
 
 The ingress resource has the following fields on the YAML manifest.
 
@@ -41,17 +42,18 @@ List of host names to match the HTTP traffic.
 The host can be set to a specific DNS name, wildcards such as `\*.example.com` are supported, and it can be defined as `'*'` to match all hostnames.
 
 `paths`::
-List of URL paths that will be matched against HTTP requests.
+List of URL paths that are matched against HTTP requests.
 
 `pathType`::
-* The value `Exact` will match the provided path as is.
-* The value `Prefix` will match the provided path if it begins with the specified prefix.
+* The value `Exact` matches the provided path as is.
+* The value `Prefix` matches the provided path if it begins with the specified prefix.
 
 `backend`::
-Specifies the service that will receive the traffic.
+Specifies the service that receives the traffic.
 
-The following is an example of an ingress resource manifest.
+The following code listing is an example of an ingress resource manifest.
 // TechEditor: [style] When introducing a list or a procedure, use "following" with a noun. Complete the following (Complete the following steps) (The following command/code block is)
+// CD: Fixed
 
 [source,yaml]
 ----
@@ -76,16 +78,16 @@ spec:
             port:
               number: 80
 ----
-<1> Specifies that Istio will handle this ingress resource.
+<1> Specifies that Istio handles this ingress resource.
 <2> Set of rules to be applied against incoming HTTP traffic.
-<3> DNS host name where the ingress will serve traffic.
+<3> DNS host name where the ingress serves traffic.
 <4> List of paths to match HTTP traffic.
 <5> Type of match that should be applied to the path.
-<6> Backend service name and port number.
+<6> Back-end service name and port number.
 
 ==== Ingress Class
 
-The annotation is required to tell the Istio gateway controller that it should handle this ingress resource, otherwise it will be ignored.
+The annotation is required to tell the Istio gateway controller that it should handle this ingress resource, otherwise is ignored.
 
 [source,yaml]
 ----
