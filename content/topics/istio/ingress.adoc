@@ -109,7 +109,7 @@ This guided exercise assumes that Istio is link:../../istio/install[installed an
 
 2) Enable the Kubernetes dashboard, and metrics server minikube add-ons.
 
-2.1) Check if `dashboard`, and `metrics-server` are listed in the available add-ons for minikube.
+2.1) Verify if `dashboard`, and `metrics-server` are listed in the available add-ons for minikube.
 
 [source,bash]
 ----
@@ -293,9 +293,9 @@ You can export the port numbers by using a single command.
 
 4) Prepare the Kubernetes dashboard namespace for Istio.
 
-4.1) Enable the sidecar injection for the `kubernetes-dashboard` namespace.
-This allows Istio to add an `istio-proxy` container on each pod to control ingress and egress traffic.
+4.1) Enable the sidecar injection for the `kubernetes-dashboard` namespace to add an `istio-proxy` container on each pod to control ingress and egress traffic.
 // TechEditor: [standards] Avoid stating that a product or feature allows the user to do something. Focus instead on what the user does. See https://stylepedia.net/style/5.0/#Avoiding_Slang_Metaphors-MisleadingLanguage-Anthropomorphism
+// CD: Fixed
 
 [source,bash]
 ----
@@ -384,6 +384,7 @@ kubernetes-dashboard   ClusterIP   10.98.184.102   <none>        80/TCP    20h
 ----
 
 5.3) Create a file called `dashboard-ingress.yaml` with the following content.
+// TechEditor: [style] Called not named - FIXED
 
 * Replace the `192.168.59.20` string with your value for `INGRESS_HOST`.
 
@@ -410,10 +411,10 @@ spec:
             port:
               number: 80  # <4>
 ----
-<1> The annotation is required to tell the Istio gateway controller that it should handle this ingress resource, otherwise it will be ignored.
-<2> DNS host name where the ingress will serve traffic.
-<3> Backend service name.
-<4> Backend service port number.
+<1> The annotation is required to tell the Istio gateway controller that it should handle this ingress resource, otherwise it is ignored.
+<2> DNS host name where the ingress serves traffic.
+<3> Back-end service name.
+<4> Back-end service port number.
 
 [NOTE]
 ====
@@ -451,7 +452,7 @@ You should deploy any Kubernetes dashboard instance that is exposed to the netwo
 * https://istio.io/latest/docs/tasks/traffic-management/ingress/secure-ingress/
 ====
 
-5.6) Verify that the backend service responds.
+5.6) Verify that the back-end service responds.
 
 * Replace the `192.168.59.20` string with your value for `INGRESS_HOST`.
 
