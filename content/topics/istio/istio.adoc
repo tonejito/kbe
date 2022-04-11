@@ -16,7 +16,7 @@ ifndef::backend-docbook5,backend-docbook45[:imagesdir: ../../..]
 == Istio
 
 Istio is an ingress controller and a service mesh implementation for Kubernetes.
-It abstracts the traffic management logic from the application by using a side car container that manages all the incoming and outgoing network traffic for a pod.
+It abstracts the traffic management logic from the application by using a sidecar container that manages all the incoming and outgoing network traffic for a pod.
 
 // === What is Istio?
 
@@ -24,12 +24,13 @@ Before Istio, applications managed all the advanced network operations, retry lo
 
 [options="header", cols="^1a"]
 |===
-| Before Istio: Application with all the traffic managment logic
+| Before Istio: Application with all the traffic management logic
 | image::img/istio/istio-pod-container.png[width="100%",align="center",alt="Before Istio"]
 |===
 
-Istio injects a side car container that intercepts the ingress and egress traffic, controlling the communication between the application, the clients and the Kubernetes services.
+Istio injects a sidecar container that intercepts the ingress and egress traffic, controlling the communication between the application, the clients and the Kubernetes services.
 // TechEditor: [misc] Not sure about sidecar or side car. Spell check suggests separating them, which I have been doing. It seems like it may be a standard term as "sidecar"? Can you confirm? I wont correct anymore just incase
+// CD: I checked on the Istio page and they use the "sidecar" term as one word, there is also the "sidecar" pattern in Kubernetes (the underlying technology), and it is also used as one word. -- FIXED
 
 [options="header", cols="^1a"]
 |===
@@ -77,7 +78,7 @@ The Istio sidecar container manages the network traffic, and the main container 
 
 === What is a Service Mesh?
 
-The term _service mesh_ refers to a technology used to manage communication between the microservices in an application.
+The term _service mesh_ refers to a technology used to manage communication between the micro-services in an application.
 It provides components such as traffic management, retry logic, metrics, and security.
 Those components can be added to the application via a sidecar container that implements all extra features and serves as a proxy for the ingress and egress traffic of the pod.
 
@@ -140,7 +141,9 @@ However, the version is outdated and cannot be installed in recent versions of K
 
 === Istio installation profiles
 
-Istio can be installed with different features turned on or off depending on the environment that will be deployed.
+Istio can be installed with different features turned on or off depending on the selected profile.
+// TechEditor: [standards] Avoid future tense (or using the term "will") whenever possible.
+// CD: Fixed future tense ("will") use
 
 You can execute `istioctl profile dump` to inspect the details of the current profile.
 
@@ -155,7 +158,9 @@ Minimal::
 Only installs the control plane components to manage an external cluster.
 
 External::
-Installs the components on a cluster that will be managed with an external control plane.
+Installs the components on a cluster that are going to be managed with an external control plane.
+// TechEditor: [standards] Avoid future tense (or using the term "will") whenever possible.
+// CD: Fixed future tense ("will") use
 
 Empty::
 It is an empty profile with all features disabled, it can be used to create custom configurations.
