@@ -211,7 +211,7 @@
 It abstracts the traffic management logic from the application by using a sidecar container that manages all the incoming and outgoing network traffic for a pod.</p>
 </div>
 <div class="paragraph">
-<p>Before istio, applications had to manage all the advanced network operations, retry logic and resiliency, adding complexity to the main logic.</p>
+<p>Before Istio, applications managed all the advanced network operations, retry logic and resiliency, which added complexity to the main logic.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -219,7 +219,7 @@ It abstracts the traffic management logic from the application by using a sideca
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-center valign-top">Before Istio: Application with all the traffic managment logic</th>
+<th class="tableblock halign-center valign-top">Before Istio: Application with all the traffic management logic</th>
 </tr>
 </thead>
 <tbody>
@@ -342,7 +342,7 @@ The Istio sidecar container manages the network traffic, and the main container 
 <div class="sect2">
 <h3 id="_what_is_a_service_mesh">What is a Service Mesh?</h3>
 <div class="paragraph">
-<p>The term <em>service mesh</em> refers to a technology used to manage communication between the microservices in an application.
+<p>The term <em>service mesh</em> refers to a technology used to manage communication between the micro-services in an application.
 It provides components such as traffic management, retry logic, metrics, and security.
 Those components can be added to the application via a sidecar container that implements all extra features and serves as a proxy for the ingress and egress traffic of the pod.</p>
 </div>
@@ -420,7 +420,7 @@ Each proxy intercepts the network traffic directed to a pod and applies routing 
 <td class="content">
 <div class="paragraph">
 <p>Minikube provides Istio as an add-on.
-However, the version is outdated and can’t be installed in recent versions of Kubernetes.</p>
+However, the version is outdated and cannot be installed in recent versions of Kubernetes.</p>
 </div>
 </td>
 </tr>
@@ -430,7 +430,7 @@ However, the version is outdated and can’t be installed in recent versions of 
 <div class="sect2">
 <h3 id="_istio_installation_profiles">Istio installation profiles</h3>
 <div class="paragraph">
-<p>Istio can be installed with different features turned on or off depending on the environment that will be deployed.</p>
+<p>Istio can be installed with different features turned on or off depending on the selected profile.</p>
 </div>
 <div class="paragraph">
 <p>You can execute <code>istioctl profile dump</code> to inspect the details of the current profile.</p>
@@ -448,11 +448,11 @@ It requires many resources.</p>
 </dd>
 <dt class="hdlist1">Minimal</dt>
 <dd>
-<p>Only install the control plane components to manage an external cluster.</p>
+<p>Only installs the control plane components to manage an external cluster.</p>
 </dd>
 <dt class="hdlist1">External</dt>
 <dd>
-<p>Install the components on a cluster that will be managed with an external control plane.</p>
+<p>Installs the components on a cluster that are going to be managed with an external control plane.</p>
 </dd>
 <dt class="hdlist1">Empty</dt>
 <dd>
@@ -506,7 +506,7 @@ It requires many resources.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The Istio minikube add-on is outdated and can’t be installed in recent versions of Kubernetes.</p>
+<p>The Istio minikube add-on is outdated and cannot be installed in recent versions of Kubernetes.</p>
 </div>
 </td>
 </tr>
@@ -524,7 +524,7 @@ Then verify if the cluster meets the installation requirements.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Install Istio in the Kubernetes cluster using the appropriate profile for your deployment.</p>
+<p>Install Istio in the Kubernetes cluster by using the appropriate profile for your deployment.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -629,7 +629,7 @@ export SECURE_INGRESS_PORT=$(kubectl get service ${INGRESS_SERVICE} \
 <div class="paragraph">
 <p>The <code>istio-proxy</code> sidecar container can be manually injected in different ways.
 The YAML resource manifest can be modified with <code>istioctl</code> to add the <code>istio-proxy</code> container to the pod definition.
-You can create the resource using the modified YAML manifest.</p>
+You can create the resource by using the modified YAML manifest.</p>
 </div>
 <div class="listingblock">
 <div class="content">

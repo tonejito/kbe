@@ -237,7 +237,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>The <code>kubectl</code>, and <code>minikube</code> executables version 1.24 or higher on a directory listed in <code>${PATH}</code>.</p>
+<p>The <code>kubectl</code>, and <code>minikube</code> executables version 1.24 or later on a directory listed in <code>${PATH}</code>.</p>
 </li>
 <li>
 <p>MetalLB installed in the cluster.
@@ -254,7 +254,7 @@ You can consult the <a href="../../metallb/install">installation guided exercise
 <td class="content">
 <div class="paragraph">
 <p>Minikube provides Istio as an add-on.
-However, the version is outdated and can’t be installed in recent versions of Kubernetes.</p>
+However, the version is outdated and cannot be installed in recent versions of Kubernetes.</p>
 </div>
 </td>
 </tr>
@@ -339,7 +339,7 @@ data:
 </td>
 <td class="content">
 <div class="paragraph">
-<p>If the IP address range for MetalLB is empty, review the troubleshooting section in the <a href="../../metallb/metallb">MetalLB lecture</a>.</p>
+<p>If the IP address range for MetalLB is empty then review the troubleshooting section in the <a href="../../metallb/metallb">MetalLB lecture</a>.</p>
 </div>
 </td>
 </tr>
@@ -376,7 +376,7 @@ data:
 </div>
 <div class="paragraph">
 <p>2.2) Extract the Istio release archive.
-Delete the archive after extracting because it is not needed anymore.</p>
+Delete the archive after extracting because it is not needed any more.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -422,7 +422,7 @@ export PATH=&#34;${PATH}:${HOME}/bin&#34;</code></pre>
 </tbody></table>
 </div>
 <div class="paragraph">
-<p>2.5) Verify that the shell is able to find the <code>istioctl</code> executable, and check the version of the tool.</p>
+<p>2.5) Verify that the shell can find the <code>istioctl</code> executable, and list the version of the tool.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -477,7 +477,7 @@ https://forms.gle/FegQbc9UvePd4Z9z7</code></pre>
 </tbody></table>
 </div>
 <div class="paragraph">
-<p>2.8) Check the resources created in the <code>istio-system</code> namespace.</p>
+<p>2.8) List the resources created in the <code>istio-system</code> namespace.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -512,8 +512,8 @@ pod/istiod-76d66d9876-jvl98                 1/1     Running   0          5m</cod
 </div>
 <div class="paragraph">
 <p>3.1) Get the services in the <code>istio-system</code> namespace.
-The external IP address is provided by MetalLB since the ingress gateway service type is LoadBalancer.
-This closely match what you might get when deploying on a cloud environment.</p>
+The external IP address is provided by MetalLB because the ingress gateway service type is LoadBalancer.
+This closely matches what you might get when deploying on a cloud environment.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -532,7 +532,7 @@ istiod                 ClusterIP      10.103.227.204   &lt;none&gt;          150
 </td>
 <td class="content">
 <div class="paragraph">
-<p>If Istio was installed using <code>helm</code>, then the ingress and egress resources are in the <code>istio-ingress</code> namespace.</p>
+<p>If Istio was installed by using <code>helm</code>, then the ingress and egress resources are in the <code>istio-ingress</code> namespace.</p>
 </div>
 </td>
 </tr>
@@ -559,7 +559,7 @@ istiod                 ClusterIP      10.103.227.204   &lt;none&gt;          150
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can export the IP address using a single command.</p>
+<p>You can export the IP address by using a single command.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -601,7 +601,7 @@ The service ports match the standard port numbers because MetalLB provided an IP
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can export the port numbers using a single command.</p>
+<p>You can export the port numbers by using a single command.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -637,10 +637,10 @@ The service ports match the standard port numbers because MetalLB provided an IP
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>[user@host kbe]$ ISTIO_VERSION=1.12.1
+<pre class="highlight"><code class="language-bash" data-lang="bash">[user@host kbe]$ ISTIO_VERSION=1.12.1
 
 [user@host kbe]$ ls istio-${ISTIO_VERSION}/samples/addons/
-extras  grafana.yaml  jaeger.yaml  kiali.yaml  prometheus.yaml  README.md</pre>
+extras  grafana.yaml  jaeger.yaml  kiali.yaml  prometheus.yaml  README.md</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -686,8 +686,7 @@ prometheus             1/1     1            1           2m</code></pre>
 <p>5) Create an example application</p>
 </div>
 <div class="paragraph">
-<p>5.1) Enable the sidecar injection for the <code>default</code> namespace.
-This allows Istio to add an <code>istio-proxy</code> container on each pod to control ingress and egress traffic.</p>
+<p>5.1) Enable the sidecar injection for the <code>default</code> namespace to add an <code>istio-proxy</code> container on each pod to control ingress and egress traffic.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -717,7 +716,7 @@ deployment.apps/helloworld-v2 created</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can use the resource manifest from GitHub if you don’t have the Istio release archive files.</p>
+<p>You can use the resource manifest from GitHub if you do not have the Istio release archive files.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -733,7 +732,7 @@ deployment.apps/helloworld-v2 created</code></pre>
 </tbody></table>
 </div>
 <div class="paragraph">
-<p>5.3) Check that the deployment and pod are ready.</p>
+<p>5.3) Verify that the deployment and pod are ready.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -790,10 +789,10 @@ virtualservice.networking.istio.io/helloworld created</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The parameters of the gateway and virtual service resources will be covered in the <a href="../../traffic-management">traffic management</a> section.</p>
+<p>The parameters of the gateway and virtual service resources are covered in the <a href="../../traffic-management">traffic management</a> section.</p>
 </div>
 <div class="paragraph">
-<p>You can use the resource manifest from GitHub if you don’t have the Istio release archive files.</p>
+<p>You can use the resource manifest from GitHub if you do not have the Istio release archive files.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -839,7 +838,7 @@ virtualservice.networking.istio.io/helloworld  [&#34;helloworld-gateway&#34;] [&
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The parameters of the virtual service resource will be covered in the <a href="../../traffic-management">traffic management</a> section.</p>
+<p>The parameters of the virtual service resource are covered in the <a href="../../traffic-management">traffic management</a> section.</p>
 </div>
 </td>
 </tr>
@@ -1039,7 +1038,7 @@ Hover on any data point to view the duration of the processing.</p>
 </table>
 <div class="paragraph">
 <p>7.8) Click on the <strong>Logs</strong> tab to display the logs for the pod containers.
-You can select the checkboxes to filter the logs for the <code>helloworld</code> application container or the <code>istio-proxy</code> container.</p>
+You can select the check boxes to filter the logs for the <code>helloworld</code> application container or the <code>istio-proxy</code> container.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1121,7 +1120,7 @@ There are complex applications that route different paths to different services.
 </tbody></table>
 </div>
 <div class="paragraph">
-<p>8) Cleanup</p>
+<p>8) Clean up</p>
 </div>
 <div class="paragraph">
 <p>8.1) Close the browser window where the Istio Kiali dashboard is displayed.</p>

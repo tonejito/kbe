@@ -227,8 +227,8 @@ That content is covered in the <a href="../traffic-management">traffic managemen
 <div class="sect2">
 <h3 id="_ingress">Ingress</h3>
 <div class="paragraph">
-<p>The Kubernetes ingress resource has a set of rules to match the incoming HTTP traffic to route the request to a backend service.
-Each rule matches a DNS name and a set of paths to forward the traffic to a backend service.</p>
+<p>The Kubernetes ingress resource has a set of rules to match the incoming HTTP traffic to route the request to a back-end service.
+Each rule matches a DNS name and a set of paths to forward the traffic to a back-end service.</p>
 </div>
 <div class="paragraph">
 <p>The ingress resource has the following fields on the YAML manifest.</p>
@@ -246,29 +246,29 @@ The host can be set to a specific DNS name, wildcards such as <code>*.example.co
 </dd>
 <dt class="hdlist1"><code>paths</code></dt>
 <dd>
-<p>List of URL paths that will be matched against HTTP requests.</p>
+<p>List of URL paths that are matched against HTTP requests.</p>
 </dd>
 <dt class="hdlist1"><code>pathType</code></dt>
 <dd>
 <div class="ulist">
 <ul>
 <li>
-<p>The value <code>Exact</code> will match the provided path as is.</p>
+<p>The value <code>Exact</code> matches the provided path as is.</p>
 </li>
 <li>
-<p>The value <code>Prefix</code> will match the provided path if it begins with the specified prefix.</p>
+<p>The value <code>Prefix</code> matches the provided path if it begins with the specified prefix.</p>
 </li>
 </ul>
 </div>
 </dd>
 <dt class="hdlist1"><code>backend</code></dt>
 <dd>
-<p>Specifies the service that will receive the traffic.</p>
+<p>Specifies the service that receives the traffic.</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>The following is an example of an ingress resource manifest.</p>
+<p>The following code listing is an example of an ingress resource manifest.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -297,13 +297,13 @@ spec:
 <div class="colist arabic">
 <ol>
 <li>
-<p>Specifies that Istio will handle this ingress resource.</p>
+<p>Specifies that Istio handles this ingress resource.</p>
 </li>
 <li>
 <p>Set of rules to be applied against incoming HTTP traffic.</p>
 </li>
 <li>
-<p>DNS host name where the ingress will serve traffic.</p>
+<p>DNS host name where the ingress serves traffic.</p>
 </li>
 <li>
 <p>List of paths to match HTTP traffic.</p>
@@ -312,14 +312,14 @@ spec:
 <p>Type of match that should be applied to the path.</p>
 </li>
 <li>
-<p>Backend service name and port number.</p>
+<p>Back-end service name and port number.</p>
 </li>
 </ol>
 </div>
 <div class="sect3">
 <h4 id="_ingress_class">Ingress Class</h4>
 <div class="paragraph">
-<p>The annotation is required to tell the Istio gateway controller that it should handle this ingress resource, otherwise it will be ignored.</p>
+<p>The annotation is required to tell the Istio gateway controller that it should handle this ingress resource, otherwise is ignored.</p>
 </div>
 <div class="listingblock">
 <div class="content">

@@ -5,5 +5,33 @@
     <link>https://tonejito.github.io/kbe/topics/metallb/</link>
     <description>Recent content in MetalLB on Kubernetes By Example</description>
     <generator>Hugo -- gohugo.io</generator><atom:link href="https://tonejito.github.io/kbe/topics/metallb/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/topics/metallb/install/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/topics/metallb/install/</guid>
+      <description>⏪
+ 🏠
+       Guided Exercise: Installing Metallb on a Minikube Cluster In this exercise, you will deploy the MetalLB add-on on a minikube cluster.
+ Outcomes
+ You should be able to:
+   Create a minikube instance.
+  Get the DHCP network parameters of the minikube VM driver.
+  Enable and configure the MetalLB minikube add-on.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/topics/metallb/metallb/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/topics/metallb/metallb/</guid>
+      <description>🏠
+ ⏩
+     MetalLB The Kubernetes clusters deployed in cloud environments use the functionality from the provider to dynamically provision managed load balancers for the services of type LoadBalancer. MetalLB implements the load balancer functionality for local or bare metal Kubernetes clusters that are not deployed in cloud environments.
+ Kubernetes Service Types Kubernetes has three types of services:</description>
+    </item>
+    
   </channel>
 </rss>

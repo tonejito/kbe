@@ -237,7 +237,7 @@ This resource has a set of hostnames to match against incoming traffic and a lis
 <dt class="hdlist1"><code>selector</code></dt>
 <dd>
 <p>The selector specifies the Istio ingress gateway to use for this resource.
-The gateway configuration will be applied to the envoy proxy running on a pod with the specified label.</p>
+The gateway configuration is applied to the envoy proxy running on a pod with the specified label.</p>
 <div class="admonitionblock note">
 <table>
 <tbody><tr>
@@ -262,7 +262,7 @@ istio-ingressgateway-78f69bd5db-s5pjz   1/1     Running   1 (1d ago)   4d</code>
 </dd>
 <dt class="hdlist1"><code>servers</code></dt>
 <dd>
-<p>The servers section is a list of host and ports that will be matched against incoming HTTP traffic.
+<p>The servers section is a list of host and ports that are matched against incoming HTTP traffic.
 The host can be set to a specific DNS name, wildcards such as <code>*.example.com</code> are supported, and it can be defined as <code>&#39;*&#39;</code> to match all hostnames.</p>
 <div class="admonitionblock note">
 <table>
@@ -309,10 +309,10 @@ spec:
 <p>Use the Istio default ingress gateway.</p>
 </li>
 <li>
-<p>DNS host name where the gateway will serve traffic.</p>
+<p>DNS host name where the ingress serves traffic.</p>
 </li>
 <li>
-<p>Port number where the proxy will listen for incoming connections.</p>
+<p>Port number where the proxy listen for incoming connections.</p>
 </li>
 </ol>
 </div>
@@ -320,7 +320,8 @@ spec:
 <div class="sect2">
 <h3 id="_virtual_service">Virtual Service</h3>
 <div class="paragraph">
-<p>The virtual service resource defines a set of rules to match the HTTP traffic and the backend service name and port number to forward the traffic if the request match.</p>
+<p>The virtual service resource defines a set of rules.
+These rules match the HTTP traffic and the backend service name and port number, they forward the traffic if the requests match.</p>
 </div>
 <div class="paragraph">
 <p>The virtual service resource has the following fields on the YAML manifest.</p>
@@ -329,7 +330,7 @@ spec:
 <dl>
 <dt class="hdlist1"><code>gateways</code></dt>
 <dd>
-<p>Specifies the Istio gateway that will handle the incoming traffic.</p>
+<p>Specifies the Istio gateway that handles the incoming traffic.</p>
 </dd>
 <dt class="hdlist1"><code>hosts</code></dt>
 <dd>
@@ -346,13 +347,13 @@ The host can be set to a specific DNS name, wildcards such as <code>*.example.co
 </dd>
 <dt class="hdlist1"><code>route</code></dt>
 <dd>
-<p>Specifies the backend service host and port number that will process the request.
+<p>Specifies the back-end service host and port number that process the request.
 Each route can have a weight to configure which percentage of the traffic should be forwarded to a given destination.</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>The following is an example of an virtual service resource manifest.</p>
+<p>The following code listing is an example of a virtual service resource manifest.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -391,7 +392,7 @@ spec:
 <p>Apply the virtual service rules to the specified gateway in the current namespace.</p>
 </li>
 <li>
-<p>DNS host name where the gateway will serve traffic.</p>
+<p>DNS host name where the ingress serves traffic.</p>
 </li>
 <li>
 <p>List of routing rules for the HTTP traffic.</p>
@@ -400,7 +401,7 @@ spec:
 <p>List of rules to match against incoming requests.</p>
 </li>
 <li>
-<p>The matching requests will be forwarded to this service and port number.</p>
+<p>The matching requests are forwarded to this service and port number.</p>
 </li>
 </ol>
 </div>
@@ -436,13 +437,13 @@ spec:
 <div class="colist arabic">
 <ol>
 <li>
-<p>10% of the traffic will be redirected to <code>reviews</code> subset <code>v1</code>.</p>
+<p>10% of the traffic is redirected to <code>reviews</code> subset <code>v1</code>.</p>
 </li>
 <li>
-<p>30% of the traffic will be redirected to <code>reviews</code> subset <code>v2</code>.</p>
+<p>30% of the traffic is redirected to <code>reviews</code> subset <code>v2</code>.</p>
 </li>
 <li>
-<p>60% of the traffic will be redirected to <code>reviews</code> subset <code>v3</code>.</p>
+<p>60% of the traffic is redirected to <code>reviews</code> subset <code>v3</code>.</p>
 </li>
 </ol>
 </div>
@@ -454,7 +455,7 @@ spec:
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The total sum of the route weights should be 100, otherwise the admission hook will raise a validation error when creating or patching the resource.</p>
+<p>The total sum of the route weights should be 100, otherwise the admission hook has a validation error when creating or patching the resource.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -481,7 +482,7 @@ configuration is invalid: total destination weight 90 != 100</code></pre>
 <dl>
 <dt class="hdlist1"><code>host</code></dt>
 <dd>
-<p>The name of the backend service on the Kubernetes cluster.</p>
+<p>The name of the back-end service on the Kubernetes cluster.</p>
 </dd>
 <dt class="hdlist1"><code>subsets</code></dt>
 <dd>
@@ -494,7 +495,7 @@ configuration is invalid: total destination weight 90 != 100</code></pre>
 </dl>
 </div>
 <div class="paragraph">
-<p>The following resource definition specifies that there are three versions of the service and that different percentages of the traffic will be routed to each one.</p>
+<p>The following resource definition specifies that there are three versions of the service and that different percentages of the traffic are routed to each one.</p>
 </div>
 <div class="listingblock">
 <div class="content">

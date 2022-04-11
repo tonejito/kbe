@@ -240,10 +240,10 @@
 <div class="ulist">
 <ul>
 <li>
-<p>The <code>kubectl</code>, and <code>minikube</code> executables version 1.22 or higher on a directory listed in <code>${PATH}</code>.</p>
+<p>The <code>kubectl</code>, and <code>minikube</code> executables version 1.22 or later on a directory listed in <code>${PATH}</code>.</p>
 </li>
 <li>
-<p>VirtualBox version 6.1 or higher.</p>
+<p>VirtualBox version 6.1 or later.</p>
 </li>
 <li>
 <p>The current user is in the <code>vboxusers</code> system group.</p>
@@ -323,7 +323,7 @@ storage-provisioner                1/1     Running   0          5m36s</code></pr
 <p>2) Get the IP address range for the DHCP server.</p>
 </div>
 <div class="paragraph">
-<p>2.1) Check the driver on which the minikube VM is created.
+<p>2.1) List the driver on which the minikube VM is created.
 This guided exercise assumes that the VM driver is provided by VirtualBox.</p>
 </div>
 <div class="listingblock">
@@ -344,7 +344,7 @@ This guided exercise assumes that the VM driver is provided by VirtualBox.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The instructions on this step will be different if another VM driver is used.</p>
+<p>The instructions on this step are different if another VM driver is used.</p>
 </div>
 </td>
 </tr>
@@ -373,7 +373,7 @@ This guided exercise assumes that the VM driver is provided by VirtualBox.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>2.3) Scroll down on the right panel, and check the configuration parameters of the second network adapter to see on which host-only adapter the VM is connected to.
+<p>2.3) Scroll down on the right panel, and verify the configuration parameters of the second network adapter to see on which host-only adapter the VM is connected to.
 Take note of the host-only <code>vboxnet</code> adapter that the VM is connected to.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -444,7 +444,7 @@ Take note of the lower and upper address bounds.</p>
 <p>3) Enable the MetalLB minikube add-on.</p>
 </div>
 <div class="paragraph">
-<p>3.1) Check if <code>metallb</code> is listed on the available add-ons for minikube.</p>
+<p>3.1) Verify that <code>metallb</code> is listed on the available add-ons for minikube.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -558,7 +558,7 @@ deployment.apps/nginx created</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>4.2) Check that the deployment and pod are ready.</p>
+<p>4.2) Verify that the deployment and pod are ready.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -608,7 +608,7 @@ nginx   LoadBalancer   10.105.39.72   192.168.59.20   80:31304/TCP   45s</code><
 <p>5) Access the example application.</p>
 </div>
 <div class="paragraph">
-<p>5.1) Check that the service responds with <code>curl</code>.</p>
+<p>5.1) Verify that the service responds with <code>curl</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -688,7 +688,7 @@ replicaset.apps/nginx-f66b485df   1         1         1       2m10s</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>6) Cleanup</p>
+<p>6) Clean up</p>
 </div>
 <div class="paragraph">
 <p>6.1) Remove the resources created.</p>

@@ -207,7 +207,7 @@
 <h2 id="_guided_exercise_configuring_istio_traffic_management">Guided Exercise: Configuring Istio Traffic Management</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this exercise, you will configure the amount of traffic that is routed to the backend services using virtual services and destination rules.</p>
+<p>In this exercise, you will configure the amount of traffic that is routed to the back-end services by using virtual services and destination rules.</p>
 </div>
 <div class="paragraph">
 <p>Outcomes</p>
@@ -231,10 +231,10 @@
 <div class="ulist">
 <ul>
 <li>
-<p>The <code>kubectl</code>, and <code>minikube</code> executables version 1.24 or higher on a directory listed in <code>${PATH}</code>.</p>
+<p>The <code>kubectl</code>, and <code>minikube</code> executables version 1.24 or later on a directory listed in <code>${PATH}</code>.</p>
 </li>
 <li>
-<p>The <code>istioctl</code> executable version 1.12.1 or higher on a directory listed in <code>${PATH}</code>.</p>
+<p>The <code>istioctl</code> executable version 1.12.1 or later on a directory listed in <code>${PATH}</code>.</p>
 </li>
 <li>
 <p>MetalLB installed in the cluster.
@@ -311,7 +311,7 @@ data:
 </td>
 <td class="content">
 <div class="paragraph">
-<p>If the IP address range for MetalLB is empty, review the troubleshooting section in the <a href="../../metallb/metallb">MetalLB lecture</a>.</p>
+<p>If the IP address range for MetalLB is empty, then review the troubleshooting section in the <a href="../../metallb/metallb">MetalLB lecture</a>.</p>
 </div>
 </td>
 </tr>
@@ -386,7 +386,7 @@ If MetalLB is not deployed, then the service internal IP address and node port n
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can export the IP address using a single command.</p>
+<p>You can export the IP address by using a single command.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -428,7 +428,7 @@ The service ports match the standard port numbers because MetalLB provided an IP
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can export the port numbers using a single command.</p>
+<p>You can export the port numbers by using a single command.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -465,8 +465,7 @@ CURRENT   NAME       CLUSTER    AUTHINFO   NAMESPACE
 </div>
 </div>
 <div class="paragraph">
-<p>3.2) Enable the sidecar injection on the namespace.
-This allows Istio to add an <code>istio-proxy</code> container on each pod to control ingress and egress traffic.</p>
+<p>3.2) Enable the sidecar injection for the <code>bookinfo</code> namespace to add an <code>istio-proxy</code> container on each pod to control ingress and egress traffic.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -507,7 +506,7 @@ service/ratings created</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can use the resource manifest from GitHub if you don’t have the Istio release archive files.</p>
+<p>You can use the resource manifest from GitHub if you do not have the Istio release archive files.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -576,7 +575,7 @@ service/reviews       ClusterIP   10.107.90.88     &lt;none&gt;        9080/TCP 
 </div>
 </div>
 <div class="paragraph">
-<p>3.6) Create a file named <code>bookinfo-gateway.yaml</code> with the following Istio gateway resource manifest.</p>
+<p>3.6) Create a file called <code>bookinfo-gateway.yaml</code> with the following Istio gateway resource manifest.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -610,10 +609,10 @@ spec:
 <p>Use the Istio default ingress gateway.</p>
 </li>
 <li>
-<p>DNS host name where the gateway will serve traffic.</p>
+<p>DNS host name where the gateway serves traffic.</p>
 </li>
 <li>
-<p>Port number of the proxy will listen for incoming connections.</p>
+<p>Port number of the proxy listen for incoming connections.</p>
 </li>
 </ol>
 </div>
@@ -645,7 +644,7 @@ spec:
 </tbody></table>
 </div>
 <div class="paragraph">
-<p>3.7) Create a file named <code>bookinfo-virtualservice.yaml</code> with the following Istio virtual service resource manifest.</p>
+<p>3.7) Create a file called <code>bookinfo-virtualservice.yaml</code> with the following Istio virtual service resource manifest.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -691,7 +690,7 @@ spec:
 <p>Apply the virtual service rules to the specified gateway in the current namespace.</p>
 </li>
 <li>
-<p>DNS host name where the gateway will serve traffic.</p>
+<p>DNS host name where the gateway serves traffic.</p>
 </li>
 <li>
 <p>List of routing rules for the HTTP traffic.</p>
@@ -700,7 +699,7 @@ spec:
 <p>List of rules to match against incoming requests.</p>
 </li>
 <li>
-<p>The matching requests will be forwarded to this service and port number.</p>
+<p>The matching requests are be forwarded to this service and port number.</p>
 </li>
 </ol>
 </div>
@@ -885,7 +884,7 @@ There are three versions of the <code>reviews</code> pods, two of which connect 
 <div class="paragraph">
 <p>4.4) Click <strong>Services</strong>, then select the <code>bookinfo</code> namespace.
 Click on the <code>reviews</code> service to view the statistics.
-The service distributes all the traffic equally among the three backend pods (33% approximately).</p>
+The service distributes all the traffic equally among the three back end pods (33% approximately).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -907,7 +906,7 @@ The service distributes all the traffic equally among the three backend pods (33
 </tbody>
 </table>
 <div class="paragraph">
-<p>5) Create destination rules and adjust the traffic for each backend service.</p>
+<p>5) Create destination rules and adjust the traffic for each back end service.</p>
 </div>
 <div class="paragraph">
 <p>5.1) Refresh several times the browser window where the bookinfo web page is open.</p>
@@ -946,7 +945,7 @@ The service distributes all the traffic equally among the three backend pods (33
 </table>
 <div class="paragraph">
 <p>5.2) Create a virtual service resource manifest that routes different traffic percentages to different pod versions.
-Create a file named <code>reviews-virtualservice.yaml</code> with the following Istio virtual service resource manifest.</p>
+Create a file called <code>reviews-virtualservice.yaml</code> with the following Istio virtual service resource manifest.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -977,13 +976,13 @@ spec:
 <div class="colist arabic">
 <ol>
 <li>
-<p>10% of the traffic will be redirected to <code>reviews</code> subset <code>v1</code>.</p>
+<p>10% of the traffic is redirected to <code>reviews</code> subset <code>v1</code>.</p>
 </li>
 <li>
-<p>30% of the traffic will be redirected to <code>reviews</code> subset <code>v2</code>.</p>
+<p>30% of the traffic is redirected to <code>reviews</code> subset <code>v2</code>.</p>
 </li>
 <li>
-<p>60% of the traffic will be redirected to <code>reviews</code> subset <code>v3</code>.</p>
+<p>60% of the traffic is redirected to <code>reviews</code> subset <code>v3</code>.</p>
 </li>
 </ol>
 </div>
@@ -1016,7 +1015,7 @@ spec:
 </div>
 <div class="paragraph">
 <p>5.3) Create a destination rule resource manifest with selectors for the different versions of the <code>reviews</code> pods.
-Create a file named <code>reviews-destinationrule.yaml</code> with the following Istio destination rule resource manifest.</p>
+Create a file called <code>reviews-destinationrule.yaml</code> with the following Istio destination rule resource manifest.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1117,7 +1116,7 @@ reviews   reviews   60s</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Check the order of the pods, the image below displays them in a different order:</p>
+<p>Verify the order of the pods in the dashboard window, the image below displays them in a different order:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1156,7 +1155,7 @@ reviews   reviews   60s</code></pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>6) Cleanup</p>
+<p>6) Clean up</p>
 </div>
 <div class="paragraph">
 <p>6.1) Press <code>Ctrl+C</code> on the terminal window where the traffic generation command is running.</p>

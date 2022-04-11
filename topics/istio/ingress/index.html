@@ -231,7 +231,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>The <code>minikube</code>, and <code>kubectl</code> executables version 1.24 or higher on a directory listed in <code>PATH</code>.</p>
+<p>The <code>minikube</code>, and <code>kubectl</code> executables version 1.24 or later on a directory listed in <code>PATH</code>.</p>
 </li>
 <li>
 <p>MetalLB installed in the cluster.
@@ -251,7 +251,7 @@ You can consult the <a href="../../istio/install">installation guided exercise</
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The minikube Istio add-on is outdated and can’t be installed in recent versions of Kubernetes.</p>
+<p>The minikube Istio add-on is outdated and cannot be installed in recent versions of Kubernetes.</p>
 </div>
 </td>
 </tr>
@@ -322,7 +322,7 @@ data:
 </td>
 <td class="content">
 <div class="paragraph">
-<p>If the IP address range for MetalLB is empty, review the troubleshooting section in the <a href="../../metallb/metallb">MetalLB lecture</a>.</p>
+<p>If the IP address range for MetalLB is empty, then review the troubleshooting section in the <a href="../../metallb/metallb">MetalLB lecture</a>.</p>
 </div>
 </td>
 </tr>
@@ -362,7 +362,7 @@ prometheus             1/1     1            1           1d</code></pre>
 <p>2) Enable the Kubernetes dashboard, and metrics server minikube add-ons.</p>
 </div>
 <div class="paragraph">
-<p>2.1) Check if <code>dashboard</code>, and <code>metrics-server</code> are listed in the available add-ons for minikube.</p>
+<p>2.1) Verify if <code>dashboard</code>, and <code>metrics-server</code> are listed in the available add-ons for minikube.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -547,7 +547,7 @@ If MetalLB is not deployed, then the service internal IP address and node port n
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can export the IP address using a single command.</p>
+<p>You can export the IP address by using a single command.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -589,7 +589,7 @@ The service ports match the standard port numbers because MetalLB provided an IP
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can export the port numbers using a single command.</p>
+<p>You can export the port numbers by using a single command.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -610,8 +610,7 @@ The service ports match the standard port numbers because MetalLB provided an IP
 <p>4) Prepare the Kubernetes dashboard namespace for Istio.</p>
 </div>
 <div class="paragraph">
-<p>4.1) Enable the sidecar injection for the <code>kubernetes-dashboard</code> namespace.
-This allows Istio to add an <code>istio-proxy</code> container on each pod to control ingress and egress traffic.</p>
+<p>4.1) Enable the sidecar injection for the <code>kubernetes-dashboard</code> namespace to add an <code>istio-proxy</code> container on each pod to control ingress and egress traffic.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -714,7 +713,7 @@ kubernetes-dashboard   ClusterIP   10.98.184.102   &lt;none&gt;        80/TCP   
 </div>
 </div>
 <div class="paragraph">
-<p>5.3) Create a file named <code>dashboard-ingress.yaml</code> with the following content.</p>
+<p>5.3) Create a file called <code>dashboard-ingress.yaml</code> with the following content.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -750,16 +749,16 @@ spec:
 <div class="colist arabic">
 <ol>
 <li>
-<p>The annotation is required to tell the Istio gateway controller that it should handle this ingress resource, otherwise it will be ignored.</p>
+<p>The annotation is required to tell the Istio gateway controller that it should handle this ingress resource, otherwise it is ignored.</p>
 </li>
 <li>
-<p>DNS host name where the ingress will serve traffic.</p>
+<p>DNS host name where the ingress serves traffic.</p>
 </li>
 <li>
-<p>Backend service name.</p>
+<p>Back-end service name.</p>
 </li>
 <li>
-<p>Backend service port number.</p>
+<p>Back-end service port number.</p>
 </li>
 </ol>
 </div>
@@ -834,7 +833,7 @@ kubernetes-dashboard  istio  dashboard.192.168.59.20.nip.io           80     60s
 </tbody></table>
 </div>
 <div class="paragraph">
-<p>5.6) Verify that the backend service responds.</p>
+<p>5.6) Verify that the back-end service responds.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -907,7 +906,7 @@ kubernetes-dashboard  istio  dashboard.192.168.59.20.nip.io           80     60s
 </tbody>
 </table>
 <div class="paragraph">
-<p>6) Cleanup.</p>
+<p>6) Clean up.</p>
 </div>
 <div class="paragraph">
 <p>6.1) Delete the Kubernetes dashboard ingress resource.</p>
