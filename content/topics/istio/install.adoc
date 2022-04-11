@@ -163,9 +163,10 @@ export PATH="${PATH}:${HOME}/bin"
 The argument to the `echo` command is enclosed in single quotes to prevent shell expansion of the variables.
 ====
 
-2.5) Verify that the shell can find the `istioctl` executable, and check the version of the tool.
+2.5) Verify that the shell can find the `istioctl` executable, and list the version of the tool.
 // TechEditor: [standards] Prefer the most concise language, "can" rather than "is able to"  - - FIXED
 // TechEditor: [terminology] Avoid the use of "check." Use a verb that describes exactly what you mean, e.g., review, verify, inspect, validate, determine...
+// CD: Fixed
 
 [source,bash]
 ----
@@ -208,7 +209,7 @@ https://forms.gle/FegQbc9UvePd4Z9z7
 The install command generates an Istio install manifest and applies it to a cluster.
 ====
 
-2.8) Check the resources created in the `istio-system` namespace.
+2.8) List the resources created in the `istio-system` namespace.
 
 [source,bash]
 ----
@@ -234,8 +235,9 @@ When istio is installed using `helm`, two namespaces are created: `istio-system`
 3) Get the Istio ingress service endpoint.
 
 3.1) Get the services in the `istio-system` namespace.
-The external IP address is provided by MetalLB since the ingress gateway service type is LoadBalancer.
+The external IP address is provided by MetalLB because the ingress gateway service type is LoadBalancer.
 // TechEditor: [standards] s/since/because/ in RH tech pubs. Only use "since" in a temporal sense.
+// CD: Fixed
 This closely matches what you might get when deploying on a cloud environment.
 
 [source,bash]
@@ -328,6 +330,7 @@ You can export the port numbers by using a single command.
 
 4.1) List the add-ons provided with the Istio release.
 
+[source,bash]
 ----
 [user@host kbe]$ ISTIO_VERSION=1.12.1
 
@@ -367,9 +370,9 @@ You might need to repeat the command until the desired condition is reached.
 
 5) Create an example application
 
-5.1) Enable the sidecar injection for the `default` namespace.
-This allows Istio to add an `istio-proxy` container on each pod to control ingress and egress traffic.
+5.1) Enable the sidecar injection for the `default` namespace to add an `istio-proxy` container on each pod to control ingress and egress traffic.
 // TechEditor: [style] Anthropomorphism: Avoid stating that a product asks or allows the user to do something. See https://stylepedia.net/style/5.0/#Avoiding_Slang_Metaphors-MisleadingLanguage-Anthropomorphism
+// CD: Fixed
 
 [source,bash]
 ----
@@ -403,8 +406,10 @@ You can use the resource manifest from GitHub if you do not have the Istio relea
 ...output omitted...
 ----
 ====
-5.3) Check that the deployment and pod are ready.
+
+5.3) Verify that the deployment and pod are ready.
 // TechEditor: [terminology] Avoid the use of "check." Use a verb that describes exactly what you mean, e.g., review, verify, inspect, validate, determine...
+// CD: Fixed
 
 [source,bash]
 ----
@@ -445,7 +450,9 @@ virtualservice.networking.istio.io/helloworld created
 
 [NOTE]
 ====
-The parameters of the gateway and virtual service resources will be covered in the link:../../traffic-management[traffic management] section.
+The parameters of the gateway and virtual service resources are covered in the link:../../traffic-management[traffic management] section.
+// TechEditor: [standards] Avoid future tense (or using the term "will") whenever possible.
+// CD: Fixed future tense ("will") use
 
 You can use the resource manifest from GitHub if you do not have the Istio release archive files.
 
@@ -482,7 +489,9 @@ virtualservice.networking.istio.io/helloworld  ["helloworld-gateway"] ["*"]  60s
 
 [NOTE]
 ====
-The parameters of the virtual service resource will be covered in the link:../../traffic-management[traffic management] section.
+The parameters of the virtual service resource are covered in the link:../../traffic-management[traffic management] section.
+// TechEditor: [standards] Avoid future tense (or using the term "will") whenever possible.
+// CD: Fixed future tense ("will") use
 ====
 
 
@@ -521,9 +530,10 @@ Hello version: v1, instance: helloworld-v1-776f57d5f6-mfkf7
   istio-${ISTIO_VERSION}/samples/helloworld/loadgen.sh
 
 while true; do curl -s -o /dev/null "http://$GATEWAY_URL/hello"; done
+----
 // TechEditor: [proofread] the dashes below are throwing everything off here, not sure how it is rendering because I cannot see the rendered content.
 // I am going to remove them for now so I can keep adding in inline comments, please check this out.
-
+// CD: Fixed - The dashes are needed for the content to render correctly. I also have the same issue, it might be a bug on the syntax highlight of VSCode.-
 
 6.3) Generate traffic for the example application.
 
