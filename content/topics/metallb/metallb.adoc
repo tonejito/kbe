@@ -1,0 +1,374 @@
+---
+description: MetalLB is a load balancer suitable for local environments
+---
+
+ifndef::backend-docbook5,backend-docbook45[:imagesdir: ../../..]
+
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
+|===
+| {nbsp}
+| link:../../../[🏠]
+| link:../install[⏩]
+|===
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+== MetalLB
+
+The Kubernetes clusters deployed in cloud environments use the functionality from the provider to dynamically provision managed load balancers for the services of type LoadBalancer.
+MetalLB implements the load balancer functionality for local or bare metal Kubernetes clusters that are not deployed in cloud environments.
+
+=== Kubernetes Service Types
+
+Kubernetes has three types of services:
+
+`ClusterIP`::
+The cluster IP service assigns an internal IP address to the service, making it accessible only within the cluster.
+
+`NodePort`::
+The node port service assigns a random port number on the node to expose the service endpoint.
+You can reach the service from outside the cluster specifying the node IP address and the port number.
+
+`LoadBalancer`::
+The load balancer service uses the cloud controller manager to request a managed load balancer from the cloud provider.
++
++
+[NOTE]
+====
+Bare metal and local clusters such as minikube do not have this functionality and load balancer services always get a `<pending>` value for the external IP address.
+====
+// TechEditor: [standards] We do not use contractions and avoid the term "will" wherever possible - - FIXED
+
+=== MetalLB Features
+
+MetalLB provides a load balancer implementation that can be configured to use ARP (layer 2) or BGP (layer 3) to announce service IP addresses.
+
+ARP::
+The service IP address is published by sending ARP (Address Resolution Protocol) responses in the local network.
+This method operates in the data link layer of the OSI model (layer 2).
++
+The administrator only has to provide an IP address range to be used by MetalLB.
+
+BGP::
+The service IP address is published with BGP requests to the router.
+This method operates in the network layer of the OSI model (layer 3).
++
+The administrator has to provide the following items to configure MetalLB with BGP:
++
+[compact]
+* The IP address of the router.
+* The AS (Autonomous System) number of the router.
+* A private AS number to be used by MetalLB.
+* The IP address range CIDR prefix to be used by MetalLB.
++
++
+[NOTE]
+====
+The BGP configuration method is outside the scope of this material.
+====
+
+=== MetalLB components
+
+MetalLB has two components
+
+Controller::
+It is the main MetalLB component that tracks the creation of the load balancer services and allocates the IP addresses.
+The controller pod is executed from a deployment.
+
+Speaker::
+Manages the advertisement of the IP address associated with them.
+The speaker daemon set runs a pod on every node
++
+When configured in layer 2 mode, the speaker application sends Gratuitous ARP messages for IPv4 addresses and Unsolicited Neighbor Advertisement for IPv6.
+If the configuration is in layer 3, then speaker sends BGP advertisements instead.
+// TechEditor: [standards] Avoid future tense (or using the term "will") whenever possible.
+// CD: Fixed future tense ("will") use
+// CD: The protocol is called IPv6 Neighbor Discovery Protocol so I'm leaving the name of the advertisements to match.
+// "https://en.wikipedia.org/wiki/Neighbor_Discovery_Protocol"
+
+=== MetalLB installation options
+
+There are various methods to install MetalLB in a Kubernetes cluster:
+
+* Apply the YAML manifests from the https://github.com/metallb/metallb/tree/v0.12.1/manifests[MetalLB repository].
+
+* Install with `kustomize` and reference https://github.com/metallb/metallb/raw/v0.12.1/manifests/kustomization.yaml[the `kustomization.yaml` file] in the source repository
+// TechEditor: [misc] Should this be in brackets or is this a mistake? file in the source repository]
+// CD: Fixed
+
+* Add the https://metallb.github.io/metallb[chart repository] and deploy the `metallb/metallb` chart with `helm`.
+
+* Install the https://operatorhub.io/operator/metallb-operator[MetalLB Operator] from OperatorHub.
+
+* Enable the `metallb` add-on in minikube.
+
+=== Installing MetalLB in Minikube
+
+Minikube clusters have the option to install MetalLB as an add-on.
+To install MetalLB on minikube, verify the add-on is listed.
+// TechEditor: [terminology] Avoid the use of "check." Use a verb that describes exactly what you mean, e.g., review, verify, inspect, validate, determine...
+// CD: Fixed
+
+[source,bash]
+----
+[user@host kbe]$ minikube addons list
+|--------------------------|----------|------------|-----------------------|
+|        ADDON NAME        | PROFILE  |   STATUS   |      MAINTAINER       |
+|--------------------------|----------|------------|-----------------------|
+...output omitted...
+| metallb                  | minikube | disabled   | unknown (third-party) |
+...output omitted...
+|--------------------------|----------|------------|-----------------------|
+💡 To see addons list for other profiles use: `minikube addons -p name list`
+----
+
+Enable the MetalLB add-on to install the tool.
+
+[source,bash]
+----
+[user@host kbe]$ minikube addons enable metallb
+    ▪ Using image metallb/controller:v0.9.6
+    ▪ Using image metallb/speaker:v0.9.6
+🌟  The 'metallb' addon is enabled
+----
+
+Configure the add-on with the range of IP addresses that MetalLB assigns to the load balancer services.
+// TechEditor: [standards] Avoid future tense (or using the term "will") whenever possible. For example, future tense ("The screen will display...") does not read as well as the present tense ("The screen displays...").
+CD: Fixed future tense ("will") use
+
+[source,bash]
+----
+[user@host kbe]$ minikube addons configure metallb
+-- Enter Load Balancer Start IP: 192.168.59.20
+-- Enter Load Balancer End IP: 192.168.59.30
+    ▪ Using image metallb/speaker:v0.9.6
+    ▪ Using image metallb/controller:v0.9.6
+✅  metallb was successfully configured
+----
+
+[NOTE]
+====
+The load balancer IP address range for MetalLB must not overlap with the DHCP IP address range.
+====
+
+The configuration step created a configuration map named `config` in the `metallb-system` namespace with the MetalLB layer 2 settings.
+You can edit this configuration map to change the settings.
+
+The IP address pool for MetalLB can be specified as `<start-address>-<end-address>` or a CIDR block such as `192.0.2.0/24`.
+
+[source,yaml]
+----
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: metallb-system
+  name: config
+data:
+  config: |
+    address-pools:
+    - name: default
+      protocol: layer2  # <1>
+      addresses:
+      - 192.168.59.20-192.168.59.30  # <2>
+----
+<1> The configuration is set to layer 2 and MetalLB uses ARP.
+<2> IP address range for MetalLB
+
+Inspect the components deployed in the `metallb-system` namespace.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get daemonsets -n metallb-system
+NAME      DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                 AGE
+speaker   1         1         1       1            1           beta.kubernetes.io/os=linux   10m
+
+[user@host kbe]$ kubectl get deployments -n metallb-system
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+controller   1/1     1            1           10m
+
+[user@host kbe]$ kubectl get pods -n metallb-system
+NAME                          READY   STATUS    RESTARTS   AGE
+controller-66bc445b99-tsc68   1/1     Running   0          10m
+speaker-pcs65                 1/1     Running   0          10m
+----
+
+=== Troubleshooting MetalLB
+
+MetalLB creates an endpoint resource with the same name as the load balancer service, verify that the endpoint has an IP address and port number and is not in the `<pending>` state.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get endpoints nginx
+NAME    ENDPOINTS        AGE
+nginx   172.17.0.19:80   27m
+----
+
+Under some circumstances the load balancer service IP address refuses connections, even if it has an external IP address provided by MetalLB.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get services -l app=nginx
+NAME    TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
+nginx   LoadBalancer   10.102.69.228   192.168.59.20   80:30574/TCP   60s
+----
+
+////
+When this happens, clients are unable to connect to the application.
+
+[source,bash]
+----
+[user@host kbe]$ curl -vk# "http://192.168.59.20:80/"
+*   Trying 192.168.59.20...
+* TCP_NODELAY set
+* connect to 192.168.59.20 port 80 failed: Connection refused
+* Failed to connect to 192.168.59.20 port 80: Connection refused
+* Closing connection 0
+curl: (7) Failed to connect to 192.168.59.20 port 80: Connection refused
+----
+////
+
+You can verify if the TCP connection to the service can be established by using `netcat`.
+// TechEditor: [standards] Using - IBM Style Guide: To avoid ambiguity, replace this gerund with either "by using" or "that uses." To refer to something "using" one thing or another is often ambiguous. - - FIXED
+
+[source,bash]
+----
+[user@host kbe]$ nc -vz 192.168.59.20 80
+Ncat: Version 7.70 ( https://nmap.org/ncat )
+Ncat: Connection refused.
+----
+
+You can also review if the IP address range is not set in the configuration map for MetalLB.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get configmap config -n metallb-system -o yaml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: metallb-system
+  name: config
+data:
+  config: |
+    address-pools:
+    - name: default
+      protocol: layer2
+      addresses:
+      - -  # <1>
+----
+<1> The IP address range is empty.
+
+You can assign or change the IP address range for MetalLB by editing the configuration map.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl edit configmap config -n metallb-system
+configmap/config edited
+----
+
+[NOTE]
+====
+You can also extract the resource as YAML, edit the file and apply the resource again to commit the changes.
+====
+
+After the IP address range is configured, the components must be rolled out to apply the changes.
+// TechEditor: [standards] prefer "must" over "need to" - - FIXED
+
+[source,bash]
+----
+[user@host kbe]$ kubectl rollout restart deployment controller -n metallb-system
+deployment.apps/controller restarted
+
+[user@host kbe]$ kubectl rollout restart daemonset speaker -n metallb-system
+daemonset.apps/speaker restarted
+
+[user@host kbe]$ kubectl get pods -n metallb-system
+NAME                        READY   STATUS    RESTARTS   AGE
+controller-6884978f-l5q4w   1/1     Running   0          20s
+speaker-qzxtr               1/1     Running   0          10s
+----
+
+You can verify if the service responds after all the components are restarted.
+
+[source,bash]
+----
+[user@host kbe]$ kubectl get services -l app=nginx
+NAME    TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
+nginx   LoadBalancer   10.102.69.228   192.168.59.20   80:30574/TCP   60s
+
+[user@host kbe]$ nc -vz 192.168.59.20 80
+Ncat: Version 7.70 ( https://nmap.org/ncat )
+Ncat: Connected to 192.168.59.20 80.
+Ncat: 0 bytes sent, 0 bytes received in 0.01 seconds.
+----
+
+You can also verify if the IP address of the service is associated with the MAC address of the minikube VM.
+
+[source,bash]
+----
+[user@host kbe]$ minikube ssh
+
+...output omitted...
+
+$ ip addr show dev eth1
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:56:de:f2 brd ff:ff:ff:ff:ff:ff  # <1>
+    inet 192.168.59.123/24 brd 192.168.59.255 scope global dynamic eth1
+       valid_lft 586sec preferred_lft 586sec
+
+$ exit
+logout
+----
+<1> The MAC address is `08:00:27:56:de:f2`
+
+Delete the entry for the service IP address from the ARP table on the client machine.
+
+[source,bash]
+----
+[root@host kbe]# arp -d 192.168.59.20
+
+[root@host kbe]# arp -d 192.168.59.20
+No ARP entry for 192.168.59.20
+----
+
+Use the `arping` tool to discover which MAC address is associated with the IP address of the service.
+
+[source,bash]
+----
+[root@host kbe]# arping -c 4 -I vboxnet0 192.168.59.20
+ARPING 192.168.59.20 from 192.168.59.1 vboxnet0
+Unicast reply from 192.168.59.20 [08:00:27:56:DE:F2]  2.460ms
+Unicast reply from 192.168.59.20 [08:00:27:56:DE:F2]  3.484ms
+Unicast reply from 192.168.59.20 [08:00:27:56:DE:F2]  1.016ms
+Unicast reply from 192.168.59.20 [08:00:27:56:DE:F2]  1.061ms
+Sent 4 probes (1 broadcast(s))
+Received 4 response(s)
+----
+
+Review the ARP table on the client machine and verify that the MAC address matches minikube VM.
+
+[source,bash]
+----
+[root@host kbe]# arp -an 192.168.59.20
+? (192.168.59.20) at 08:00:27:56:de:f2 [ether] on vboxnet0
+----
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+References
+
+- https://metallb.universe.tf/
+- https://metallb.universe.tf/installation/
+- https://metallb.universe.tf/configuration/
+- https://metallb.universe.tf/configuration/troubleshooting/
+- https://github.com/metallb/metallb/tree/v0.12.1/manifests
+- https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+- https://kubernetes.io/docs/concepts/architecture/cloud-controller/
+
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
+|===
+| {nbsp}
+| link:../../../[🏠]
+| link:../install[⏩]
+|===
