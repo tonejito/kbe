@@ -1,0 +1,168 @@
+/* custom.css */
+
+.center
+{
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.frame-none
+{
+  border: 0px !important;
+  border-collapse: collapse !important;
+  border-style: hidden !important;
+}
+
+li
+{
+  line-height: unset !important;
+}
+
+p
+{
+  margin: 1em;
+}
+
+li > p
+{
+  margin: 0em;
+}
+
+.stretch
+{
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 99%;
+}
+
+.content
+{
+  width: 100%;
+}
+
+.halign-center
+{
+  text-align: center;
+}
+
+.valign-top
+{
+  vertical-align: top;
+}
+
+.colist
+{
+  background-color: #f0f0f0;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  text-align: left;
+}
+
+li::marker
+{
+  font-weight: bold;
+}
+
+/* TODO: Add colour links for admonition blocks */
+.admonitionblock {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  text-align: left;
+}
+
+.admonitionblock.note {
+  /* csslint allow: adjoining-classes */
+  color: #3a87ad;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}
+
+.admonitionblock.warning {
+  /* csslint allow: adjoining-classes */
+  color: #c09853;
+  background-color: #fcf8e3;
+  border-color: #fbeed5;
+}
+
+.admonitionblock.danger {
+  /* csslint allow: adjoining-classes */
+  color: #b94a48;
+  background-color: #f2dede;
+  border-color: #eed3d7;
+}
+
+.admonitionblock.important {
+  /* csslint allow: adjoining-classes */
+  color: #b94a48;
+  background-color: #f2dede;
+  border-color: #eed3d7;
+}
+
+.admonitionblock.title {
+  font-weight: bold;
+  text-align: left;
+}
+
+/*
+.icon
+{
+}
+
+.title
+{
+}
+
+.content
+{
+}
+
+.paragraph
+{
+}
+*/
+
+.watermark-container
+{
+  width: 99%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.watermark {
+  opacity: 0.2;
+  font-size: 3em;
+  color: black;
+  /* background: #c0c0c0; */
+  background: '#ccc';
+  /* display: flex; */
+  position: fixed;
+  cursor: default;
+  user-select: none;
+  right: 1em;
+  bottom: 1em;
+  /* top: 4.5em; */
+  /* left: 2em; */
+  margin-left: auto;
+  margin-right: auto;
+  /* float: left; */
+  /*
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  */
+  /* transform: rotate(30deg); */
+  text-align: center;
+}
+
+.not-visible
+{
+  height: 0em;
+  display: none;
+  visibility: hidden;
+}

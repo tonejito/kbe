@@ -1,2 +1,9 @@
+#	.gitignore
 .DS_Store
+Icon
+
+.sw?
+.*.sw?
+
 /public/
+Settings.desktop

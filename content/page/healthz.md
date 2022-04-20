@@ -139,4 +139,4 @@ kubectl delete pod/hc pod/ready pod/badpod
 Learn more about configuring probes, including TCP and command probes, via the
 [docs](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/).
 
-[Previous](/sd) | [Next](/envs)
+[Previous](../sd) | [Next](../envs)

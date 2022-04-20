@@ -71,4 +71,4 @@ configmaps                            cm         true         ConfigMap
 ...
 ```
 
-[Previous](/nodes)
+[Previous](../nodes)

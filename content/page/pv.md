@@ -102,4 +102,4 @@ persistentvolumeclaim "myclaim" deleted
 
 The types of PV available in your Kubernetes cluster depend on the environment (on-prem or public cloud). Check out the [Stateful Kubernetes](https://stateful.kubernetes.sh/#storage) reference site if you want to learn more about this topic.
 
-[Previous](/volumes) | [Next](/secrets)
+[Previous](../volumes) | [Next](../secrets)

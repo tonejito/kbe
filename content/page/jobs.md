@@ -105,4 +105,4 @@ Note that there are also more advanced ways to use jobs, for example,
 by utilizing a [work queue](https://kubernetes.io/docs/tasks/job/coarse-parallel-processing-work-queue/)
 or scheduling the execution at a certain time via [cron jobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/).
 
-[Previous](/logging) | [Next](/statefulset)
+[Previous](../logging) | [Next](../statefulset)

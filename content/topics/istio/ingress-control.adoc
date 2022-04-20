@@ -1,0 +1,143 @@
+---
+description: Istio Ingress Control
+draft: true
+---
+
+ifndef::backend-docbook5,backend-docbook45[:imagesdir: ../../..]
+
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
+|===
+| link:../install[⏪]
+| link:../../../[🏠]
+| link:../ingress[⏩]
+|===
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+== Istio Ingress Control
+
+Istio implements the https://kubernetes.io/docs/concepts/services-networking/ingress/[Kubernetes ingress] resource to expose a service and make it accessible from outside the cluster.
+
+[NOTE]
+====
+The general recommendation is to use Istio gateway, and virtual service resources to allow a more complete control over the traffic.
+That content is covered in the link:../traffic-management[traffic management] section.
+====
+
+=== Ingress
+
+The Kubernetes ingress resource has a set of rules to match the incoming HTTP traffic to route the request to a back-end service.
+// TechEditor: [standards] ⁠back end, back-end n. Two words. Refers to software that performs the final stages of a process, or to tasks that are not visible to the user. For example, "each back end provides a set of calls." adj. Hyphenate. For example, "when the back-end database processes a search operation …" Do not use "backend."
+// Please check for all other instances throughout all sections, I wont comment out again.
+// CD: Fixed
+Each rule matches a DNS name and a set of paths to forward the traffic to a back-end service.
+
+The ingress resource has the following fields on the YAML manifest.
+
+`rules`::
+List of rules to match against incoming HTTP traffic.
+
+`host`::
+List of host names to match the HTTP traffic.
+The host can be set to a specific DNS name, wildcards such as `\*.example.com` are supported, and it can be defined as `'*'` to match all hostnames.
+
+`paths`::
+List of URL paths that are matched against HTTP requests.
+
+`pathType`::
+* The value `Exact` matches the provided path as is.
+* The value `Prefix` matches the provided path if it begins with the specified prefix.
+
+`backend`::
+Specifies the service that receives the traffic.
+
+The following code listing is an example of an ingress resource manifest.
+// TechEditor: [style] When introducing a list or a procedure, use "following" with a noun. Complete the following (Complete the following steps) (The following command/code block is)
+// CD: Fixed
+
+[source,yaml]
+----
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+  annotations:
+    kubernetes.io/ingress.class: istio  # <1>
+spec:
+  rules:  # <2>
+  - host: dashboard.192.168.59.20.nip.io  # <3>
+    http:
+      paths:  # <4>
+      - path: /
+        pathType: Prefix  # <5>
+        backend:  # <6>
+          service:
+            name: kubernetes-dashboard
+            port:
+              number: 80
+----
+<1> Specifies that Istio handles this ingress resource.
+<2> Set of rules to be applied against incoming HTTP traffic.
+<3> DNS host name where the ingress serves traffic.
+<4> List of paths to match HTTP traffic.
+<5> Type of match that should be applied to the path.
+<6> Back-end service name and port number.
+
+==== Ingress Class
+
+The annotation is required to tell the Istio gateway controller that it should handle this ingress resource, otherwise is ignored.
+
+[source,yaml]
+----
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+----
+
+[NOTE]
+====
+The `kubernetes.io/ingress.class` annotation was deprecated in Kubernetes 1.22+.
+However, Istio does not support the `ingressClassName` field unless you also modify the Istio ingress class.
+
+[source,yaml]
+----
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: IngressClass
+metadata:
+  name: istio
+spec:
+  controller: istio.io/ingress-controller
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  ingressClassName: istio
+  ...output omitted...
+----
+====
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+References
+
+* https://kubernetes.io/docs/concepts/services-networking/ingress/
+* https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/#using-multiple-ingress-controllers
+* https://kubernetes.io/docs/reference/labels-annotations-taints/#ingressclass-kubernetes-io-is-default-class
+* https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/
+* https://istio.io/v1.12/docs/reference/config/annotations/
+* https://istio.io/v1.12/docs/tasks/traffic-management/ingress/kubernetes-ingress/
+* https://istio.io/v1.12/docs/examples/microservices-istio/istio-ingress-gateway/
+* https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#ingress-v1-networking-k8s-io
+* https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#ingressclass-v1-networking-k8s-io
+
+[cols="^1a,^8a,^1a",frame="none",grid="none",align="center",halign="center",valign="middle"]
+|===
+| link:../install[⏪]
+| link:../../../[🏠]
+| link:../ingress[⏩]
+|===

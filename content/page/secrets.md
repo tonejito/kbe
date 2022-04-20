@@ -43,7 +43,7 @@ apikey.txt:     12 bytes
 ```
 
 Now let's use the secret in a [pod](https://github.com/openshift-evangelists/kbe/blob/main/specs/secrets/pod.yaml)
-via a [volume](/volumes/):
+via a [volume](../volumes/):
 
 
 ```bash
@@ -81,4 +81,4 @@ You can remove both the pod and the secret with:
 kubectl delete pod/consumesec secret/apikey
 ```
 
-[Previous](/volumes) | [Next](/logging)
+[Previous](../volumes) | [Next](../logging)

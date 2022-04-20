@@ -5,7 +5,7 @@ date = "2019-02-27"
 url = "/sd/"
 +++
 
-Service discovery is the process of figuring out how to connect to a [service](/services/).
+Service discovery is the process of figuring out how to connect to a [service](../services/).
 While there is a service discovery option based on [environment variables](https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/#environment-variables) available,
 the DNS-based service discovery is preferable. Note that [Kube DNS is a cluster add-on](https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/dns/kube-dns/README.md), which means that it may need to installed, configured, or enabled in order to function correctly.
 
@@ -67,7 +67,7 @@ Let's see how that works by creating:
 1. a [service](https://github.com/openshift-evangelists/kbe/blob/main/specs/sd/other-svc.yaml) `thesvc` in namespace `other`
 1. an [RC](https://github.com/openshift-evangelists/kbe/blob/main/specs/sd/other-rc.yaml) supervising the pods, also in namespace `other`
 
-If you're not familiar with namespaces, check out the [namespace examples](/ns/) first.
+If you're not familiar with namespaces, check out the [namespace examples](../ns/) first.
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/sd/other-ns.yaml
@@ -109,4 +109,4 @@ kubectl delete ns other
 
 Keep in mind that removing a namespace will destroy every resource inside.
 
-[Previous](/services) | [Next](/pf)
+[Previous](../services) | [Next](../pf)
