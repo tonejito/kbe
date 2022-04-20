@@ -1,0 +1,138 @@
+baseURL: 'https://kubernetesbyexample.com'
+DefaultContentLanguage: en
+title: Kubernetes By Example
+theme: beautifulhugo
+metaDataFormat: yaml
+googleAnalytics: UA-34425776-2
+
+security:
+  exec:
+    allow:
+      - ^dart-sass-embedded$
+      - ^go$
+      - ^npx$
+      - ^postcss$
+      - ^asciidoctor$
+      - ^pandoc$
+
+Params:
+  subtitle: Brought to you by the OpenShift team
+  logo: img/kbe-logo.png
+  favicon: img/kbe-logo.ico
+  dateFormat: '2006-01-02'
+  commit: false
+  rss: false
+  custom_css:
+    - css/custom.css
+  watermark: For testing purposes only
+  annoying_banner_ad: false
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true  # default is false
+  highlight:
+    style: tango    # default is monokai
+
+menu:
+  main:
+    - name: Try out!
+      identifier: try-out
+      url: diy/
+      weight: '3'
+
+    - name: Contribute
+      identifier: contribute
+      url: 'https://github.com/openshift-evangelists/kbe'
+      weight: '2'
+
+    - name: Hands-on Examples
+      identifier: hands-on
+      url: /
+      weight: '1'
+    - name: Pods
+      parent: hands-on
+      url: pods/
+      weight: '1'
+    - name: Labels
+      parent: hands-on
+      url: labels/
+      weight: '2'
+    - name: Deployments
+      parent: hands-on
+      url: deployments/
+      weight: '3'
+    - name: Services
+      parent: hands-on
+      url: services/
+      weight: '4'
+    - name: Service Discovery
+      parent: hands-on
+      url: sd/
+      weight: '5'
+    - name: Port Forward
+      parent: hands-on
+      url: pf/
+      weight: '6'
+    - name: Health Checks
+      parent: hands-on
+      url: healthz/
+      weight: '7'
+    - name: Environment Variables
+      parent: hands-on
+      url: envs/
+      weight: '8'
+    - name: Namespaces
+      parent: hands-on
+      url: ns/
+      weight: '9'
+    - name: Volumes
+      parent: hands-on
+      url: volumes/
+      weight: '10'
+    - name: Persistent Volumes
+      parent: hands-on
+      url: pv/
+      weight: '11'
+    - name: Secrets
+      parent: hands-on
+      url: secrets/
+      weight: '12'
+    - name: Logging
+      parent: hands-on
+      url: logging/
+      weight: '13'
+    - name: Jobs
+      parent: hands-on
+      url: jobs/
+      weight: '14'
+    - name: Stateful Sets
+      parent: hands-on
+      url: statefulset/
+      weight: '15'
+    - name: Init Containers
+      parent: hands-on
+      url: ic/
+      weight: '16'
+    - name: Nodes
+      parent: hands-on
+      url: nodes/
+      weight: '17'
+    - name: API Server
+      parent: hands-on
+      url: api/
+      weight: '18'
+
+    - name: Other topics
+      identifier: topics
+      url: /
+      weight: '1'
+    - name: MetalLB
+      parent: topics
+      url: topics/metallb/metallb/
+      weight: '1'
+    - name: Istio
+      parent: topics
+      url: topics/istio/istio/
+      weight: '2'
+
