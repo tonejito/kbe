@@ -450,7 +450,7 @@ virtualservice.networking.istio.io/helloworld created
 
 [NOTE]
 ====
-The parameters of the gateway and virtual service resources are covered in the link:../../traffic-management[traffic management] section.
+The parameters of the gateway and virtual service resources are covered in the link:../../istio/traffic-management[traffic management] section.
 // TechEditor: [standards] Avoid future tense (or using the term "will") whenever possible.
 // CD: Fixed future tense ("will") use
 
