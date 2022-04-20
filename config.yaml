@@ -1,4 +1,7 @@
-baseURL: 'https://kubernetesbyexample.com'
+---
+# baseURL: "https://kubernetesbyexample.com"
+baseURL: "https://tonejito.github.io/kbe/"
+
 DefaultContentLanguage: en
 title: Kubernetes By Example
 theme: beautifulhugo
@@ -43,9 +46,10 @@ menu:
 
     - name: Contribute
       identifier: contribute
-      url: 'https://github.com/openshift-evangelists/kbe'
+      url: 'https://github.com/openshift-evangelists/kbe.git'
       weight: '2'
 
+    # Legacy content that should be kept as-is
     - name: Hands-on Examples
       identifier: hands-on
       url: /
@@ -123,6 +127,7 @@ menu:
       url: api/
       weight: '18'
 
+    # Add your own content under "content/topics/<name>"
     - name: Other topics
       identifier: topics
       url: /
