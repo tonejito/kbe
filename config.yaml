@@ -4,9 +4,13 @@ baseURL: "https://tonejito.github.io/kbe/"
 
 DefaultContentLanguage: en
 title: Kubernetes By Example
+# https://themes.gohugo.io/themes/beautifulhugo/
 theme: beautifulhugo
 metaDataFormat: yaml
 googleAnalytics: UA-34425776-2
+
+# Disable copy button in code blocks
+pygmentsCodeFences: false
 
 security:
   exec:
@@ -96,7 +100,7 @@ menu:
       weight: '10'
     - name: Persistent Volumes
       parent: hands-on
-      url: pv/
+      url: concepts/persistent-volumes  # pv/
       weight: '11'
     - name: Secrets
       parent: hands-on
