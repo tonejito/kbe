@@ -50,17 +50,6 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
 
   
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small;' role="alert">
-    <strong>Kubernetes By Example is evolving!</strong>
-    <br/>
-    On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.
-    <br/>
-    Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  
 
   <div class="container-fluid">
     <div class="navbar-header">
@@ -95,19 +84,19 @@
                 
                   <a href="/kbe/healthz/">Health Checks</a>
                 
-                  <a href="/kbe/envs/">Environment Variables</a>
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
                 
                   <a href="/kbe/ns/">Namespaces</a>
                 
                   <a href="/kbe/volumes/">Volumes</a>
                 
-                  <a href="/kbe/pv/">Persistent Volumes</a>
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
                 
                   <a href="/kbe/secrets/">Secrets</a>
                 
                   <a href="/kbe/logging/">Logging</a>
                 
-                  <a href="/kbe/jobs/">Jobs</a>
+                  <a href="/kbe/concepts/jobs">Jobs</a>
                 
                   <a href="/kbe/statefulset/">Stateful Sets</a>
                 
@@ -136,7 +125,7 @@
         
           
             <li>
-              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
             </li>
           
         
@@ -212,17 +201,23 @@ a process that runs for a certain time to completion, for example a calculation
 or a backup operation.</p>
 <p>Let&rsquo;s create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/jobs/job.yaml">job</a>
 called <code>countdown</code> that supervises a pod counting from 9 down to 1:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/jobs/job.yaml
-</code></pre></div><p>You can see the job and the pod it looks after like so:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get jobs
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                      DESIRED   SUCCESSFUL   AGE
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/jobs/job.yaml
+</code></pre>
+<p>You can see the job and the pod it looks after like so:</p>
+<pre><code class="language-bash">kubectl get jobs
+</code></pre>
+<pre><code class="language-cat">NAME                      DESIRED   SUCCESSFUL   AGE
 countdown                 1         1            5s
-</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME              READY   STATUS      RESTARTS   AGE
+</code></pre>
+<pre><code class="language-bash">kubectl get pods
+</code></pre>
+<pre><code class="language-cat">NAME              READY   STATUS      RESTARTS   AGE
 countdown-qkjx8   0/1     Completed   0          2m17s
-</code></pre><p>To learn more about the status of the job, do:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl describe jobs/countdown
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">Name:           countdown
+</code></pre>
+<p>To learn more about the status of the job, do:</p>
+<pre><code class="language-bash">kubectl describe jobs/countdown
+</code></pre>
+<pre><code class="language-cat">Name:           countdown
 Namespace:      default
 Selector:       controller-uid=4960c8be-6a3f-11ea-84fd-0242ac11002a
 Labels:         controller-uid=4960c8be-6a3f-11ea-84fd-0242ac11002a
@@ -254,9 +249,11 @@ Events:
   Type    Reason            Age    From            Message
   ----    ------            ----   ----            -------
   Normal  SuccessfulCreate  3m18s  job-controller  Created pod: countdown-qkjx8
-</code></pre><p>And to see the output of the job via the pod it supervised, execute:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl logs countdown-qkjx8
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">9
+</code></pre>
+<p>And to see the output of the job via the pod it supervised, execute:</p>
+<pre><code class="language-bash">kubectl logs countdown-qkjx8
+</code></pre>
+<pre><code class="language-cat">9
 8
 7
 6
@@ -265,11 +262,14 @@ Events:
 3
 2
 1
-</code></pre><p>To clean up, use the <code>delete</code> verb on the job object which will remove all the
+</code></pre>
+<p>To clean up, use the <code>delete</code> verb on the job object which will remove all the
 supervised pods:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete job countdown
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">job &quot;countdown&quot; deleted
-</code></pre><p>Note that there are also more advanced ways to use jobs, for example,
+<pre><code class="language-bash">kubectl delete job countdown
+</code></pre>
+<pre><code class="language-cat">job &quot;countdown&quot; deleted
+</code></pre>
+<p>Note that there are also more advanced ways to use jobs, for example,
 by utilizing a <a href="https://kubernetes.io/docs/tasks/job/coarse-parallel-processing-work-queue/">work queue</a>
 or scheduling the execution at a certain time via <a href="https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/">cron jobs</a>.</p>
 <p><a href="../logging">Previous</a> | <a href="../statefulset">Next</a></p>

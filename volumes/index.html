@@ -50,17 +50,6 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
 
   
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small;' role="alert">
-    <strong>Kubernetes By Example is evolving!</strong>
-    <br/>
-    On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.
-    <br/>
-    Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  
 
   <div class="container-fluid">
     <div class="navbar-header">
@@ -95,19 +84,19 @@
                 
                   <a href="/kbe/healthz/">Health Checks</a>
                 
-                  <a href="/kbe/envs/">Environment Variables</a>
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
                 
                   <a href="/kbe/ns/">Namespaces</a>
                 
                   <a href="/kbe/volumes/">Volumes</a>
                 
-                  <a href="/kbe/pv/">Persistent Volumes</a>
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
                 
                   <a href="/kbe/secrets/">Secrets</a>
                 
                   <a href="/kbe/logging/">Logging</a>
                 
-                  <a href="/kbe/jobs/">Jobs</a>
+                  <a href="/kbe/concepts/jobs">Jobs</a>
                 
                   <a href="/kbe/statefulset/">Stateful Sets</a>
                 
@@ -136,7 +125,7 @@
         
           
             <li>
-              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
             </li>
           
         
@@ -219,40 +208,57 @@ running in a pod. In contrast to the container-local filesystem, the data in vol
 <p>A special type of volume is <code>PersistentVolume</code>, which we will cover elsewhere.</p>
 <p>Let&rsquo;s create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/volumes/pod.yaml">pod</a>
 with two containers that use an <code>emptyDir</code> volume to exchange data:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/volumes/pod.yaml
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl describe pod sharevol
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">Name:                   sharevol
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/volumes/pod.yaml
+</code></pre>
+<pre><code class="language-bash">kubectl describe pod sharevol
+</code></pre>
+<pre><code class="language-cat">Name:                   sharevol
 Namespace:              default
 ...
 Volumes:
   xchange:
     Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
     Medium:
-</code></pre><p>We first exec into one of the containers in the pod, <code>c1</code>, check the volume mount
+</code></pre>
+<p>We first exec into one of the containers in the pod, <code>c1</code>, check the volume mount
 and generate some data:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec -it sharevol -c c1 -- bash
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mount | grep xchange
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">/dev/vda3 on /tmp/xchange type xfs (rw,relatime,seclabel,attr2,inode64,rjquota)
-</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">echo <span style="color:#e6db74">&#39;some data&#39;</span> &gt; /tmp/xchange/data
-</code></pre></div><p>exit the pod to continue</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">exit
-</code></pre></div><p>When we now exec into <code>c2</code>, the second container running in the pod, we can see
+<pre><code class="language-bash">kubectl exec -it sharevol -c c1 -- bash
+</code></pre>
+<pre><code class="language-bash">mount | grep xchange
+</code></pre>
+<pre><code class="language-cat">/dev/vda3 on /tmp/xchange type xfs (rw,relatime,seclabel,attr2,inode64,rjquota)
+</code></pre>
+<pre><code class="language-bash">echo 'some data' &gt; /tmp/xchange/data
+</code></pre>
+<p>exit the pod to continue</p>
+<pre><code class="language-bash">exit
+</code></pre>
+<p>When we now exec into <code>c2</code>, the second container running in the pod, we can see
 the volume mounted at <code>/tmp/data</code> and are able to read the data created in the
 previous step:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec -it sharevol -c c2 -- bash
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mount | grep /tmp/data
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">/dev/vda3 on /tmp/data type xfs (rw,relatime,seclabel,attr2,inode64,prjquota)
-</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat /tmp/data/data/
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">cat: /tmp/data/data/: Not a directory
-</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat /tmp/data/data
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">some data
-</code></pre><p>Note that in each container you need to decide where to mount the volume and
+<pre><code class="language-bash">kubectl exec -it sharevol -c c2 -- bash
+</code></pre>
+<pre><code class="language-bash">mount | grep /tmp/data
+</code></pre>
+<pre><code class="language-cat">/dev/vda3 on /tmp/data type xfs (rw,relatime,seclabel,attr2,inode64,prjquota)
+</code></pre>
+<pre><code class="language-bash">cat /tmp/data/data/
+</code></pre>
+<pre><code class="language-cat">cat: /tmp/data/data/: Not a directory
+</code></pre>
+<pre><code class="language-bash">cat /tmp/data/data
+</code></pre>
+<pre><code class="language-cat">some data
+</code></pre>
+<p>Note that in each container you need to decide where to mount the volume and
 that for <code>emptyDir</code> you currently can not specify resource consumption limits.</p>
 <p>return to continue</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">exit
-</code></pre></div><p>You can remove the pod with:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete pod/sharevol
-</code></pre></div><p>As already described, this will destroy the shared volume and all its contents.</p>
+<pre><code class="language-bash">exit
+</code></pre>
+<p>You can remove the pod with:</p>
+<pre><code class="language-bash">kubectl delete pod/sharevol
+</code></pre>
+<p>As already described, this will destroy the shared volume and all its contents.</p>
 <p><a href="../ns">Previous</a> | <a href="../pv">Next</a></p>
 
         

@@ -50,17 +50,6 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
 
   
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small;' role="alert">
-    <strong>Kubernetes By Example is evolving!</strong>
-    <br/>
-    On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.
-    <br/>
-    Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  
 
   <div class="container-fluid">
     <div class="navbar-header">
@@ -95,19 +84,19 @@
                 
                   <a href="/kbe/healthz/">Health Checks</a>
                 
-                  <a href="/kbe/envs/">Environment Variables</a>
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
                 
                   <a href="/kbe/ns/">Namespaces</a>
                 
                   <a href="/kbe/volumes/">Volumes</a>
                 
-                  <a href="/kbe/pv/">Persistent Volumes</a>
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
                 
                   <a href="/kbe/secrets/">Secrets</a>
                 
                   <a href="/kbe/logging/">Logging</a>
                 
-                  <a href="/kbe/jobs/">Jobs</a>
+                  <a href="/kbe/concepts/jobs">Jobs</a>
                 
                   <a href="/kbe/statefulset/">Stateful Sets</a>
                 
@@ -136,7 +125,7 @@
         
           
             <li>
-              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
             </li>
           
         
@@ -212,8 +201,9 @@ as a workspace you&rsquo;re sharing with other users. Many resources such as pod
 services are namespaced, while some, for example, nodes are not namespaced (but cluster-wide). As a developer you&rsquo;d usually use an assigned namespace, however admins may wish to manage them, for example to set up access control or resource quotas.</p>
 <p>Let&rsquo;s list all namespaces (note that the output will depend on the environment
 you&rsquo;re using, we&rsquo;re using the <a href="../diy/">OpenShift Playground</a> here):</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get ns
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                                                    STATUS   AGE
+<pre><code class="language-bash">kubectl get ns
+</code></pre>
+<pre><code class="language-cat">NAME                                                    STATUS   AGE
 default                                                 Active   98d
 kube-node-lease                                         Active   98d
 kube-public                                             Active   98d
@@ -221,21 +211,27 @@ kube-system                                             Active   98d
 openshift                                               Active   98d
 openshift-apiserver                                     Active   98d
 ...
-</code></pre><p>You can learn more about a namespace using the <code>describe</code> verb, for example:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl describe ns default
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">Name:   default
+</code></pre>
+<p>You can learn more about a namespace using the <code>describe</code> verb, for example:</p>
+<pre><code class="language-bash">kubectl describe ns default
+</code></pre>
+<pre><code class="language-cat">Name:   default
 Labels: &lt;none&gt;
 Status: Active
 
 No resource quota.
 
 No resource limits.
-</code></pre><p>Let&rsquo;s now create a new <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/ns/ns.yaml">namespace</a>
+</code></pre>
+<p>Let&rsquo;s now create a new <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/ns/ns.yaml">namespace</a>
 called <code>test</code> now:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/ns/ns.yaml
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">namespace &quot;test&quot; created
-</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get ns
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                                                    STATUS   AGE
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/ns/ns.yaml
+</code></pre>
+<pre><code class="language-cat">namespace &quot;test&quot; created
+</code></pre>
+<pre><code class="language-bash">kubectl get ns
+</code></pre>
+<pre><code class="language-cat">NAME                                                    STATUS   AGE
 default                                                 Active   98d
 kube-node-lease                                         Active   98d
 kube-public                                             Active   98d
@@ -244,26 +240,32 @@ openshift                                               Active   98d
 openshift-apiserver                                     Active   98d
 ...
 test                                                    Active   16s
-</code></pre><p>Alternatively, we could have created the namespace using the <code>kubectl create namespace test</code> command.</p>
+</code></pre>
+<p>Alternatively, we could have created the namespace using the <code>kubectl create namespace test</code> command.</p>
 <p>To launch a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/ns/pod.yaml">pod</a> in
 the newly created namespace <code>test</code>, do:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply --namespace<span style="color:#f92672">=</span>test -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/ns/pod.yaml
-</code></pre></div><p>Note that using above method the namespace becomes a runtime property, that is,
+<pre><code class="language-bash">kubectl apply --namespace=test -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/ns/pod.yaml
+</code></pre>
+<p>Note that using above method the namespace becomes a runtime property, that is,
 you can deploy the same pod or service, etc. into multiple
 namespaces (for example: <code>dev</code> and <code>prod</code>). Hard-coding the
 namespace directly in the <code>metadata</code> section like shown in the following is possible but causes less flexibility when deploying your apps:</p>
-<pre tabindex="0"><code class="language-cat" data-lang="cat">apiVersion: v1
+<pre><code class="language-cat">apiVersion: v1
 kind: Pod
 metadata:
   name: podintest
   namespace: test
-</code></pre><p>To list namespaced objects such as our pod <code>podintest</code>, run the following command:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods --namespace<span style="color:#f92672">=</span>test
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME        READY     STATUS    RESTARTS   AGE
+</code></pre>
+<p>To list namespaced objects such as our pod <code>podintest</code>, run the following command:</p>
+<pre><code class="language-bash">kubectl get pods --namespace=test
+</code></pre>
+<pre><code class="language-cat">NAME        READY     STATUS    RESTARTS   AGE
 podintest   1/1       Running   0          16s
-</code></pre><p>You can remove the namespace (and everything inside) with:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete ns test
-</code></pre></div><p>If you&rsquo;re an admin, you might want to check out the <a href="https://kubernetes.io/docs/tasks/administer-cluster/namespaces/">docs</a>
+</code></pre>
+<p>You can remove the namespace (and everything inside) with:</p>
+<pre><code class="language-bash">kubectl delete ns test
+</code></pre>
+<p>If you&rsquo;re an admin, you might want to check out the <a href="https://kubernetes.io/docs/tasks/administer-cluster/namespaces/">docs</a>
 for more info how to handle namespaces.</p>
 <p><a href="../envs">Previous</a> | <a href="../volumes">Next</a></p>
 

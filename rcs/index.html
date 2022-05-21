@@ -50,17 +50,6 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
 
   
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small;' role="alert">
-    <strong>Kubernetes By Example is evolving!</strong>
-    <br/>
-    On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.
-    <br/>
-    Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  
 
   <div class="container-fluid">
     <div class="navbar-header">
@@ -95,19 +84,19 @@
                 
                   <a href="/kbe/healthz/">Health Checks</a>
                 
-                  <a href="/kbe/envs/">Environment Variables</a>
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
                 
                   <a href="/kbe/ns/">Namespaces</a>
                 
                   <a href="/kbe/volumes/">Volumes</a>
                 
-                  <a href="/kbe/pv/">Persistent Volumes</a>
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
                 
                   <a href="/kbe/secrets/">Secrets</a>
                 
                   <a href="/kbe/logging/">Logging</a>
                 
-                  <a href="/kbe/jobs/">Jobs</a>
+                  <a href="/kbe/concepts/jobs">Jobs</a>
                 
                   <a href="/kbe/statefulset/">Stateful Sets</a>
                 
@@ -136,7 +125,7 @@
         
           
             <li>
-              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
             </li>
           
         
@@ -213,32 +202,42 @@ sure that they keep running, for example when a node fails or something
 inside of a pod, that is, in one of its containers goes wrong.</p>
 <p>Let&rsquo;s create an <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/rcs/rc.yaml">RC</a>
 that supervises a single replica of a pod:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/rcs/rc.yaml
-</code></pre></div><p>You can see the RC and the pod it looks after like so:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get rc
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                DESIRED   CURRENT   READY     AGE
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/rcs/rc.yaml
+</code></pre>
+<p>You can see the RC and the pod it looks after like so:</p>
+<pre><code class="language-bash">kubectl get rc
+</code></pre>
+<pre><code class="language-cat">NAME                DESIRED   CURRENT   READY     AGE
 rcex                1         1         1         3m
-</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods --show-labels
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME           READY     STATUS    RESTARTS   AGE    LABELS
+</code></pre>
+<pre><code class="language-bash">kubectl get pods --show-labels
+</code></pre>
+<pre><code class="language-cat">NAME           READY     STATUS    RESTARTS   AGE    LABELS
 rcex-qrv8j     1/1       Running   0          4m     app=sise
-</code></pre><p>Note two things here:</p>
+</code></pre>
+<p>Note two things here:</p>
 <ul>
 <li>the supervised pod got a random name assigned
 (<code>rcex-qrv8j</code>)</li>
 <li>the way the RC keeps track of its pods is via the label, here <code>app=sise</code></li>
 </ul>
 <p>To scale up, that is, to increase the number of replicas, do:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl scale --replicas<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> rc/rcex
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods -l app<span style="color:#f92672">=</span>sise
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME         READY     STATUS    RESTARTS   AGE
+<pre><code class="language-bash">kubectl scale --replicas=3 rc/rcex
+</code></pre>
+<pre><code class="language-bash">kubectl get pods -l app=sise
+</code></pre>
+<pre><code class="language-cat">NAME         READY     STATUS    RESTARTS   AGE
 rcex-1rh9r   1/1       Running   0          54s
 rcex-lv6xv   1/1       Running   0          54s
 rcex-qrv8j   1/1       Running   0          10m
 
-</code></pre><p>Finally, to get rid of the RC and the pods it is supervising, use:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete rc rcex
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">replicationcontroller &quot;rcex&quot; deleted
-</code></pre><p>Note that, going forward, the RCs are called <a href="https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/">replica sets</a> (RS), supporting set-based selectors. The RS are already in use in the context of <a href="../deployments/">deployments</a>.</p>
+</code></pre>
+<p>Finally, to get rid of the RC and the pods it is supervising, use:</p>
+<pre><code class="language-bash">kubectl delete rc rcex
+</code></pre>
+<pre><code class="language-cat">replicationcontroller &quot;rcex&quot; deleted
+</code></pre>
+<p>Note that, going forward, the RCs are called <a href="https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/">replica sets</a> (RS), supporting set-based selectors. The RS are already in use in the context of <a href="../deployments/">deployments</a>.</p>
 <p><a href="../labels">Previous</a> | <a href="../deployments">Next</a></p>
 
         

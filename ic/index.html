@@ -50,17 +50,6 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
 
   
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small;' role="alert">
-    <strong>Kubernetes By Example is evolving!</strong>
-    <br/>
-    On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.
-    <br/>
-    Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  
 
   <div class="container-fluid">
     <div class="navbar-header">
@@ -95,19 +84,19 @@
                 
                   <a href="/kbe/healthz/">Health Checks</a>
                 
-                  <a href="/kbe/envs/">Environment Variables</a>
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
                 
                   <a href="/kbe/ns/">Namespaces</a>
                 
                   <a href="/kbe/volumes/">Volumes</a>
                 
-                  <a href="/kbe/pv/">Persistent Volumes</a>
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
                 
                   <a href="/kbe/secrets/">Secrets</a>
                 
                   <a href="/kbe/logging/">Logging</a>
                 
-                  <a href="/kbe/jobs/">Jobs</a>
+                  <a href="/kbe/concepts/jobs">Jobs</a>
                 
                   <a href="/kbe/statefulset/">Stateful Sets</a>
                 
@@ -136,7 +125,7 @@
         
           
             <li>
-              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
             </li>
           
         
@@ -209,25 +198,32 @@
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <p>It&rsquo;s sometimes necessary to prepare a container running in a pod. For example, you might want to wait for a service being available, want to configure things at runtime, or init some data in a database. In all of these cases, <a href="https://kubernetes.io/docs/concepts/workloads/pods/init-containers/">init containers</a> are useful. Note that Kubernetes will execute all init containers (and they must all exit successfully) before the main container(s) are executed.</p>
 <p>So let&rsquo;s create an <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/ic/deploy.yaml">deployment</a> consisting of an init container that writes a message into a file at <code>/ic/this</code> and the main (long-running) container reading out this file, then:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/ic/deploy.yaml
-</code></pre></div><p>Now we can check the output of the main container:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get deploy,po
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/ic/deploy.yaml
+</code></pre>
+<p>Now we can check the output of the main container:</p>
+<pre><code class="language-bash">kubectl get deploy,po
+</code></pre>
+<pre><code class="language-cat">NAME                              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 deployment.extensions/ic-deploy   1         1         1            1           11m
 
 NAME                            READY   STATUS    RESTARTS   AGE
 pod/ic-deploy-bf75cbf87-8zmrb   1/1     Running   0          59s
-</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl logs ic-deploy-bf75cbf87-8zmrb -f
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">INIT_DONE
+</code></pre>
+<pre><code class="language-bash">kubectl logs ic-deploy-bf75cbf87-8zmrb -f
+</code></pre>
+<pre><code class="language-cat">INIT_DONE
 INIT_DONE
 INIT_DONE
 INIT_DONE
 INIT_DONE
-</code></pre><p>Send a break signal (Ctrl-C) when you&rsquo;re ready to disconnect from the log stream:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">^C
-</code></pre></div><p>Now we can cleanup after we are done as follows:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/ic/deploy.yaml
-</code></pre></div><p>If you want to learn more about init containers and related topics, check out the blog post <a href="https://blog.openshift.com/kubernetes-pods-life/">Kubernetes: A Pod’s Life</a>.</p>
+</code></pre>
+<p>Send a break signal (Ctrl-C) when you&rsquo;re ready to disconnect from the log stream:</p>
+<pre><code class="language-bash">^C
+</code></pre>
+<p>Now we can cleanup after we are done as follows:</p>
+<pre><code class="language-bash">kubectl delete -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/ic/deploy.yaml
+</code></pre>
+<p>If you want to learn more about init containers and related topics, check out the blog post <a href="https://blog.openshift.com/kubernetes-pods-life/">Kubernetes: A Pod’s Life</a>.</p>
 <p><a href="../statefulset">Previous</a> | <a href="../nodes">Next</a></p>
 
         

@@ -50,17 +50,6 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
 
   
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small;' role="alert">
-    <strong>Kubernetes By Example is evolving!</strong>
-    <br/>
-    On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.
-    <br/>
-    Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  
 
   <div class="container-fluid">
     <div class="navbar-header">
@@ -95,19 +84,19 @@
                 
                   <a href="/kbe/healthz/">Health Checks</a>
                 
-                  <a href="/kbe/envs/">Environment Variables</a>
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
                 
                   <a href="/kbe/ns/">Namespaces</a>
                 
                   <a href="/kbe/volumes/">Volumes</a>
                 
-                  <a href="/kbe/pv/">Persistent Volumes</a>
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
                 
                   <a href="/kbe/secrets/">Secrets</a>
                 
                   <a href="/kbe/logging/">Logging</a>
                 
-                  <a href="/kbe/jobs/">Jobs</a>
+                  <a href="/kbe/concepts/jobs">Jobs</a>
                 
                   <a href="/kbe/statefulset/">Stateful Sets</a>
                 
@@ -136,7 +125,7 @@
         
           
             <li>
-              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
             </li>
           
         
@@ -210,39 +199,60 @@
         <p>A <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/">persistent volume</a> (PV) is a cluster-wide resource that you can use to store data in a way that it persists beyond the lifetime of a pod. The PV is not backed by locally-attached storage on a worker node but by networked storage system such as EBS or NFS or a distributed filesystem like Ceph.</p>
 <p>If you are using
 <a href="https://learn.openshift.com/playgrounds/openshift45">OpenShift Playground</a> like us there already exist a few persistent volumes on your cluster.  If not, you&rsquo;ll need to create one first using:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/pv/pv.yaml
-</code></pre></div><p>In order to use a PV you need to claim it first, using a persistent volume claim (PVC). The PVC requests a PV with your desired specification (size, speed, etc.) from Kubernetes and binds it then to a pod where you can mount it as a volume. So let&rsquo;s create such a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/pv/pvc.yaml">PVC</a>, asking Kubernetes for 1 GB of storage using the default <a href="https://kubernetes.io/docs/concepts/storage/storage-classes/">storage class</a>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/pv/pvc.yaml
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pvc
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME      STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS    AGE
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/pv/pv.yaml
+</code></pre>
+<p>In order to use a PV you need to claim it first, using a persistent volume claim (PVC). The PVC requests a PV with your desired specification (size, speed, etc.) from Kubernetes and binds it then to a pod where you can mount it as a volume. So let&rsquo;s create such a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/pv/pvc.yaml">PVC</a>, asking Kubernetes for 1 GB of storage using the default <a href="https://kubernetes.io/docs/concepts/storage/storage-classes/">storage class</a>:</p>
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/pv/pvc.yaml
+</code></pre>
+<pre><code class="language-bash">kubectl get pvc
+</code></pre>
+<pre><code class="language-cat">NAME      STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS    AGE
 myclaim   Bound    pvc-27fed6b6-3047-11e9-84bb-12b5519f9b58   1Gi        RWO            gp2-encrypted   18m
-</code></pre><p>To understand how the persistency plays out, let&rsquo;s create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/pv/deploy.yaml">deployment</a> that uses above PVC to mount it as a volume into <code>/tmp/persistent</code>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/pv/deploy.yaml
-</code></pre></div><p>Now we want to test if data in the volume actually persists. For this we find the pod managed by above deployment, exec into its main container and create a file called <code>data</code> in the <code>/tmp/persistent</code> directory (where we decided to mount the PV):</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get po
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                         READY   STATUS    RESTARTS   AGE
+</code></pre>
+<p>To understand how the persistency plays out, let&rsquo;s create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/pv/deploy.yaml">deployment</a> that uses above PVC to mount it as a volume into <code>/tmp/persistent</code>:</p>
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/pv/deploy.yaml
+</code></pre>
+<p>Now we want to test if data in the volume actually persists. For this we find the pod managed by above deployment, exec into its main container and create a file called <code>data</code> in the <code>/tmp/persistent</code> directory (where we decided to mount the PV):</p>
+<pre><code class="language-bash">kubectl get po
+</code></pre>
+<pre><code class="language-cat">NAME                         READY   STATUS    RESTARTS   AGE
 pv-deploy-69959dccb5-jhxx    1/1     Running   0          16m
-</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec -it pv-deploy-69959dccb5-jhxxw -- bash
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">touch /tmp/persistent/data
+</code></pre>
+<pre><code class="language-bash">kubectl exec -it pv-deploy-69959dccb5-jhxxw -- bash
+</code></pre>
+<pre><code class="language-bash">touch /tmp/persistent/data
 ls /tmp/persistent/
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">data  lost+found
-</code></pre><p>return</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">exit
-</code></pre></div><p>It&rsquo;s time to destroy the pod and let the deployment launch a new pod. The expectation is that the PV is available again in the new pod and the data in <code>/tmp/persistent</code> is still present. Let&rsquo;s check that:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete po pv-deploy-69959dccb5-jhxxw
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">pod pv-deploy-69959dccb5-jhxxw deleted
-</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get po
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                         READY   STATUS    RESTARTS   AGE
+</code></pre>
+<pre><code class="language-cat">data  lost+found
+</code></pre>
+<p>return</p>
+<pre><code class="language-bash">exit
+</code></pre>
+<p>It&rsquo;s time to destroy the pod and let the deployment launch a new pod. The expectation is that the PV is available again in the new pod and the data in <code>/tmp/persistent</code> is still present. Let&rsquo;s check that:</p>
+<pre><code class="language-bash">kubectl delete po pv-deploy-69959dccb5-jhxxw
+</code></pre>
+<pre><code class="language-cat">pod pv-deploy-69959dccb5-jhxxw deleted
+</code></pre>
+<pre><code class="language-bash">kubectl get po
+</code></pre>
+<pre><code class="language-cat">NAME                         READY   STATUS    RESTARTS   AGE
 pv-deploy-69959dccb5-kwrrv   1/1     Running   0          16m
-</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec -it pv-deploy-69959dccb5-kwrrv -- bash
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ls /tmp/persistent/
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">data  lost+found
-</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">exit
-</code></pre></div><p>And indeed, the <code>data</code> file and its content is still where it is expected to be.</p>
+</code></pre>
+<pre><code class="language-bash">kubectl exec -it pv-deploy-69959dccb5-kwrrv -- bash
+</code></pre>
+<pre><code class="language-bash">ls /tmp/persistent/
+</code></pre>
+<pre><code class="language-cat">data  lost+found
+</code></pre>
+<pre><code class="language-bash">exit
+</code></pre>
+<p>And indeed, the <code>data</code> file and its content is still where it is expected to be.</p>
 <p>Note that the default behavior is that even when the deployment is deleted, the PVC (and the PV) continues to exist. This storage protection feature helps avoiding data loss. Once you&rsquo;re sure you don&rsquo;t need the data anymore, you can go ahead and delete the PVC and with it eventually destroy the PV:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete pvc myclaim
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">persistentvolumeclaim &quot;myclaim&quot; deleted
-</code></pre><p>The types of PV available in your Kubernetes cluster depend on the environment (on-prem or public cloud). Check out the <a href="https://stateful.kubernetes.sh/#storage">Stateful Kubernetes</a> reference site if you want to learn more about this topic.</p>
+<pre><code class="language-bash">kubectl delete pvc myclaim
+</code></pre>
+<pre><code class="language-cat">persistentvolumeclaim &quot;myclaim&quot; deleted
+</code></pre>
+<p>The types of PV available in your Kubernetes cluster depend on the environment (on-prem or public cloud). Check out the <a href="https://stateful.kubernetes.sh/#storage">Stateful Kubernetes</a> reference site if you want to learn more about this topic.</p>
 <p><a href="../volumes">Previous</a> | <a href="../secrets">Next</a></p>
 
         

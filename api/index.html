@@ -50,17 +50,6 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
 
   
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small;' role="alert">
-    <strong>Kubernetes By Example is evolving!</strong>
-    <br/>
-    On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.
-    <br/>
-    Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  
 
   <div class="container-fluid">
     <div class="navbar-header">
@@ -95,19 +84,19 @@
                 
                   <a href="/kbe/healthz/">Health Checks</a>
                 
-                  <a href="/kbe/envs/">Environment Variables</a>
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
                 
                   <a href="/kbe/ns/">Namespaces</a>
                 
                   <a href="/kbe/volumes/">Volumes</a>
                 
-                  <a href="/kbe/pv/">Persistent Volumes</a>
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
                 
                   <a href="/kbe/secrets/">Secrets</a>
                 
                   <a href="/kbe/logging/">Logging</a>
                 
-                  <a href="/kbe/jobs/">Jobs</a>
+                  <a href="/kbe/concepts/jobs">Jobs</a>
                 
                   <a href="/kbe/statefulset/">Stateful Sets</a>
                 
@@ -136,7 +125,7 @@
         
           
             <li>
-              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
             </li>
           
         
@@ -209,12 +198,15 @@
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <p>Sometimes it&rsquo;s useful or necessary to directly <a href="https://kubernetes.io/docs/tasks/access-kubernetes-api/http-proxy-access-api/">access the Kubernetes API server</a>, for exploratory or testing purposes.</p>
 <p>In order to do this, one option is to proxy the API to your local environment, using:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl proxy --port<span style="color:#f92672">=</span><span style="color:#ae81ff">8080</span>
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">Starting to serve on 127.0.0.1:8080
+<pre><code class="language-bash">kubectl proxy --port=8080
+</code></pre>
+<pre><code class="language-cat">Starting to serve on 127.0.0.1:8080
 
-</code></pre><p>Now you can query the API (in a separate terminal session) like so:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl http://localhost:8080/api/v1
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">{
+</code></pre>
+<p>Now you can query the API (in a separate terminal session) like so:</p>
+<pre><code class="language-bash">curl http://localhost:8080/api/v1
+</code></pre>
+<pre><code class="language-cat">{
   &quot;kind&quot;: &quot;APIResourceList&quot;,
   &quot;groupVersion&quot;: &quot;v1&quot;,
   &quot;resources&quot;: [
@@ -233,20 +225,26 @@
     }
   ]
 }
-</code></pre><p>Alternatively, without proxying, you can use <code>kubectl</code> directly as follows to achieve the same:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get --raw /api/v1
-</code></pre></div><p>Further, if you want to explore the supported API versions and/or resources, you can use the following commands:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl api-versions
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">admissionregistration.k8s.io/v1beta1
+</code></pre>
+<p>Alternatively, without proxying, you can use <code>kubectl</code> directly as follows to achieve the same:</p>
+<pre><code class="language-bash">kubectl get --raw /api/v1
+</code></pre>
+<p>Further, if you want to explore the supported API versions and/or resources, you can use the following commands:</p>
+<pre><code class="language-bash">kubectl api-versions
+</code></pre>
+<pre><code class="language-cat">admissionregistration.k8s.io/v1beta1
 ...
 v1
-</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl api-resources
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                                  SHORTNAMES       APIGROUP         NAMESPACED   KIND
+</code></pre>
+<pre><code class="language-bash">kubectl api-resources
+</code></pre>
+<pre><code class="language-cat">NAME                                  SHORTNAMES       APIGROUP         NAMESPACED   KIND
 bindings         true         Binding
 componentstatuses                     cs         false        ComponentStatus
 configmaps                            cm         true         ConfigMap
 ...
-</code></pre><p><a href="../nodes">Previous</a></p>
+</code></pre>
+<p><a href="../nodes">Previous</a></p>
 
         
       </div>

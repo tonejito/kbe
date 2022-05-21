@@ -50,17 +50,6 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
 
   
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small;' role="alert">
-    <strong>Kubernetes By Example is evolving!</strong>
-    <br/>
-    On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.
-    <br/>
-    Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  
 
   <div class="container-fluid">
     <div class="navbar-header">
@@ -95,19 +84,19 @@
                 
                   <a href="/kbe/healthz/">Health Checks</a>
                 
-                  <a href="/kbe/envs/">Environment Variables</a>
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
                 
                   <a href="/kbe/ns/">Namespaces</a>
                 
                   <a href="/kbe/volumes/">Volumes</a>
                 
-                  <a href="/kbe/pv/">Persistent Volumes</a>
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
                 
                   <a href="/kbe/secrets/">Secrets</a>
                 
                   <a href="/kbe/logging/">Logging</a>
                 
-                  <a href="/kbe/jobs/">Jobs</a>
+                  <a href="/kbe/concepts/jobs">Jobs</a>
                 
                   <a href="/kbe/statefulset/">Stateful Sets</a>
                 
@@ -136,7 +125,7 @@
         
           
             <li>
-              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
             </li>
           
         
@@ -213,24 +202,32 @@ the DNS-based service discovery is preferable. Note that <a href="https://github
 <p>Let&rsquo;s create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/sd/svc.yaml">service</a> named
 <code>thesvc</code> and an <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/sd/rc.yaml">RC</a> supervising
 some pods along with it:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/sd/rc.yaml
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/sd/svc.yaml
-</code></pre></div><p>Now we want to connect to the <code>thesvc</code> service from within the cluster, say, from another service.
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/sd/rc.yaml
+</code></pre>
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/sd/svc.yaml
+</code></pre>
+<p>Now we want to connect to the <code>thesvc</code> service from within the cluster, say, from another service.
 To simulate this, we create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/sd/jumpod.yaml">jump pod</a>
 in the same namespace (<code>default</code>, since we didn&rsquo;t specify anything else):</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/sd/jumpod.yaml
-</code></pre></div><p>The DNS add-on will make sure that our service <code>thesvc</code> is available via the FQDN
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/sd/jumpod.yaml
+</code></pre>
+<p>The DNS add-on will make sure that our service <code>thesvc</code> is available via the FQDN
 <code>thesvc.default.svc.cluster.local</code> from other pods in the cluster. Let&rsquo;s try it out:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec -it jumpod -c shell -- ping thesvc.default.svc.cluster.local
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">PING thesvc.default.svc.cluster.local (172.30.251.137) 56(84) bytes of data.
+<pre><code class="language-bash">kubectl exec -it jumpod -c shell -- ping thesvc.default.svc.cluster.local
+</code></pre>
+<pre><code class="language-cat">PING thesvc.default.svc.cluster.local (172.30.251.137) 56(84) bytes of data.
 ...
-</code></pre><p>Send a break signal (Ctrl-C) to close the connection</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">^C
-</code></pre></div><p>The answer to the <code>ping</code> tells us that the service is available via the cluster
+</code></pre>
+<p>Send a break signal (Ctrl-C) to close the connection</p>
+<pre><code class="language-bash">^C
+</code></pre>
+<p>The answer to the <code>ping</code> tells us that the service is available via the cluster
 IP <code>172.30.251.137</code>. We can directly connect to and consume the service (in the same namespace) like so:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec -it jumpod -c shell -- curl http://thesvc/info
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">{&quot;host&quot;: &quot;thesvc&quot;, &quot;version&quot;: &quot;0.5.0&quot;, &quot;from&quot;: &quot;172.17.0.5&quot;}
-</code></pre><p>Note that the IP address <code>172.17.0.5</code> above is the cluster-internal IP address
+<pre><code class="language-bash">kubectl exec -it jumpod -c shell -- curl http://thesvc/info
+</code></pre>
+<pre><code class="language-cat">{&quot;host&quot;: &quot;thesvc&quot;, &quot;version&quot;: &quot;0.5.0&quot;, &quot;from&quot;: &quot;172.17.0.5&quot;}
+</code></pre>
+<p>Note that the IP address <code>172.17.0.5</code> above is the cluster-internal IP address
 of the jump pod.</p>
 <p>To access a service that is deployed in a different namespace than the one you&rsquo;re
 accessing it from, use a FQDN in the form <code>$SVC.$NAMESPACE.svc.cluster.local</code>.</p>
@@ -241,21 +238,30 @@ accessing it from, use a FQDN in the form <code>$SVC.$NAMESPACE.svc.cluster.loca
 <li>an <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/sd/other-rc.yaml">RC</a> supervising the pods, also in namespace <code>other</code></li>
 </ol>
 <p>If you&rsquo;re not familiar with namespaces, check out the <a href="../ns/">namespace examples</a> first.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/sd/other-ns.yaml
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/sd/other-rc.yaml
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/sd/other-svc.yaml
-</code></pre></div><p>We&rsquo;re now in the position to consume the service <code>thesvc</code> in namespace <code>other</code> from the
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/sd/other-ns.yaml
+</code></pre>
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/sd/other-rc.yaml
+</code></pre>
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/sd/other-svc.yaml
+</code></pre>
+<p>We&rsquo;re now in the position to consume the service <code>thesvc</code> in namespace <code>other</code> from the
 <code>default</code> namespace (again via the jump pod):</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl exec -it jumpod -c shell -- curl http://thesvc.other/info
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">{&quot;host&quot;: &quot;thesvc.other&quot;, &quot;version&quot;: &quot;0.5.0&quot;, &quot;from&quot;: &quot;172.17.0.5&quot;}
-</code></pre><p>Summing up, DNS-based service discovery provides a flexible and generic way to
+<pre><code class="language-bash">kubectl exec -it jumpod -c shell -- curl http://thesvc.other/info
+</code></pre>
+<pre><code class="language-cat">{&quot;host&quot;: &quot;thesvc.other&quot;, &quot;version&quot;: &quot;0.5.0&quot;, &quot;from&quot;: &quot;172.17.0.5&quot;}
+</code></pre>
+<p>Summing up, DNS-based service discovery provides a flexible and generic way to
 connect to services across the cluster.</p>
 <p>You can destroy all the resources created with:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete pods jumpod
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete svc thesvc
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete rc rcsise
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete ns other
-</code></pre></div><p>Keep in mind that removing a namespace will destroy every resource inside.</p>
+<pre><code class="language-bash">kubectl delete pods jumpod
+</code></pre>
+<pre><code class="language-bash">kubectl delete svc thesvc
+</code></pre>
+<pre><code class="language-bash">kubectl delete rc rcsise
+</code></pre>
+<pre><code class="language-bash">kubectl delete ns other
+</code></pre>
+<p>Keep in mind that removing a namespace will destroy every resource inside.</p>
 <p><a href="../services">Previous</a> | <a href="../pf">Next</a></p>
 
         

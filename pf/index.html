@@ -50,17 +50,6 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
 
   
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small;' role="alert">
-    <strong>Kubernetes By Example is evolving!</strong>
-    <br/>
-    On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.
-    <br/>
-    Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  
 
   <div class="container-fluid">
     <div class="navbar-header">
@@ -95,19 +84,19 @@
                 
                   <a href="/kbe/healthz/">Health Checks</a>
                 
-                  <a href="/kbe/envs/">Environment Variables</a>
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
                 
                   <a href="/kbe/ns/">Namespaces</a>
                 
                   <a href="/kbe/volumes/">Volumes</a>
                 
-                  <a href="/kbe/pv/">Persistent Volumes</a>
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
                 
                   <a href="/kbe/secrets/">Secrets</a>
                 
                   <a href="/kbe/logging/">Logging</a>
                 
-                  <a href="/kbe/jobs/">Jobs</a>
+                  <a href="/kbe/concepts/jobs">Jobs</a>
                 
                   <a href="/kbe/statefulset/">Stateful Sets</a>
                 
@@ -136,7 +125,7 @@
         
           
             <li>
-              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
             </li>
           
         
@@ -209,20 +198,27 @@
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <p>In the context of developing apps on Kubernetes it is often useful to quickly access a service from your local environment without exposing it using, for example, a load balancer or an ingress resource. In this case you can use <a href="https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/">port forwarding</a>.</p>
 <p>Let&rsquo;s create an <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/pf/app.yaml">app</a> consisting of a deployment and a service called <code>simpleservice</code>, serving on port <code>80</code>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/pf/app.yaml
-</code></pre></div><p>Let&rsquo;s say we want to access the <code>simpleservice</code> service from the local environment, say, your laptop, on port <code>8080</code>. So we forward the traffic as follows:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl port-forward service/simpleservice 8080:80
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">Forwarding from 127.0.0.1:8080 -&gt; 9876
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/pf/app.yaml
+</code></pre>
+<p>Let&rsquo;s say we want to access the <code>simpleservice</code> service from the local environment, say, your laptop, on port <code>8080</code>. So we forward the traffic as follows:</p>
+<pre><code class="language-bash">kubectl port-forward service/simpleservice 8080:80
+</code></pre>
+<pre><code class="language-cat">Forwarding from 127.0.0.1:8080 -&gt; 9876
 Forwarding from [::1]:8080 -&gt; 9876
-</code></pre><p>We can see from above that the traffic gets eventually routed through the service to the pod serving on port <code>9876</code>.</p>
+</code></pre>
+<p>We can see from above that the traffic gets eventually routed through the service to the pod serving on port <code>9876</code>.</p>
 <p>Now we can invoke the service locally like so (using a separate terminal session):</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl localhost:8080/info
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">{&quot;host&quot;: &quot;localhost:8080&quot;, &quot;version&quot;: &quot;0.5.0&quot;, &quot;from&quot;: &quot;127.0.0.1&quot;}
-</code></pre><p>Remember that port forwarding is not meant for production traffic but for development and experimentation.</p>
+<pre><code class="language-bash">curl localhost:8080/info
+</code></pre>
+<pre><code class="language-cat">{&quot;host&quot;: &quot;localhost:8080&quot;, &quot;version&quot;: &quot;0.5.0&quot;, &quot;from&quot;: &quot;127.0.0.1&quot;}
+</code></pre>
+<p>Remember that port forwarding is not meant for production traffic but for development and experimentation.</p>
 <p>You can remove the <code>simpleservice</code> with</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete service/simpleservice 
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete deployment sise-deploy
-</code></pre></div><p><a href="../sd">Previous</a> | <a href="../healthz">Next</a></p>
+<pre><code class="language-bash">kubectl delete service/simpleservice 
+</code></pre>
+<pre><code class="language-bash">kubectl delete deployment sise-deploy
+</code></pre>
+<p><a href="../sd">Previous</a> | <a href="../healthz">Next</a></p>
 
         
       </div>

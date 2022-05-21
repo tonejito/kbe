@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Concepts on Kubernetes By Example</title>
+    <link>https://tonejito.github.io/kbe/concepts/</link>
+    <description>Recent content in Concepts on Kubernetes By Example</description>
+    <generator>Hugo -- gohugo.io</generator><atom:link href="https://tonejito.github.io/kbe/concepts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/environment-variables/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/environment-variables/</guid>
+      <description>Environment Variables You can set environment variables for containers running in a pod. Additionally, Kubernetes automatically exposes certain runtime information via environment variables.
+Create a pod of the simple service application using the container image on the quay.io registry.
+$ kubectl run envs --image=quay.io/openshiftlabs/simpleservice:0.5.0 --port=9876 $ kubectl get pods NAME READY STATUS RESTARTS AGE envs 1/1 Running 0 20s  View the environment variables defined in the pod.
+$ kubectl describe pod envs | grep &#39;Environment:&#39; Environment: &amp;lt;none&amp;gt;  Access the application and display the service version.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/jobs/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/jobs/</guid>
+      <description>Jobs A job in Kubernetes is a supervisor for pods that run for a certain time to completion, for example a calculation or a backup operation.
+Let&amp;rsquo;s create a job named countdown that supervises a pod counting from 9 down to 1.
+$ $ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/jobs/job.yaml job.batch/countdown created  The job definition is listed under the resource type job.
+$ kubectl get jobs NAME COMPLETIONS DURATION AGE countdown 1/1 1s 10s  A job is executed as a pod.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/persistent-volumes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/persistent-volumes/</guid>
+      <description>Persistent Volume A persistent volume (PV) is a cluster-wide resource that you can use to store data in a way that it persists beyond the lifetime of a pod. The PV is not backed by locally-attached storage on a worker node but by networked storage system such as EBS or NFS or a distributed filesystem like Ceph.
+Depending on your cluster and storage type, the configuration of a PV will vary slightly.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -50,17 +50,6 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
 
   
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small;' role="alert">
-    <strong>Kubernetes By Example is evolving!</strong>
-    <br/>
-    On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.
-    <br/>
-    Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  
 
   <div class="container-fluid">
     <div class="navbar-header">
@@ -95,19 +84,19 @@
                 
                   <a href="/kbe/healthz/">Health Checks</a>
                 
-                  <a href="/kbe/envs/">Environment Variables</a>
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
                 
                   <a href="/kbe/ns/">Namespaces</a>
                 
                   <a href="/kbe/volumes/">Volumes</a>
                 
-                  <a href="/kbe/pv/">Persistent Volumes</a>
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
                 
                   <a href="/kbe/secrets/">Secrets</a>
                 
                   <a href="/kbe/logging/">Logging</a>
                 
-                  <a href="/kbe/jobs/">Jobs</a>
+                  <a href="/kbe/concepts/jobs">Jobs</a>
                 
                   <a href="/kbe/statefulset/">Stateful Sets</a>
                 
@@ -136,7 +125,7 @@
         
           
             <li>
-              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
             </li>
           
         
@@ -214,32 +203,39 @@ container produces available, which is a good use case for debugging. More advan
 them in a central place, either within the cluster or via a dedicated (cloud-based) service.</p>
 <p>Let&rsquo;s create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/logging/pod.yaml">pod</a>
 called <code>logme</code> that runs a container writing to <code>stdout</code> and <code>stderr</code>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/logging/pod.yaml
-</code></pre></div><p>To view the five most recent log lines of the <code>gen</code> container in the <code>logme</code> pod,
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/logging/pod.yaml
+</code></pre>
+<p>To view the five most recent log lines of the <code>gen</code> container in the <code>logme</code> pod,
 execute:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl logs --tail<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span> logme -c gen
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">Thu Apr 27 11:34:40 UTC 2017
+<pre><code class="language-bash">kubectl logs --tail=5 logme -c gen
+</code></pre>
+<pre><code class="language-cat">Thu Apr 27 11:34:40 UTC 2017
 Thu Apr 27 11:34:41 UTC 2017
 Thu Apr 27 11:34:41 UTC 2017
 Thu Apr 27 11:34:42 UTC 2017
 Thu Apr 27 11:34:42 UTC 2017
-</code></pre><p>To stream the log of the <code>gen</code> container in the <code>logme</code> pod (like <code>tail -f</code>), do:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl logs -f --since<span style="color:#f92672">=</span>10s logme -c gen
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">Thu Apr 27 11:43:11 UTC 2017
+</code></pre>
+<p>To stream the log of the <code>gen</code> container in the <code>logme</code> pod (like <code>tail -f</code>), do:</p>
+<pre><code class="language-bash">kubectl logs -f --since=10s logme -c gen
+</code></pre>
+<pre><code class="language-cat">Thu Apr 27 11:43:11 UTC 2017
 Thu Apr 27 11:43:11 UTC 2017
 Thu Apr 27 11:43:12 UTC 2017
 Thu Apr 27 11:43:12 UTC 2017
 Thu Apr 27 11:43:13 UTC 2017
 ...
-</code></pre><p>Note that if you wouldn&rsquo;t have specified <code>--since=10s</code> in the above command, you
+</code></pre>
+<p>Note that if you wouldn&rsquo;t have specified <code>--since=10s</code> in the above command, you
 would have gotten all log lines from the start of the container.</p>
 <p>You can also view logs of pods that have already completed their lifecycle.
 For this we create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/logging/oneshotpod.yaml">pod</a>
 called <code>oneshot</code> that counts down from 9 to 1 and then exits. Using the <code>-p</code> option
 you can print the logs for previous instances of the container in a pod:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/logging/oneshotpod.yaml
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl logs -p oneshot -c gen
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">9
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/logging/oneshotpod.yaml
+</code></pre>
+<pre><code class="language-bash">kubectl logs -p oneshot -c gen
+</code></pre>
+<pre><code class="language-cat">9
 8
 7
 6
@@ -248,9 +244,11 @@ you can print the logs for previous instances of the container in a pod:</p>
 3
 2
 1
-</code></pre><p>You can remove the created pods with:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete pod/logme pod/oneshot
-</code></pre></div><p><a href="../secrets">Previous</a> | <a href="../jobs">Next</a></p>
+</code></pre>
+<p>You can remove the created pods with:</p>
+<pre><code class="language-bash">kubectl delete pod/logme pod/oneshot
+</code></pre>
+<p><a href="../secrets">Previous</a> | <a href="../jobs">Next</a></p>
 
         
       </div>

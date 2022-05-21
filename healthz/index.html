@@ -50,17 +50,6 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
 
   
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small;' role="alert">
-    <strong>Kubernetes By Example is evolving!</strong>
-    <br/>
-    On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.
-    <br/>
-    Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  
 
   <div class="container-fluid">
     <div class="navbar-header">
@@ -95,19 +84,19 @@
                 
                   <a href="/kbe/healthz/">Health Checks</a>
                 
-                  <a href="/kbe/envs/">Environment Variables</a>
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
                 
                   <a href="/kbe/ns/">Namespaces</a>
                 
                   <a href="/kbe/volumes/">Volumes</a>
                 
-                  <a href="/kbe/pv/">Persistent Volumes</a>
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
                 
                   <a href="/kbe/secrets/">Secrets</a>
                 
                   <a href="/kbe/logging/">Logging</a>
                 
-                  <a href="/kbe/jobs/">Jobs</a>
+                  <a href="/kbe/concepts/jobs">Jobs</a>
                 
                   <a href="/kbe/statefulset/">Stateful Sets</a>
                 
@@ -136,7 +125,7 @@
         
           
             <li>
-              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
             </li>
           
         
@@ -217,18 +206,21 @@ of the application developer to expose a URL that the kubelet can
 use to determine if the container is healthy (and potentially ready).</p>
 <p>Let&rsquo;s create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/healthz/pod.yaml">pod</a>
 that exposes an endpoint <code>/health</code>, responding with a HTTP <code>200</code> status code:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/healthz/pod.yaml
-</code></pre></div><p>In the pod specification we&rsquo;ve defined the following:</p>
-<pre tabindex="0"><code class="language-cat" data-lang="cat">livenessProbe:
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/healthz/pod.yaml
+</code></pre>
+<p>In the pod specification we&rsquo;ve defined the following:</p>
+<pre><code class="language-cat">livenessProbe:
   initialDelaySeconds: 2
   periodSeconds: 5
   httpGet:
     path: /health
     port: 9876
-</code></pre><p>Above means that Kubernetes will start checking the <code>/health</code> endpoint, after initially waiting 2 seconds, every 5 seconds.</p>
+</code></pre>
+<p>Above means that Kubernetes will start checking the <code>/health</code> endpoint, after initially waiting 2 seconds, every 5 seconds.</p>
 <p>If we now look at the pod we can see that it is considered healthy:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl describe pod hc
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">Name:                   hc
+<pre><code class="language-bash">kubectl describe pod hc
+</code></pre>
+<pre><code class="language-cat">Name:                   hc
 Namespace:              default
 Security Policy:        anyuid
 Node:                   192.168.99.100/192.168.99.100
@@ -244,13 +236,16 @@ Events:
 already present on machine
   3s            3s              1       {kubelet 192.168.99.100}        spec.containers{sise}   Normal          Created         Created container with docker id 8a628578d6ad; Security:[seccomp=unconfined]
   2s            2s              1       {kubelet 192.168.99.100}        spec.containers{sise}   Normal          Started         Started container with docker id 8a628578d6ad
-</code></pre><p>Now we launch a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/healthz/badpod.yaml">bad pod</a>,
+</code></pre>
+<p>Now we launch a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/healthz/badpod.yaml">bad pod</a>,
 that is, a pod that has a container that randomly (in the time range 1 to 4 sec)
 does not return a 200 code:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/healthz/badpod.yaml
-</code></pre></div><p>Looking at the events of the bad pod, we can see that the health check failed:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl describe pod badpod
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">...
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/healthz/badpod.yaml
+</code></pre>
+<p>Looking at the events of the bad pod, we can see that the health check failed:</p>
+<pre><code class="language-bash">kubectl describe pod badpod
+</code></pre>
+<pre><code class="language-cat">...
 Events:
   FirstSeen     LastSeen        Count   From                            SubobjectPath           Type            Reason          Message
   ---------     --------        -----   ----                            -------------           --------        ------          -------
@@ -262,12 +257,15 @@ Events:
   23s           23s             1       {kubelet 192.168.99.100}        spec.containers{sise}   Normal          Created         Created container with docker id ec63dc3edfaa; Security:[seccomp=unconfined]
   23s           23s             1       {kubelet 192.168.99.100}        spec.containers{sise}   Normal          Started         Started container with docker id ec63dc3edfaa
   1m            18s             4       {kubelet 192.168.99.100}        spec.containers{sise}   Warning         Unhealthy       Liveness probe failed: Get http://172.17.0.4:9876/health: net/http: request canceled (Client.Timeout exceeded while awaiting headers)
-</code></pre><p>This can also be verified as follows:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                      READY     STATUS    RESTARTS   AGE
+</code></pre>
+<p>This can also be verified as follows:</p>
+<pre><code class="language-bash">kubectl get pods
+</code></pre>
+<pre><code class="language-cat">NAME                      READY     STATUS    RESTARTS   AGE
 badpod                    1/1       Running   4          2m
 hc                        1/1       Running   0          6m
-</code></pre><p>From above you can see that the <code>badpod</code> had already been re-launched 4 times,
+</code></pre>
+<p>From above you can see that the <code>badpod</code> had already been re-launched 4 times,
 since the health check failed.</p>
 <p>In addition to a <code>livenessProbe</code> you can also specify a <code>readinessProbe</code>, which
 can be configured in the same way but has a different use case and semantics:
@@ -277,20 +275,24 @@ to initialize some tables. In this case you want to signal when the container is
 ready to serve traffic.</p>
 <p>Let&rsquo;s create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/healthz/ready.yaml">pod</a>
 with a <code>readinessProbe</code> that kicks in after 10 seconds:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/healthz/ready.yaml
-</code></pre></div><p>Looking at the events of the pod, we can see that, eventually, the pod is ready
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/healthz/ready.yaml
+</code></pre>
+<p>Looking at the events of the pod, we can see that, eventually, the pod is ready
 to serve traffic:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl describe pod ready
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">...
+<pre><code class="language-bash">kubectl describe pod ready
+</code></pre>
+<pre><code class="language-cat">...
 Conditions:                                                                                                                                                               [0/1888]
   Type          Status
   Initialized   True
   Ready         True
   PodScheduled  True
 ...
-</code></pre><p>You can remove all the created pods with:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete pod/hc pod/ready pod/badpod
-</code></pre></div><p>Learn more about configuring probes, including TCP and command probes, via the
+</code></pre>
+<p>You can remove all the created pods with:</p>
+<pre><code class="language-bash">kubectl delete pod/hc pod/ready pod/badpod
+</code></pre>
+<p>Learn more about configuring probes, including TCP and command probes, via the
 <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/">docs</a>.</p>
 <p><a href="../sd">Previous</a> | <a href="../envs">Next</a></p>
 

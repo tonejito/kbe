@@ -1,0 +1,70 @@
+<div>
+    <p>You can set environment variables for containers running in a pod. Additionally, Kubernetes automatically exposes certain runtime information via environment variables.</p>
+    
+    <p>Let's launch a&nbsp;<a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/envs/pod.yaml">pod</a>&nbsp;that we pass an environment variable&nbsp;<code>SIMPLE_SERVICE_VERSION</code>&nbsp;with the value&nbsp;<code>1.0</code>:</p>
+    &nbsp;
+    
+    <div contenteditable="false" tabindex="-1">
+    <pre data-widget="codeSnippet">
+    <code>kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/envs/pod.yaml</code></pre>
+    </div>
+    &nbsp;
+    
+    <p>Now, let's verify from within the cluster if the application running in the pod has picked up the environment variable:</p>
+    &nbsp;
+    
+    <div contenteditable="false" tabindex="-1">
+    <pre data-widget="codeSnippet">
+    <code>kubectl exec envs -t -- curl -s 127.0.0.1:9876/info</code></pre>
+    </div>
+    
+    <p>The output reflects the value that was set for the environment variable (the default, unless overridden by the variable, is&nbsp;<code>0.5.0</code>):</p>
+    
+    <div contenteditable="false" tabindex="-1">
+    <pre data-widget="codeSnippet">
+    <code>{"host": "127.0.0.1:9876", "version": "1.0", "from": "127.0.0.1"}</code></pre>
+    </div>
+    
+    <!-- <p><span contenteditable="false" tabindex="-1"><img data-widget="image" src="image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" style="cursor: default;" /></span><span contenteditable="false" tabindex="-1"><img data-widget="image" src="image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" style="cursor: default;" /></span></p> -->
+
+    You can check what environment variables Kubernetes itself provides automatically using a REST endpoint in the sample application:
+    
+    <p>&nbsp;</p>
+    
+    <p>&nbsp;</p>
+    
+    <div contenteditable="false" tabindex="-1">
+    <pre data-widget="codeSnippet">
+    <code>kubectl exec envs -t -- curl -s 127.0.0.1:9876/env</code></pre>
+    </div>
+    
+    <p>Your results will vary slightly depending on you cluster configuration, but an example output is included below:</p>
+    
+    <div contenteditable="false" tabindex="-1">
+    <pre data-widget="codeSnippet">
+    <code>{"version": "1.0", "env": "{'HOSTNAME': 'envs', 'DOCKER_REGISTRY_SERVICE_PORT': '5000', 'KUBERNETES_PORT_443_TCP_ADDR': '172.30.0.1', 'ROUTER_PORT_80_TCP_PROTO': 'tcp', 'KUBERNETES_PORT_53_UDP_PROTO': 'udp', 'ROUTER_SERVICE_HOST': '172.30.246.127', 'ROUTER_PORT_1936_TCP_PROTO': 'tcp', 'KUBERNETES_SERVICE_PORT_DNS': '53', 'DOCKER_REGISTRY_PORT_5000_TCP_PORT': '5000', 'PATH': '/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'ROUTER_SERVICE_PORT_443_TCP': '443', 'KUBERNETES_PORT_53_TCP': 'tcp://172.30.0.1:53', 'KUBERNETES_SERVICE_PORT': '443', 'ROUTER_PORT_80_TCP_ADDR': '172.30.246.127', 'LANG': 'C.UTF-8', 'KUBERNETES_PORT_53_TCP_ADDR': '172.30.0.1', 'PYTHON_VERSION': '2.7.13', 'KUBERNETES_SERVICE_HOST': '172.30.0.1', 'PYTHON_PIP_VERSION': '9.0.1', 'DOCKER_REGISTRY_PORT_5000_TCP_PROTO': 'tcp', 'REFRESHED_AT': '2017-04-24T13:50', 'ROUTER_PORT_1936_TCP': 'tcp://172.30.246.127:1936', 'KUBERNETES_PORT_53_TCP_PROTO': 'tcp', 'KUBERNETES_PORT_53_TCP_PORT': '53', 'HOME': '/root', 'DOCKER_REGISTRY_SERVICE_HOST': '172.30.1.1', 'GPG_KEY': 'C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF', 'ROUTER_SERVICE_PORT_80_TCP': '80', 'ROUTER_PORT_443_TCP_ADDR': '172.30.246.127', 'ROUTER_PORT_1936_TCP_ADDR': '172.30.246.127', 'ROUTER_SERVICE_PORT': '80', 'ROUTER_PORT_443_TCP_PORT': '443', 'KUBERNETES_SERVICE_PORT_DNS_TCP': '53', 'KUBERNETES_PORT_53_UDP_ADDR': '172.30.0.1', 'KUBERNETES_PORT_53_UDP': 'udp://172.30.0.1:53', 'KUBERNETES_PORT': 'tcp://172.30.0.1:443', 'ROUTER_PORT_1936_TCP_PORT': '1936', 'ROUTER_PORT_80_TCP': 'tcp://172.30.246.127:80', 'KUBERNETES_SERVICE_PORT_HTTPS': '443', 'KUBERNETES_PORT_53_UDP_PORT': '53', 'ROUTER_PORT_80_TCP_PORT': '80', 'ROUTER_PORT': 'tcp://172.30.246.127:80', 'ROUTER_PORT_443_TCP': 'tcp://172.30.246.127:443', 'SIMPLE_SERVICE_VERSION': '1.0', 'ROUTER_PORT_443_TCP_PROTO': 'tcp', 'KUBERNETES_PORT_443_TCP': 'tcp://172.30.0.1:443', 'DOCKER_REGISTRY_PORT_5000_TCP': 'tcp://172.30.1.1:5000', 'DOCKER_REGISTRY_PORT': 'tcp://172.30.1.1:5000', 'KUBERNETES_PORT_443_TCP_PORT': '443', 'ROUTER_SERVICE_PORT_1936_TCP': '1936', 'DOCKER_REGISTRY_PORT_5000_TCP_ADDR': '172.30.1.1', 'DOCKER_REGISTRY_SERVICE_PORT_5000_TCP': '5000', 'KUBERNETES_PORT_443_TCP_PROTO': 'tcp'}"}</code></pre>
+
+    <!-- <img src="data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" /><span style="background: url(&quot;https://dxp-kbe-prod.apps.ext-waf.spoke.prod.us-west-2.aws.paas.redhat.com/core/assets/vendor/ckeditor/plugins/widget/images/handle.png&quot;) rgba(220, 220, 220, 0.5); top: -15px; left: 0px;"><img height="15" role="presentation" src="data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" title="Click and drag to move" width="15" /></span></div> -->
+    
+    <!-- <p><img alt="" data-entity-type="" data-entity-uuid="" src="image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" style="cursor: default;" /><img alt="" data-entity-type="" data-entity-uuid="" src="image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" style="cursor: default;" /><img alt="" data-entity-type="" data-entity-uuid="" src="image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" style="cursor: default;" /><img alt="" data-entity-type="" data-entity-uuid="" src="image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" style="cursor: default;" /><img alt="" data-entity-type="" data-entity-uuid="" src="image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" style="cursor: default;" /><img alt="" data-entity-type="" data-entity-uuid="" src="image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" style="cursor: default;" /></p> -->
+    
+    <p>&nbsp;</p>
+    
+    <p>&nbsp;</p>
+    
+    <p>Alternatively, you can also use the&nbsp;<code>exec</code>&nbsp;subcommand to display the environment variables within the pod:</p>
+    
+    <pre>
+    <code>kubectl exec envs -- printenv</code></pre>
+    &nbsp;
+    
+    <p>Remove the sample pod with:</p>
+    &nbsp;
+    
+    <pre>
+    <code>kubectl delete pod/envs</code></pre>
+    &nbsp;
+    
+    <p>In addition to the above examples, you can also use secrets, volumes, or the&nbsp;<a href="https://kubernetes.io/docs/user-guide/downward-api/">downward API</a>&nbsp;to inject additional information into your container environments.</p>
+</div>
+    

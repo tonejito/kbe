@@ -50,17 +50,6 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
 
   
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small;' role="alert">
-    <strong>Kubernetes By Example is evolving!</strong>
-    <br/>
-    On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.
-    <br/>
-    Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  
 
   <div class="container-fluid">
     <div class="navbar-header">
@@ -95,19 +84,19 @@
                 
                   <a href="/kbe/healthz/">Health Checks</a>
                 
-                  <a href="/kbe/envs/">Environment Variables</a>
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
                 
                   <a href="/kbe/ns/">Namespaces</a>
                 
                   <a href="/kbe/volumes/">Volumes</a>
                 
-                  <a href="/kbe/pv/">Persistent Volumes</a>
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
                 
                   <a href="/kbe/secrets/">Secrets</a>
                 
                   <a href="/kbe/logging/">Logging</a>
                 
-                  <a href="/kbe/jobs/">Jobs</a>
+                  <a href="/kbe/concepts/jobs">Jobs</a>
                 
                   <a href="/kbe/statefulset/">Stateful Sets</a>
                 
@@ -136,7 +125,7 @@
         
           
             <li>
-              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
             </li>
           
         
@@ -211,23 +200,31 @@
 you might want to familiarize yourself with node <a href="https://kubernetes.io/docs/concepts/nodes/node/">operations</a>.</p>
 <p>To list available nodes in your cluster (note that the output will depend on the environment
 you&rsquo;re using. This example is using the <a href="../diy/">OpenShift Playground</a>):</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get nodes
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                 STATUS   ROLES           AGE    VERSION
+<pre><code class="language-bash">kubectl get nodes
+</code></pre>
+<pre><code class="language-cat">NAME                 STATUS   ROLES           AGE    VERSION
 crc-rk2fc-master-0   Ready    master,worker   102d   v1.14.6+888f9c630
-</code></pre><p>One interesting task, from a developer point of view, is to make Kubernetes
+</code></pre>
+<p>One interesting task, from a developer point of view, is to make Kubernetes
 schedule a pod on a certain node. For this, we first need to label the node
 we want to target:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl label nodes crc-rk2fc-master-0 shouldrun<span style="color:#f92672">=</span>here
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">node/crc-rk2fc-master-0 labeled
-</code></pre><p>Now we can create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/nodes/pod.yaml">pod</a>
+<pre><code class="language-bash">kubectl label nodes crc-rk2fc-master-0 shouldrun=here
+</code></pre>
+<pre><code class="language-cat">node/crc-rk2fc-master-0 labeled
+</code></pre>
+<p>Now we can create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/nodes/pod.yaml">pod</a>
 that gets scheduled on the node with the label <code>shouldrun=here</code>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/nodes/pod.yaml
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pods --output<span style="color:#f92672">=</span>wide
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME             READY   STATUS    RESTARTS   AGE     IP            NODE            NOMINATED NODE   READINESS GATES
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/nodes/pod.yaml
+</code></pre>
+<pre><code class="language-bash">kubectl get pods --output=wide
+</code></pre>
+<pre><code class="language-cat">NAME             READY   STATUS    RESTARTS   AGE     IP            NODE            NOMINATED NODE   READINESS GATES
 onspecificnode   1/1     Running   0          2m31s   10.128.1.11   crc-rk2fc-master-0   &lt;none&gt;           &lt;none&gt;
-</code></pre><p>To learn more about a specific node, <code>crc-rk2fc-master-0</code> in our case, do:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl describe node crc-rk2fc-master-0
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">Name:               crc-rk2fc-master-0
+</code></pre>
+<p>To learn more about a specific node, <code>crc-rk2fc-master-0</code> in our case, do:</p>
+<pre><code class="language-bash">kubectl describe node crc-rk2fc-master-0
+</code></pre>
+<pre><code class="language-cat">Name:               crc-rk2fc-master-0
 Roles:              master,worker
 Labels:             beta.kubernetes.io/arch=amd64
                     beta.kubernetes.io/os=linux
@@ -294,7 +291,8 @@ Allocated resources:
   cpu                3010m (54%)   700m (12%)
   memory             8289Mi (55%)  687Mi (4%)
   ephemeral-storage  0 (0%)        0 (0%)
-</code></pre><p>Note that there are more sophisticated methods than shown above, such as using affinity, to <a href="https://kubernetes.io/docs/concepts/configuration/assign-pod-node/">assign pods to nodes</a> and depending on your use case, you might want to check those out as well.</p>
+</code></pre>
+<p>Note that there are more sophisticated methods than shown above, such as using affinity, to <a href="https://kubernetes.io/docs/concepts/configuration/assign-pod-node/">assign pods to nodes</a> and depending on your use case, you might want to check those out as well.</p>
 <p><a href="../ic">Previous</a> | <a href="../api">Next</a></p>
 
         

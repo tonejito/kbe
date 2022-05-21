@@ -50,17 +50,6 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
 
   
-  <div class="container-fluid alert alert-warning alert-dismissible show annoying-banner-ad" style='color:white; background: #53b9fc; font-size:small;' role="alert">
-    <strong>Kubernetes By Example is evolving!</strong>
-    <br/>
-    On June 15, you will find more hands-on trainings using real world use cases and an improved site navigation and interface to make it easier for you to build skills with Kubernetes.
-    <br/>
-    Don't worry, you'll still have access to all the current Kubernetes learning resources on KBE.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  
 
   <div class="container-fluid">
     <div class="navbar-header">
@@ -95,19 +84,19 @@
                 
                   <a href="/kbe/healthz/">Health Checks</a>
                 
-                  <a href="/kbe/envs/">Environment Variables</a>
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
                 
                   <a href="/kbe/ns/">Namespaces</a>
                 
                   <a href="/kbe/volumes/">Volumes</a>
                 
-                  <a href="/kbe/pv/">Persistent Volumes</a>
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
                 
                   <a href="/kbe/secrets/">Secrets</a>
                 
                   <a href="/kbe/logging/">Logging</a>
                 
-                  <a href="/kbe/jobs/">Jobs</a>
+                  <a href="/kbe/concepts/jobs">Jobs</a>
                 
                   <a href="/kbe/statefulset/">Stateful Sets</a>
                 
@@ -136,7 +125,7 @@
         
           
             <li>
-              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe">Contribute</a>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
             </li>
           
         
@@ -210,10 +199,12 @@
         <p>If you have a stateless app you want to use a deployment. However, for a stateful app you might want to use a <a href="https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/">StatefulSet</a>. Unlike a deployment, the <code>StatefulSet</code> provides certain guarantees about the identity of the pods it is managing (that is, predictable names) and about the startup order. Two more things that are different compared to a deployment: for network communication you need to create a <a href="https://kubernetes.io/docs/concepts/services-networking/service/#headless-services">headless services</a> and for persistency the <code>StatefulSet</code> manages a <a href="../pv">persistent volume</a> per pod.</p>
 <p>In order to see how this all plays together, we will be using an <a href="https://blog.openshift.com/kubernetes-statefulset-in-action/">educational Kubernetes-native NoSQL datastore</a>.</p>
 <p>Let&rsquo;s start with creating the <a href="https://raw.githubusercontent.com/openshift-evangelists/mehdb/main/app.yaml">stateful app</a>, that is, the <code>StatefulSet</code> along with the persistent volumes and the headless service:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/mehdb/main/app.yaml
-</code></pre></div><p>After a minute or so, you can have a look at all the resources that have been created:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get sts,po,pvc,svc
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">NAME                     DESIRED   CURRENT   AGE
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/mehdb/main/app.yaml
+</code></pre>
+<p>After a minute or so, you can have a look at all the resources that have been created:</p>
+<pre><code class="language-bash">kubectl get sts,po,pvc,svc
+</code></pre>
+<pre><code class="language-cat">NAME                     DESIRED   CURRENT   AGE
 statefulset.apps/mehdb   2         2         1m
 
 NAME          READY   STATUS    RESTARTS   AGE
@@ -226,16 +217,20 @@ persistentvolumeclaim/data-mehdb-1   Bound    pvc-d4b7620f-310d-11e9-aeff-123713
 
 NAME            TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
 service/mehdb   ClusterIP   None         &lt;none&gt;        9876/TCP   1m
-</code></pre><p>Now we can check if the stateful app is working properly. To do this, we use the <code>/status</code> endpoint of the headless service <code>mehdb:9876</code> and since we haven&rsquo;t put any data yet into the datastore, we&rsquo;d expect that <code>0</code> keys are reported:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl run -it --rm jumpod --restart<span style="color:#f92672">=</span>Never --image<span style="color:#f92672">=</span>quay.io/openshiftlabs/jump:0.2 -- curl -s mehdb:9876/status?level<span style="color:#f92672">=</span>full
-</code></pre></div><pre tabindex="0"><code class="language-cat" data-lang="cat">0
+</code></pre>
+<p>Now we can check if the stateful app is working properly. To do this, we use the <code>/status</code> endpoint of the headless service <code>mehdb:9876</code> and since we haven&rsquo;t put any data yet into the datastore, we&rsquo;d expect that <code>0</code> keys are reported:</p>
+<pre><code class="language-bash">kubectl run -it --rm jumpod --restart=Never --image=quay.io/openshiftlabs/jump:0.2 -- curl -s mehdb:9876/status?level=full
+</code></pre>
+<pre><code class="language-cat">0
 pod &quot;jumpod&quot; deleted
-</code></pre><p>And indeed we see <code>0</code> keys being available, reported above.</p>
+</code></pre>
+<p>And indeed we see <code>0</code> keys being available, reported above.</p>
 <p>Note that sometimes a <code>StatefulSet</code> is not the best fit for your stateful app. You might be better off defining a <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/">custom resource</a> along with writing a custom controller to have finer-grained control over your workload.</p>
 <p>We can now cleanup after we are done using:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete -f https://raw.githubusercontent.com/openshift-evangelists/mehdb/main/app.yaml
+<pre><code class="language-bash">kubectl delete -f https://raw.githubusercontent.com/openshift-evangelists/mehdb/main/app.yaml
 kubectl delete pvc/data-mehdb-0
-</code></pre></div><p><a href="../jobs">Previous</a> | <a href="../ic">Next</a></p>
+</code></pre>
+<p><a href="../jobs">Previous</a> | <a href="../ic">Next</a></p>
 
         
       </div>
