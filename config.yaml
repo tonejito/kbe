@@ -112,7 +112,7 @@ menu:
       weight: '13'
     - name: Jobs
       parent: hands-on
-      url: jobs/
+      url: concepts/jobs  # jobs/
       weight: '14'
     - name: Stateful Sets
       parent: hands-on

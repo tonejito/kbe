@@ -13,7 +13,7 @@ This is a hands-on introduction to Kubernetes. Browse the examples:
 - [persistent volumes](concepts/persistent-volumes)
 - [secrets](secrets/)
 - [logging](logging/)
-- [jobs](jobs/)
+- [jobs](concepts/jobs)
 - [stateful sets](statefulset/)
 - [init containers](ic/)
 - [nodes](nodes/)
