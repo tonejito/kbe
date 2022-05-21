@@ -88,7 +88,7 @@ menu:
       weight: '7'
     - name: Environment Variables
       parent: hands-on
-      url: envs/
+      url: concepts/environment-variables
       weight: '8'
     - name: Namespaces
       parent: hands-on

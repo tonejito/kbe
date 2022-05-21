@@ -7,7 +7,7 @@ This is a hands-on introduction to Kubernetes. Browse the examples:
 - [service discovery](sd/)
 - [port forward](pf/)
 - [health checks](healthz/)
-- [environment variables](envs/)
+- [environment variables](concepts/environment-variables)
 - [namespaces](ns/)
 - [volumes](volumes/)
 - [persistent volumes](concepts/persistent-volumes)
