@@ -1,3 +1,9 @@
++++
+description = ""
++++
+
+<!-- # KBE - Kube By Example -->
+
 This is a hands-on introduction to Kubernetes. Browse the examples:
 
 - [pods](pods/)
@@ -7,10 +13,10 @@ This is a hands-on introduction to Kubernetes. Browse the examples:
 - [service discovery](sd/)
 - [port forward](pf/)
 - [health checks](healthz/)
-- [environment variables](concepts/environment-variables)
+- [environment variables](envs/)
 - [namespaces](ns/)
 - [volumes](volumes/)
-- [persistent volumes](concepts/persistent-volumes)
+- [persistent volumes](pv/)
 - [secrets](secrets/)
 - [logging](logging/)
 - [jobs](concepts/jobs)
@@ -18,6 +24,23 @@ This is a hands-on introduction to Kubernetes. Browse the examples:
 - [init containers](ic/)
 - [nodes](nodes/)
 - [API server](api/)
+
+Kubernetes Featured Concepts:
+
+- [Pods](concepts/pods)
+- [Labels](concepts/labels)
+- [Deployments](concepts/deployments)
+- [Services](concepts/services)
+- [Port Forwarding](concepts/port-forwarding)
+- [Health Checks](concepts/health-checks)
+- [Environment Variables](concepts/environment-variables)
+- [Namespaces](concepts/namespaces)
+- [Volumes](concepts/volumes)
+- [Persistent Volumes](concepts/persistent-volumes)
+- [Secrets](concepts/secrets)
+- [Logging](concepts/logging)
+- [Jobs](concepts/jobs)
+- [Nodes](concepts/nodes)
 
 There are other topics that include guided exercises:
 
