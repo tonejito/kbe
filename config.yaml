@@ -132,6 +132,84 @@ menu:
     url: api/
     weight: '18'
 
+  # Add your own content under "content/concepts/<name>"
+  - name: Concepts
+    identifier: concepts
+    url: concepts
+    weight: '2'
+  - name: Pods
+    parent: concepts
+    url: concepts/pods
+    weight: '1'
+  - name: Labels
+    parent: concepts
+    url: concepts/labels
+    weight: '2'
+  - name: Deployments
+    parent: concepts
+    url: concepts/deployments
+    weight: '3'
+  - name: Services
+    parent: concepts
+    url: concepts/services
+    weight: '4'
+  # - name: Service Discovery
+  #   parent: concepts
+  #   url: concepts/service-discovery
+  #   weight: '5'
+  - name: Port Forwarding
+    parent: concepts
+    url: concepts/port-forwarding
+    weight: '6'
+  - name: Health Checks
+    parent: concepts
+    url: concepts/health-checks
+    weight: '7'
+  - name: Environment Variables
+    parent: concepts
+    url: concepts/environment-variables
+    weight: '8'
+  - name: Namespaces
+    parent: concepts
+    url: concepts/namespaces
+    weight: '9'
+  - name: Volumes
+    parent: concepts
+    url: concepts/volumes
+    weight: '10'
+  - name: Persistent Volumes
+    parent: concepts
+    url: concepts/persistent-volumes
+    weight: '11'
+  - name: Secrets
+    parent: concepts
+    url: concepts/secrets
+    weight: '12'
+  - name: Logging
+    parent: concepts
+    url: concepts/logging
+    weight: '13'
+  - name: Jobs
+    parent: concepts
+    url: concepts/jobs
+    weight: '14'
+  # - name: Stateful Sets
+  #   parent: concepts
+  #   url: concepts/stateful-sets
+  #   weight: '15'
+  # - name: Init Containers
+  #   parent: concepts
+  #   url: concepts/init-containers
+  #   weight: '16'
+  - name: Nodes
+    parent: concepts
+    url: concepts/nodes
+    weight: '17'
+  # - name: API Server
+  #   parent: concepts
+  #   url: concepts/api-server
+  #   weight: '18'
+
   # Add your own content under "content/topics/<name>"
   - name: Other topics
     identifier: topics
