@@ -9,15 +9,14 @@
   <meta property="og:title" content="Kubernetes By Example" />
   <meta name="twitter:title" content="Kubernetes By Example" />
   <meta name="description" content="Environment Variables You can set environment variables for containers running in a pod. Additionally, Kubernetes automatically exposes certain runtime information via environment variables.
-Create a pod of the simple service application using the container image on the quay.io registry.
-$ kubectl run envs --image=quay.io/openshiftlabs/simpleservice:0.5.0 --port=9876 $ kubectl get pods NAME READY STATUS RESTARTS AGE envs 1/1 Running 0 20s  View the environment variables defined in the pod.
-$ kubectl describe pod envs | grep &#39;Environment:&#39; Environment: &lt;none&gt;  Access the application and display the service version.">
+Let&rsquo;s launch a pod that we pass an environment variable SIMPLE_SERVICE_VERSION with the value 1.0:
+$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/envs/pod.yaml  Now, let&rsquo;s verify from within the cluster if the application running in the pod has picked up the environment variable:
+$ kubectl exec envs -t -- curl -s 127.">
   <meta property="og:description" content="Environment Variables You can set environment variables for containers running in a pod. Additionally, Kubernetes automatically exposes certain runtime information via environment variables.
-Create a pod of the simple service application using the container image on the quay.io registry.
-$ kubectl run envs --image=quay.io/openshiftlabs/simpleservice:0.5.0 --port=9876 $ kubectl get pods NAME READY STATUS RESTARTS AGE envs 1/1 Running 0 20s  View the environment variables defined in the pod.
-$ kubectl describe pod envs | grep &#39;Environment:&#39; Environment: &lt;none&gt;  Access the application and display the service version.">
-  <meta name="twitter:description" content="Environment Variables You can set environment variables for containers running in a pod. Additionally, Kubernetes automatically exposes certain runtime information via environment variables.
-Create a …">
+Let&rsquo;s launch a pod that we pass an environment variable SIMPLE_SERVICE_VERSION with the value 1.0:
+$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/envs/pod.yaml  Now, let&rsquo;s verify from within the cluster if the application running in the pod has picked up the environment variable:
+$ kubectl exec envs -t -- curl -s 127.">
+  <meta name="twitter:description" content="Environment Variables You can set environment variables for containers running in a pod. Additionally, Kubernetes automatically exposes certain runtime information via environment variables. …">
   <meta name="author" content=""/>
   <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
   <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
@@ -74,44 +73,12 @@ Create a …">
         
           
             <li class="navlinks-container">
-              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
               <div class="navlinks-children">
                 
-                  <a href="/kbe/pods/">Pods</a>
+                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
                 
-                  <a href="/kbe/labels/">Labels</a>
-                
-                  <a href="/kbe/deployments/">Deployments</a>
-                
-                  <a href="/kbe/services/">Services</a>
-                
-                  <a href="/kbe/sd/">Service Discovery</a>
-                
-                  <a href="/kbe/pf/">Port Forward</a>
-                
-                  <a href="/kbe/healthz/">Health Checks</a>
-                
-                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
-                
-                  <a href="/kbe/ns/">Namespaces</a>
-                
-                  <a href="/kbe/volumes/">Volumes</a>
-                
-                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
-                
-                  <a href="/kbe/secrets/">Secrets</a>
-                
-                  <a href="/kbe/logging/">Logging</a>
-                
-                  <a href="/kbe/concepts/jobs">Jobs</a>
-                
-                  <a href="/kbe/statefulset/">Stateful Sets</a>
-                
-                  <a href="/kbe/ic/">Init Containers</a>
-                
-                  <a href="/kbe/nodes/">Nodes</a>
-                
-                  <a href="/kbe/api/">API Server</a>
+                  <a href="/kbe/topics/istio/istio/">Istio</a>
                 
               </div>
             </li>
@@ -119,12 +86,55 @@ Create a …">
         
           
             <li class="navlinks-container">
-              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
+              <a class="navlinks-parent" href="javascript:void(0)">Concepts</a>
               <div class="navlinks-children">
                 
-                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
+                  <a href="/kbe/concepts/pods">Pods</a>
                 
-                  <a href="/kbe/topics/istio/istio/">Istio</a>
+                  <a href="/kbe/concepts/labels">Labels</a>
+                
+                  <a href="/kbe/concepts/deployments">Deployments</a>
+                
+                  <a href="/kbe/concepts/services">Services</a>
+                
+                  <a href="/kbe/concepts/port-forwarding">Port Forwarding</a>
+                
+                  <a href="/kbe/concepts/health-checks">Health Checks</a>
+                
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
+                
+                  <a href="/kbe/concepts/namespaces">Namespaces</a>
+                
+                  <a href="/kbe/concepts/volumes">Volumes</a>
+                
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
+                
+                  <a href="/kbe/concepts/secrets">Secrets</a>
+                
+                  <a href="/kbe/concepts/logging">Logging</a>
+                
+                  <a href="/kbe/concepts/jobs">Jobs</a>
+                
+                  <a href="/kbe/concepts/nodes">Nodes</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/sd/">Service Discovery</a>
+                
+                  <a href="/kbe/pf/">Port Forward</a>
+                
+                  <a href="/kbe/statefulset/">Stateful Sets</a>
+                
+                  <a href="/kbe/ic/">Init Containers</a>
+                
+                  <a href="/kbe/api/">API Server</a>
                 
               </div>
             </li>
@@ -182,90 +192,22 @@ Create a …">
 <h1 id="environment-variables">Environment Variables</h1>
 <p>You can set environment variables for containers running in a pod.
 Additionally, Kubernetes automatically exposes certain runtime information via environment variables.</p>
-<p>Create a pod of the <a href="https://github.com/openshift-labs/simpleservice">simple service application</a> using the container image on the <code>quay.io</code> registry.</p>
-<pre><code class="language-bash">$ kubectl run envs --image=quay.io/openshiftlabs/simpleservice:0.5.0 --port=9876
-
-$ kubectl get pods
-NAME   READY   STATUS    RESTARTS   AGE
-envs   1/1     Running   0          20s
-</code></pre>
-<p>View the environment variables defined in the pod.</p>
-<pre><code class="language-bash">$ kubectl describe pod envs | grep 'Environment:'
-    Environment:    &lt;none&gt;
-</code></pre>
-<p>Access the application and display the service version.
-The default value <code>0.5.0</code> is displayed.</p>
-<pre><code class="language-bash">$ kubectl exec -it pod/envs -- curl -s localhost:9876/info | jq .
-{
-  &quot;host&quot;: &quot;localhost:9876&quot;,
-  &quot;version&quot;: &quot;0.5.0&quot;,  # &lt;= The default version value is shown
-  &quot;from&quot;: &quot;127.0.0.1&quot;
-}
-</code></pre>
-<p>Delete the pod that was created with the <code>kubectl run</code> command.</p>
-<pre><code class="language-bash">$ kubectl delete pod envs
-pod &quot;envs&quot; deleted
-</code></pre>
-<p>Launch a new pod using a YAML resource manifest where the <code>SIMPLE_SERVICE_VERSION</code> environment variable is provided.
-The <a href="https://github.com/openshift-labs/simpleservice">simple service application</a> can override the <strong>version</strong> to the value specified in the <code>SIMPLE_SERVICE_VERSION</code> environment variable.</p>
+<p>Let&rsquo;s launch a <a href="https://github.com/openshift-evangelists/kbe/raw/main/specs/envs/pod.yaml">pod</a> that we pass an environment variable <code>SIMPLE_SERVICE_VERSION</code> with the value <code>1.0</code>:</p>
 <pre><code class="language-bash">$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/envs/pod.yaml
 </code></pre>
-<p>Verify that the <code>envs</code> pod is running.</p>
-<pre><code class="language-bash">$ kubectl get pods
-NAME   READY   STATUS    RESTARTS   AGE
-envs   1/1     Running   0          30s
+<p>Now, let&rsquo;s verify from within the cluster if the application running in the pod has picked up the environment variable:</p>
+<pre><code class="language-bash">$ kubectl exec envs -t -- curl -s 127.0.0.1:9876/info
 </code></pre>
-<p>Inspect the pod description to view the environment variables.</p>
-<pre><code class="language-bash">$ kubectl describe pod envs | grep -A 1 'Environment:'
-    Environment:
-      SIMPLE_SERVICE_VERSION:  1.0
+<p>The output reflects the value that was set for the environment variable (the default, unless overridden by the variable, is <code>0.5.0</code>):</p>
+<pre><code class="language-json">{&quot;host&quot;: &quot;127.0.0.1:9876&quot;, &quot;version&quot;: &quot;1.0&quot;, &quot;from&quot;: &quot;127.0.0.1&quot;}
 </code></pre>
-<!--
-```bash
-$ kubectl get pod envs -o jsonpath='{.spec.containers[0].env}{"\n"}'
-[{"name":"SIMPLE_SERVICE_VERSION","value":"1.0"}]
-```
--->
-<p>Verify that the <code>version</code> value is overridden with the value from the environment variable.</p>
-<pre><code class="language-bash">$ kubectl exec -it pod/envs -- curl -s localhost:9876/info | jq .
-{
-  &quot;host&quot;: &quot;localhost:9876&quot;,
-  &quot;version&quot;: &quot;1.0&quot;,  # &lt;= The version value is overridden from the environment variable
-  &quot;from&quot;: &quot;127.0.0.1&quot;
-}
+<p>You can check what environment variables Kubernetes itself provides automatically using a REST endpoint in the sample application:</p>
+<pre><code class="language-bash">$ kubectl exec envs -t -- curl -s 127.0.0.1:9876/env
 </code></pre>
-<p>You can check what environment variables Kubernetes itself provides automatically using a REST endpoint in the sample application.</p>
-<pre><code class="language-bash">$ kubectl exec -it envs -- curl -s 127.0.0.1:9876/env
-</code></pre>
-<p>Your results will vary slightly depending on you cluster configuration, but an example output is included below.</p>
+<p>Your results will vary slightly depending on you cluster configuration, but an example output is included below:</p>
 <pre><code class="language-json">{
   &quot;version&quot;: &quot;1.0&quot;,
   &quot;env&quot;: &quot;{
-    'GPG_KEY': 'FBC59DD261FEBA08C40D6991B8E4DFA780EE0021',
-    'HOSTNAME': 'envs',
-    'LANG': 'C.UTF-8',
-    'HOME': '/root',
-    'PATH': '/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-    'PYTHON_VERSION': '2.7.13',
-    'PYTHON_PIP_VERSION': '9.0.1',
-    'KUBERNETES_PORT': 'tcp://10.96.0.1:443',
-    'KUBERNETES_PORT_443_TCP': 'tcp://10.96.0.1:443',
-    'KUBERNETES_PORT_443_TCP_ADDR': '10.96.0.1',
-    'KUBERNETES_PORT_443_TCP_PORT': '443',
-    'KUBERNETES_PORT_443_TCP_PROTO': 'tcp',
-    'KUBERNETES_SERVICE_HOST': '10.96.0.1',
-    'KUBERNETES_SERVICE_PORT': '443',
-    'KUBERNETES_SERVICE_PORT_HTTPS': '443',
-    'REFRESHED_AT': '2017-04-24T13:50',
-    'SIMPLE_SERVICE_VERSION': '1.0'
-  }&quot;
-} 
-</code></pre>
-<!--
-```json
-{
-  "version": "1.0",
-  "env": "{
     'GPG_KEY': 'FBC59DD261FEBA08C40D6991B8E4DFA780EE0021',
     'HOSTNAME': 'envs',
     'HOME': '/root',
@@ -319,35 +261,16 @@ $ kubectl get pod envs -o jsonpath='{.spec.containers[0].env}{"\n"}'
     'ROUTER_SERVICE_PORT_1936_TCP': '1936',
     'ROUTER_SERVICE_PORT_443_TCP': '443',
     'SIMPLE_SERVICE_VERSION': '1.0'
-  }"
+  }&quot;
 }
-```
--->
-<p>Alternatively, you can also use the <code>exec</code> subcommand to display the environment variables within the pod.</p>
-<pre><code class="language-bash">$ kubectl exec -it pod/envs -- printenv
-GPG_KEY=FBC59DD261FEBA08C40D6991B8E4DFA780EE0021
-HOSTNAME=envs
-LANG=C.UTF-8
-HOME=/root
-PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-PYTHON_VERSION=2.7.13
-PYTHON_PIP_VERSION=9.0.1
-KUBERNETES_PORT=tcp://10.96.0.1:443
-KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
-KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
-KUBERNETES_PORT_443_TCP_PORT=443
-KUBERNETES_PORT_443_TCP_PROTO=tcp
-KUBERNETES_SERVICE_HOST=10.96.0.1
-KUBERNETES_SERVICE_PORT=443
-KUBERNETES_SERVICE_PORT_HTTPS=443
-SIMPLE_SERVICE_VERSION=1.0
-REFRESHED_AT=2017-04-24T13:50
-TERM=xterm
 </code></pre>
-<p>Remove the pod to clean up the environment.</p>
-<pre><code class="language-bash">$ kubectl delete pod envs
+<p>Alternatively, you can also use the exec subcommand to display the environment variables within the pod:</p>
+<pre><code class="language-bash">$ kubectl exec envs -- printenv
 </code></pre>
-<p>In addition to the above examples, you can also use secrets, volumes, or the <a href="https://kubernetes.io/docs/user-guide/downward-api/">downward API</a> to inject additional information into your container environments.</p>
+<p>Remove the sample pod with:</p>
+<pre><code class="language-bash">$ kubectl delete pod/envs
+</code></pre>
+<p>In addition to the above examples, you can also use secrets, volumes, or the <a href="https://kubernetes.io/docs/user-guide/downward-api">downward API</a> to inject additional information into your container environments.</p>
 <hr>
 
   </div>

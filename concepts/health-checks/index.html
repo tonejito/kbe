@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Kubernetes By Example</title>
+  <meta property="og:title" content="Kubernetes By Example" />
+  <meta name="twitter:title" content="Kubernetes By Example" />
+  <meta name="description" content="Health Checks In order to verify if a container in a pod is healthy and ready to serve traffic, Kubernetes provides for a range of health checking mechanisms. Health checks, or probes as they are called in Kubernetes, are carried out by the kubelet to determine when to restart a container (liveness probes) and used by services and deployments to determine if a pod should receive traffic (readiness probes).
+We will focus on HTTP health checks in the following.">
+  <meta property="og:description" content="Health Checks In order to verify if a container in a pod is healthy and ready to serve traffic, Kubernetes provides for a range of health checking mechanisms. Health checks, or probes as they are called in Kubernetes, are carried out by the kubelet to determine when to restart a container (liveness probes) and used by services and deployments to determine if a pod should receive traffic (readiness probes).
+We will focus on HTTP health checks in the following.">
+  <meta name="twitter:description" content="Health Checks In order to verify if a container in a pod is healthy and ready to serve traffic, Kubernetes provides for a range of health checking mechanisms. Health checks, or probes as they are …">
+  <meta name="author" content=""/>
+  <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://tonejito.github.io/kbe/concepts/health-checks/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kubernetes By Example" />
+
+  <meta name="generator" content="Hugo 0.91.2" />
+  <link rel="canonical" href="https://tonejito.github.io/kbe/concepts/health-checks/" />
+  <link rel="alternate" href="https://tonejito.github.io/index.xml" type="application/rss+xml" title="Kubernetes By Example">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/main.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/pygment_highlights.css" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/highlight.min.css" />
+<link rel="stylesheet" type="text/css" href="https://tonejito.github.io/kbe/css/custom.css">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WNHKJNX');</script>
+  
+</head>
+
+  <body>
+    
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WNHKJNX"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
+
+  
+
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://tonejito.github.io/">Home</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
+                
+                  <a href="/kbe/topics/istio/istio/">Istio</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Concepts</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/concepts/pods">Pods</a>
+                
+                  <a href="/kbe/concepts/labels">Labels</a>
+                
+                  <a href="/kbe/concepts/deployments">Deployments</a>
+                
+                  <a href="/kbe/concepts/services">Services</a>
+                
+                  <a href="/kbe/concepts/port-forwarding">Port Forwarding</a>
+                
+                  <a href="/kbe/concepts/health-checks">Health Checks</a>
+                
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
+                
+                  <a href="/kbe/concepts/namespaces">Namespaces</a>
+                
+                  <a href="/kbe/concepts/volumes">Volumes</a>
+                
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
+                
+                  <a href="/kbe/concepts/secrets">Secrets</a>
+                
+                  <a href="/kbe/concepts/logging">Logging</a>
+                
+                  <a href="/kbe/concepts/jobs">Jobs</a>
+                
+                  <a href="/kbe/concepts/nodes">Nodes</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/sd/">Service Discovery</a>
+                
+                  <a href="/kbe/pf/">Port Forward</a>
+                
+                  <a href="/kbe/statefulset/">Stateful Sets</a>
+                
+                  <a href="/kbe/ic/">Init Containers</a>
+                
+                  <a href="/kbe/api/">API Server</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Try out!" href="/kbe/diy/">Try out!</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="Kubernetes By Example" href="https://tonejito.github.io/">
+            <img class="avatar-img" src="https://tonejito.github.io/kbe//img/kbe-logo.png" alt="Kubernetes By Example" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  <div class="intro-header"></div>
+
+
+    
+  <div class="container" role="main">
+    <!-- https://kubebyexample.com/en/concept/health-checks -->
+<h1 id="health-checks">Health Checks</h1>
+<p>In order to verify if a container in a pod is healthy and ready to serve traffic, Kubernetes provides for a range of health checking mechanisms.
+Health checks, or <em>probes</em> as they are called in Kubernetes, are carried out by the <a href="https://kubernetes.io/docs/admin/kubelet">kubelet</a> to determine when to restart a container (<em>liveness probes</em>) and used by services and deployments to determine if a pod should receive traffic (<em>readiness probes</em>).</p>
+<p>We will focus on HTTP health checks in the following.
+Note that it is the responsibility of the application developer to expose a URL that the kubelet can use to determine if the container is healthy (and potentially ready).</p>
+<p>Let&rsquo;s create a <a href="https://github.com/openshift-evangelists/kbe/raw/main/specs/healthz/pod.yaml">pod</a> that exposes an endpoint <code>/health</code>, responding with a HTTP <code>200</code> status code:</p>
+<pre><code class="language-bash">$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/healthz/pod.yaml
+</code></pre>
+<p>In the pod specification we&rsquo;ve defined the following:</p>
+<pre><code class="language-yaml">livenessProbe:
+initialDelaySeconds: 2
+periodSeconds: 5
+httpGet:
+path: /health
+port: 9876
+</code></pre>
+<p>The configuration above tells Kubernetes to start checking the <code>/health</code> endpoint, after initially waiting 2 seconds, every 5 seconds.</p>
+<p>If we now look at the pod we can see that it is considered healthy:</p>
+<pre><code class="language-bash">$ kubectl describe pod hc
+</code></pre>
+<p>The following (truncated) output shows the relevant sections:</p>
+<pre><code class="language-text">Name:         hc
+Namespace:    default
+Priority:     0
+Node:         minikube/192.168.39.51
+...
+Containers:
+  sise:
+    Container ID:   docker://2cfe4187808a89ae4731abfe242ac42611e1f658505691f540ac31ca8f6ce86f
+    Image:          quay.io/openshiftlabs/simpleservice:0.5.0
+    ...
+    Ready:          True
+    Restart Count:  0
+    Liveness:       http-get http://:9876/health delay=2s timeout=1s period=5s #success=1 #failure=3
+    Environment:    &lt;none&gt;
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+...
+</code></pre>
+<p>Now launch a <a href="https://github.com/openshift-evangelists/kbe/raw/main/specs/healthz/badpod.yaml">bad pod</a> which will randomly (in the time range 1 to 4 sec) not return a <code>200</code> code:</p>
+<pre><code class="language-bash">$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/healthz/badpod.yaml
+</code></pre>
+<p>Looking at the events of the bad pod, we can see that the health check failed:</p>
+<pre><code class="language-bash">$ kubectl describe pod badpod
+</code></pre>
+<p>In particular, look at the events section at the bottom:</p>
+<pre><code class="language-text">Events:
+  Type     Reason     Age               From               Message
+  ----     ------     ----              ----               -------
+  Normal   Scheduled  24s               default-scheduler  Successfully assigned default/badpod to minikube
+  Normal   Pulled     22s               kubelet            Container image &quot;quay.io/openshiftlabs/simpleservice:0.5.0&quot; already present on machine
+  Normal   Created    22s               kubelet            Created container sise
+  Normal   Started    22s               kubelet            Started container sise
+  Warning  Unhealthy  9s (x3 over 19s)  kubelet            Liveness probe failed: Get &quot;http://172.17.0.4:9876/health&quot;: context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+  Normal   Killing    9s                kubelet            Container sise failed liveness probe, will be restarted
+</code></pre>
+<p>This can also be verified with the get subcommand:</p>
+<pre><code class="language-bash">$ kubectl get pods
+</code></pre>
+<p>Notice that badpod has been restarted multiple times because of the failing health checks.</p>
+<pre><code class="language-text">NAME     READY   STATUS    RESTARTS   AGE
+badpod   1/1     Running   2          109s
+hc       1/1     Running   0          11m
+</code></pre>
+<p>In addition to a liveness probe, you can also specify a readiness probe.
+Readiness probes are configured in the same way, but have different use cases and semantics.
+The readiness probe indicates when the application itself is running and able to receive traffic.</p>
+<p>Let&rsquo;s create a <a href="https://github.com/openshift-evangelists/kbe/raw/main/specs/healthz/ready.yaml">pod with a readiness probe</a> that reports success after 10 seconds:</p>
+<pre><code class="language-bash">$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/healthz/ready.yaml
+</code></pre>
+<p>Looking at the events of the pod, we can see that, eventually, the pod is ready to serve traffic:</p>
+<pre><code class="language-bash">$ kubectl describe pod ready
+</code></pre>
+<p>Depending on how quickly you ran the describe command, you may have noticed the pod reflected that it was not ready to receive traffic:</p>
+<pre><code class="language-text">Conditions:
+  Type              Status
+  Initialized       True
+  Ready             False
+  ContainersReady   False
+  PodScheduled      True
+</code></pre>
+<p>You can remove all of the created pods with:</p>
+<pre><code class="language-bash">$ kubectl delete pod/hc pod/ready pod/badpod
+</code></pre>
+<p>Learn more about configuring probes, including TCP and command probes, in the <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes">documentation</a>.</p>
+<hr>
+
+  </div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+          &nbsp;&bull;&nbsp;
+          2020
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://tonejito.github.io/">Kubernetes By Example</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.91.2</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://tonejito.github.io/kbe//js/main.js"></script>
+<script>
+
+$('.language-test').parent().css('display', 'none')
+
+
+var copybtns = {
+  fallbackCopyTextToClipboard: function (text) {
+    var txt = document.createElement("textarea");
+    txt.value = text;
+    
+    
+    txt.style.position = "fixed";
+    txt.style.top = "0";
+    txt.style.left = "0";
+  
+    document.body.appendChild(txt);
+    txt.focus();
+    txt.select();
+    txt.setSelectionRange(0, 99999);
+  
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+    } catch (err) {
+      console.error('Fallback: Unable to copy', err);
+    }
+  
+    document.body.removeChild(txt);
+  },
+  copyTextToClipboard: function (text) {
+    if (!navigator.clipboard) {
+      copybtns.fallbackCopyTextToClipboard(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+      
+    }, function(err) {
+      
+      copybtns.fallbackCopyTextToClipboard(text);
+    });
+  },
+  flash: function(btn, content){
+    
+    content.fadeTo(50, 0.25, function() { $(this).fadeTo(300, 1.0); });
+    
+    btn.fadeTo(50, 0.0, function() { $(this).fadeTo(900, 1.0); });
+  },
+  txtClick : function(){
+    var content = $(this);
+    var btn = content.prev('button');
+    
+    copybtns.flash(btn, content);
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  btnClick : function(){
+    var btn = $(this);
+    var content = $(btn.next().children()[0]);
+    
+    copybtns.flash(btn, content)
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  init : function() {
+    var buttonHTML = '<button type="button" data-toggle="tooltip" data-placement="top" title="Copy" class="copybtn btn btn-outline-dark"><img src="https:\/\/tonejito.github.io\/kbe\//img/Icon-Red_Hat-Media_and_documents-Paper_Stack_Blank-A-Black-RGB.png"/></button>';
+    
+    $('div.highlight').prepend(buttonHTML);
+    
+    $('button.copybtn').bind("click", copybtns.btnClick);
+    $('div.highlight pre').bind("click", copybtns.txtClick);
+  }
+}
+copybtns.init();
+</script>
+<script src="https://tonejito.github.io/kbe//js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-34425776-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+<div class="watermark-container">
+  <div class="watermark">
+    For testing purposes only
+  </div>
+  <div style="clear: both;"></div>
+</div>
+
+
+
+  </body>
+</html>
+

@@ -8,9 +8,11 @@
   <title>Kubernetes By Example</title>
   <meta property="og:title" content="Kubernetes By Example" />
   <meta name="twitter:title" content="Kubernetes By Example" />
-  <meta name="description" content="Persistent Volumes provide storage for Kubernetes pods">
-  <meta property="og:description" content="Persistent Volumes provide storage for Kubernetes pods">
-  <meta name="twitter:description" content="Persistent Volumes provide storage for Kubernetes pods">
+  <meta name="description" content="Persistent Volumes A persistent volume (PV) is a cluster-wide resource that you can use to store data in a way that it persists beyond the lifetime of a pod. The PV is not backed by locally-attached storage on a worker node but by networked storage system such as EBS or NFS or a distributed filesystem like Ceph.
+Depending on your cluster and storage type, the configuration of a PV will vary slightly.">
+  <meta property="og:description" content="Persistent Volumes A persistent volume (PV) is a cluster-wide resource that you can use to store data in a way that it persists beyond the lifetime of a pod. The PV is not backed by locally-attached storage on a worker node but by networked storage system such as EBS or NFS or a distributed filesystem like Ceph.
+Depending on your cluster and storage type, the configuration of a PV will vary slightly.">
+  <meta name="twitter:description" content="Persistent Volumes A persistent volume (PV) is a cluster-wide resource that you can use to store data in a way that it persists beyond the lifetime of a pod. The PV is not backed by locally-attached …">
   <meta name="author" content=""/>
   <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
   <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
@@ -67,44 +69,12 @@
         
           
             <li class="navlinks-container">
-              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
               <div class="navlinks-children">
                 
-                  <a href="/kbe/pods/">Pods</a>
+                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
                 
-                  <a href="/kbe/labels/">Labels</a>
-                
-                  <a href="/kbe/deployments/">Deployments</a>
-                
-                  <a href="/kbe/services/">Services</a>
-                
-                  <a href="/kbe/sd/">Service Discovery</a>
-                
-                  <a href="/kbe/pf/">Port Forward</a>
-                
-                  <a href="/kbe/healthz/">Health Checks</a>
-                
-                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
-                
-                  <a href="/kbe/ns/">Namespaces</a>
-                
-                  <a href="/kbe/volumes/">Volumes</a>
-                
-                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
-                
-                  <a href="/kbe/secrets/">Secrets</a>
-                
-                  <a href="/kbe/logging/">Logging</a>
-                
-                  <a href="/kbe/concepts/jobs">Jobs</a>
-                
-                  <a href="/kbe/statefulset/">Stateful Sets</a>
-                
-                  <a href="/kbe/ic/">Init Containers</a>
-                
-                  <a href="/kbe/nodes/">Nodes</a>
-                
-                  <a href="/kbe/api/">API Server</a>
+                  <a href="/kbe/topics/istio/istio/">Istio</a>
                 
               </div>
             </li>
@@ -112,12 +82,55 @@
         
           
             <li class="navlinks-container">
-              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
+              <a class="navlinks-parent" href="javascript:void(0)">Concepts</a>
               <div class="navlinks-children">
                 
-                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
+                  <a href="/kbe/concepts/pods">Pods</a>
                 
-                  <a href="/kbe/topics/istio/istio/">Istio</a>
+                  <a href="/kbe/concepts/labels">Labels</a>
+                
+                  <a href="/kbe/concepts/deployments">Deployments</a>
+                
+                  <a href="/kbe/concepts/services">Services</a>
+                
+                  <a href="/kbe/concepts/port-forwarding">Port Forwarding</a>
+                
+                  <a href="/kbe/concepts/health-checks">Health Checks</a>
+                
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
+                
+                  <a href="/kbe/concepts/namespaces">Namespaces</a>
+                
+                  <a href="/kbe/concepts/volumes">Volumes</a>
+                
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
+                
+                  <a href="/kbe/concepts/secrets">Secrets</a>
+                
+                  <a href="/kbe/concepts/logging">Logging</a>
+                
+                  <a href="/kbe/concepts/jobs">Jobs</a>
+                
+                  <a href="/kbe/concepts/nodes">Nodes</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/sd/">Service Discovery</a>
+                
+                  <a href="/kbe/pf/">Port Forward</a>
+                
+                  <a href="/kbe/statefulset/">Stateful Sets</a>
+                
+                  <a href="/kbe/ic/">Init Containers</a>
+                
+                  <a href="/kbe/api/">API Server</a>
                 
               </div>
             </li>
@@ -172,214 +185,61 @@
     
   <div class="container" role="main">
     <!-- https://kubebyexample.com/en/concept/persistent-volumes -->
-<h1 id="persistent-volume">Persistent Volume</h1>
+<h1 id="persistent-volumes">Persistent Volumes</h1>
 <p>A <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/">persistent volume</a> (PV) is a cluster-wide resource that you can use to store data in a way that it persists beyond the lifetime of a pod.
 The PV is not backed by locally-attached storage on a worker node but by networked storage system such as EBS or NFS or a distributed filesystem like Ceph.</p>
 <p>Depending on your cluster and storage type, the configuration of a PV will vary slightly.
-The command below will work for <code>minikube</code> clusters, where it will create the volume as a mount on the VM.</p>
-<pre><code class="language-text">$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/pv/pv.yaml
-</code></pre>
-<p>View the status of the persistent volume that was just created.</p>
-<pre><code class="language-bash">$ kubectl get pv
-NAME     CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM             STORAGECLASS   REASON   AGE
-pv0001   5Gi        RWO            Recycle          Available   default/myclaim                           30s
-</code></pre>
-<p>Review the details of the persistent volume.</p>
-<pre><code class="language-bash">$ kubectl describe pv pv0001
-Name:            pv0001
-Labels:          volume=pv0001
-Annotations:     pv.kubernetes.io/bound-by-controller: yes
-Finalizers:      [kubernetes.io/pv-protection]
-StorageClass:
-Status:          Available  # &lt;= The persistent volume is not bound to a PVC
-Claim:           default/myclaim
-Reclaim Policy:  Recycle
-Access Modes:    RWO
-VolumeMode:      Filesystem
-Capacity:        5Gi
-Node Affinity:   &lt;none&gt;
-Message:
-Source:
-    Type:          HostPath (bare host directory volume)
-    Path:          /mnt/pv-data/pv0001
-    HostPathType:
-Events:            &lt;none&gt;
+The command below will work for minikube clusters, where it will create the volume as a mount on the <code>minikube</code> VM:</p>
+<pre><code class="language-bash">$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/pv/pv.yaml
 </code></pre>
 <p>In order to use a PV, you need to claim it first, using a persistent volume claim (PVC).
-The PVC requests a PV with your desired specification (size, speed, etc.), and it&rsquo;s mounted as a volume inside the pod.
-Let&rsquo;s create a PVC that uses the default <a href="https://kubernetes.io/docs/concepts/storage/storage-classes/">storage class</a>.</p>
+The PVC requests a PV with your desired specification (size, speed, etc.) from Kubernetes and binds it to a pod where you it is mounted as a volume.
+Let&rsquo;s create a PVC, asking Kubernetes for 1 GB of storage using the default <a href="https://kubernetes.io/docs/concepts/storage/storage-classes/">storage class</a>:</p>
 <pre><code class="language-bash">$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/pv/pvc.yaml
 </code></pre>
-<p>The persistent volume status is set to <code>Bound</code> when a persistent volume claim is using it.</p>
-<pre><code class="language-bash">$ kubectl get pv
-NAME     CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM             STORAGECLASS   REASON   AGE
-pv0001   5Gi        RWO            Recycle          Bound    default/myclaim                           120s
+<p>Persistent Volume Claims can be queried using the abbreviation <code>pvc</code>:</p>
+<pre><code class="language-bash">$ kubectl get pvc
 </code></pre>
-<p>Persistent Volume Claims can be queried using the abbreviation <code>pvc</code>.
-The output reflects the name of the created PVC and some basic information.</p>
-<pre><code class="language-bash">$ kubectl get pv
-NAME     CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM             STORAGECLASS   REASON   AGE
-pv0001   5Gi        RWO            Recycle          Bound    default/myclaim                           120s
-
-$ kubectl get pvc
-NAME      STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-myclaim   Bound    pv0001   5Gi        RWO            standard       30s
+<p>The output reflects the name of the created PVC and some basic information:</p>
+<pre><code class="language-text">NAME      STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myclaim   Bound    pv0001   5Gi        RWO            standard       10s
 </code></pre>
-<p>Review the details of the persistent volume claim that was just created.</p>
-<pre><code class="language-bash">$ kubectl describe pvc myclaim
-Name:          myclaim
-Namespace:     default
-StorageClass:  standard
-Status:        Bound  # &lt;= The persistent volume claim is bound to a PV
-Volume:        pv0001  # &lt;= The PV that provides the persistent storage for this PVC
-Labels:        &lt;none&gt;
-Annotations:   pv.kubernetes.io/bind-completed: yes
-               pv.kubernetes.io/bound-by-controller: yes
-Finalizers:    [kubernetes.io/pvc-protection]
-Capacity:      5Gi
-Access Modes:  RWO
-VolumeMode:    Filesystem
-Used By:       &lt;none&gt;  # &lt;= The PVC is currently not being used by a pod
-Events:        &lt;none&gt;
+<p>To understand how the persistence works, let&rsquo;s create a deployment that uses above PVC and mounts it as a volume into <code>/tmp/persistent</code>:</p>
+<pre><code class="language-bash">$ kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/pv/deploy.yaml
 </code></pre>
-<p>To understand how the persistence works, let&rsquo;s create a deployment that uses above PVC and mounts it as a volume into the <code>/tmp/persistent</code> directory.</p>
-<pre><code class="language-bash">$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/pv/deploy.yaml
+<p>Now we want to test if data in the volume actually persists.
+Start by finding the pod managed by above deployment using <code>kubectl get pods</code> (it will begin with <code>pv-deploy-</code>) and then connecting into it:</p>
+<pre><code class="language-bash">$ kubectl exec ${POD_NAME} -it -- /bin/bash
 </code></pre>
-<p>View the status of the deployment and the pod.
-The <code>-L</code> option displays a column with the value associated with the <code>app</code> label.</p>
-<pre><code class="language-bash">$ kubectl get deployments,pods -L app
-NAME                        READY   UP-TO-DATE   AVAILABLE   AGE   APP
-deployment.apps/pv-deploy   1/1     1            1           31s
-
-NAME                             READY   STATUS    RESTARTS   AGE   APP
-pod/pv-deploy-7d5f79cb7f-j28rd   1/1     Running   0          30s   mypv
+<p>Once in the pod, create a new file in the mounted persistent volume:</p>
+<pre><code class="language-bash">$ echo &quot;Hello World&quot; &gt; /tmp/persistent/test
 </code></pre>
-<p>Inspect the persistent volume claim resource.
-The <code>Used By</code> field now displays the name of the pod that has the persistent volume mounted.</p>
-<pre><code class="language-bash">$ kubectl describe pvc myclaim
-Name:          myclaim
-Namespace:     default
-StorageClass:  standard
-Status:        Bound  # &lt;= The persistent volume claim is bound to a PV
-Volume:        pv0001  # &lt;= The PV that provides the persistent storage for this PVC
-Labels:        &lt;none&gt;
-Annotations:   pv.kubernetes.io/bind-completed: yes
-               pv.kubernetes.io/bound-by-controller: yes
-Finalizers:    [kubernetes.io/pvc-protection]
-Capacity:      5Gi
-Access Modes:  RWO
-VolumeMode:    Filesystem
-Used By:       pv-deploy-7d5f79cb7f-j28rd  # &lt;= The PVC is now being used by a pod
-Events:        &lt;none&gt;
-</code></pre>
-<p>Verify that the pod template in the deployment mounts the volume requested in the PVC.</p>
-<pre><code class="language-bash">$ kubectl describe deployment pv-deploy | egrep -A2 '(Volumes|Mounts):'
-    Mounts:
-      /tmp/persistent from mypd (rw)
-  Volumes:
-   mypd:
-    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
-</code></pre>
-<!--
-```bash
-$ kubectl get deployment pv-deploy -o jsonpath='{.spec.template.spec.volumes[0]}{"\n"}'
-{"name":"mypd","persistentVolumeClaim":{"claimName":"myclaim"}}
-
-$ kubectl get deployment pv-deploy -o jsonpath='{.spec.template.spec.containers[0].volumeMounts}{"\n"}'
-[{"mountPath":"/tmp/persistent","name":"mypd"}]
-```
--->
-<p>Get the name of the pod and export it to an environment variable.</p>
-<pre><code class="language-bash">$ kubectl get pods -l app=mypv -o name
-pod/pv-deploy-7d5f79cb7f-j28rd
-
-$ export POD_NAME=&quot;pv-deploy-7d5f79cb7f-j28rd&quot;
-</code></pre>
-<p>Verify that the persistent volume is mounted in the pod.</p>
-<pre><code class="language-bash">$ kubectl exec -it ${POD_NAME} -- df -m /tmp/persistent
-Filesystem     1M-blocks  Used Available Use% Mounted on
-tmpfs               5232   623      4609  12% /tmp/persistent
-</code></pre>
-<p>Now we want to test if data in the volume actually persists.</p>
-<pre><code class="language-bash">$ kubectl exec -it ${POD_NAME} -- /bin/bash
-</code></pre>
-<p>Connect to the pod, then create a new file in the mounted persistent volume.
-Once you&rsquo;ve verified the file was created, disconnect from the pod using the <code>exit</code> command.</p>
-<pre><code class="language-bash">$ kubectl exec -it ${POD_NAME} -- /bin/bash
-
-[root@pod /]# echo &quot;Kube by Example&quot; &gt; /tmp/persistent/test
-
-[root@pod /]# cat /tmp/persistent/test
-Kube by Example
-
-[root@pod /]# exit
-
-$ 
-</code></pre>
+<p>Once you&rsquo;ve verified the file was created, disconnect from the pod using <code>exit</code>.</p>
 <p>It&rsquo;s time to destroy the pod and let the deployment launch a new pod.
-The expectation is that the PV will be reconnected to the new pod and the data in <code>/tmp/persistent</code> is still present.</p>
+The expectation is that the PV will be reconnected to the new pod and the data in <code>/tmp/persistent</code> is still present:</p>
 <pre><code class="language-bash">$ kubectl delete pod ${POD_NAME}
 </code></pre>
 <p>Since Kubernetes will ensure that the desired number of pods in a deployment are present, it will start a new pod with the same spec as the original.
 When viewing the list of pods, you will likely see two: the previous pod (which should be in the <code>Terminating</code> state) and the new pod being started.
-For example (your pod names will vary slightly).</p>
-<pre><code class="language-bash">$ kubectl get pods
-NAME                         READY   STATUS        RESTARTS   AGE
-pv-deploy-7d5f79cb7f-j28rd   1/1     Terminating   0          120s
-pv-deploy-7d5f79cb7f-cxcgx   1/1     Running       0          10s
+For example (your pod names will vary slightly):</p>
+<pre><code class="language-text">NAME                         READY   STATUS        RESTARTS   AGE
+pv-deploy-7d5f79cb7f-d4jb6   1/1     Terminating   0          4m32s
+pv-deploy-7d5f79cb7f-fnscf   1/1     Running       0          19s
 </code></pre>
-<p>Get the name of the new pod (the one in the <code>Running</code> state) and export it to an environment variable.</p>
-<pre><code class="language-bash">$ kubectl get pods -l app=mypv -o name
-pod/pv-deploy-7d5f79cb7f-cxcgx
-
-$ export POD_NAME=&quot;pv-deploy-7d5f79cb7f-cxcgx&quot;
+<p>Connect to the newly created pod (the one in the <code>Running</code> state) as you did previously:</p>
+<pre><code class="language-bash">$ kubectl exec ${POD_NAME} -it -- /bin/bash
 </code></pre>
-<p>Connect to the newly created pod as you did previously and display the contents of the file that was created from the original pod.
-The text <code>Kube by Example</code> should appear, showing that the original persistent volume was mounted to the newly created pod.</p>
-<pre><code class="language-bash">$ kubectl exec ${POD_NAME} -it -- cat /tmp/persistent/test
-Kube by Example
+<p>Display the contents of the file that was created from the original pod:</p>
+<pre><code class="language-bash">$ cat /tmp/persistent/test 
 </code></pre>
+<p>The text <code>Hello World</code> should appear, showing that the original persistent volume was mounted to the newly created pod.</p>
 <p>Note that the default behavior is that even when the deployment is deleted, the PVC and the PV continue to exist.
-This storage protection feature helps avoid data loss.</p>
+This storage protection feature helps avoid data loss.
+Once you&rsquo;re sure you don&rsquo;t need the data anymore, you can go ahead and delete the PVC (for the purposes of this lesson, we&rsquo;ll delete the PV as well).
+To clean up before the next lesson, we&rsquo;ll also delete the deployment:</p>
 <pre><code class="language-bash">$ kubectl delete deployment pv-deploy
-deployment.apps &quot;pv-deploy&quot; deleted
-</code></pre>
-<p>After the deployment and pod are deleted the PVC status displays that is not being used by any pod.</p>
-<pre><code class="language-bash">$ kubectl describe pvc myclaim | grep 'Used By'
-Used By:       &lt;none&gt;  # &lt;= The PVC is currently not being used by a pod
-</code></pre>
-<p>Create the same deployment again using the resource manifest.</p>
-<pre><code class="language-bash">$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/pv/deploy.yaml
-deployment.apps/pv-deploy created
-</code></pre>
-<p>Wait until the deployment and pod are ready again.</p>
-<pre><code class="language-bash">$ kubectl get deployments,pods
-NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/pv-deploy   1/1     1            1           6s
-
-NAME                             READY   STATUS    RESTARTS   AGE
-pod/pv-deploy-7d5f79cb7f-l4bmw   1/1     Running   0          5s
-</code></pre>
-<p>View the status of the PVC, it displays that is being used by the pod we just created.</p>
-<pre><code class="language-bash">$ kubectl describe pvc myclaim | grep 'Used By'
-Used By:       pv-deploy-7d5f79cb7f-l4bmw  # &lt;= The PVC is now being used by a pod
-</code></pre>
-<p>Connect to the deployment and view the contents of the file stored in the persistent volume.</p>
-<pre><code class="language-bash">$ kubectl exec -it deployment/pv-deploy -- cat /tmp/persistent/test
-Kube by Example
-</code></pre>
-<p>Once you&rsquo;re sure you don&rsquo;t need the data anymore, you can go ahead and delete the PVC (for the purposes of this lesson, we&rsquo;ll delete the PV as well).
-To clean up before the next lesson, we&rsquo;ll also delete the deployment and remove the environment variable that stores the name of the pod.</p>
-<pre><code class="language-bash">$ kubectl delete deployment pv-deploy
-deployment.apps &quot;pv-deploy&quot; deleted
-
 $ kubectl delete pvc myclaim
-persistentvolumeclaim &quot;myclaim&quot; deleted
-
 $ kubectl delete pv pv0001
-persistentvolume &quot;pv0001&quot; deleted
-
-$ unset POD_NAME
 </code></pre>
 <p>The types of persistent volume available to your Kubernetes cluster depend on the environment (on-prem or public cloud).
 The <a href="https://stateful.kubernetes.sh/#storage">Stateful Kubernetes</a> site has more information on the types of volumes available.</p>

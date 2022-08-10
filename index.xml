@@ -218,14 +218,47 @@ kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/mai
     
     <item>
       <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/deployments/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/deployments/</guid>
+      <description>Deployments A deployment is a supervisor for pods, giving you fine-grained control over how and when a new pod version is rolled out as well as rolled back to a previous state.
+Let&amp;rsquo;s create a deployment called sise-deploy that produces two replicas of a pod as well as a replica set:
+$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/deployments/d09.yaml  You can have a look at the deployment, as well as the the replica set and the pods the deployment looks using the get subcommand (multiple resource types may be specified in a single call):</description>
+    </item>
+    
+    <item>
+      <title></title>
       <link>https://tonejito.github.io/kbe/concepts/environment-variables/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://tonejito.github.io/kbe/concepts/environment-variables/</guid>
       <description>Environment Variables You can set environment variables for containers running in a pod. Additionally, Kubernetes automatically exposes certain runtime information via environment variables.
+Let&amp;rsquo;s launch a pod that we pass an environment variable SIMPLE_SERVICE_VERSION with the value 1.0:
+$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/envs/pod.yaml  Now, let&amp;rsquo;s verify from within the cluster if the application running in the pod has picked up the environment variable:
+$ kubectl exec envs -t -- curl -s 127.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/environment-variables.old/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/environment-variables.old/</guid>
+      <description>Environment Variables You can set environment variables for containers running in a pod. Additionally, Kubernetes automatically exposes certain runtime information via environment variables.
 Create a pod of the simple service application using the container image on the quay.io registry.
 $ kubectl run envs --image=quay.io/openshiftlabs/simpleservice:0.5.0 --port=9876 $ kubectl get pods NAME READY STATUS RESTARTS AGE envs 1/1 Running 0 20s  View the environment variables defined in the pod.
 $ kubectl describe pod envs | grep &#39;Environment:&#39; Environment: &amp;lt;none&amp;gt;  Access the application and display the service version.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/health-checks/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/health-checks/</guid>
+      <description>Health Checks In order to verify if a container in a pod is healthy and ready to serve traffic, Kubernetes provides for a range of health checking mechanisms. Health checks, or probes as they are called in Kubernetes, are carried out by the kubelet to determine when to restart a container (liveness probes) and used by services and deployments to determine if a pod should receive traffic (readiness probes).
+We will focus on HTTP health checks in the following.</description>
     </item>
     
     <item>
@@ -235,9 +268,65 @@ $ kubectl describe pod envs | grep &#39;Environment:&#39; Environment: &amp;lt;n
       
       <guid>https://tonejito.github.io/kbe/concepts/jobs/</guid>
       <description>Jobs A job in Kubernetes is a supervisor for pods that run for a certain time to completion, for example a calculation or a backup operation.
+Let&amp;rsquo;s create a job named countdown that supervises a pod counting from 9 down to 1:
+$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/jobs/job.yaml  The job definition is listed under the resource type job:
+$ kubectl get jobs  A job is executed as a pod. Unlike most pods, however, the pod spawned by a job does not continue to run, but will instead reach a Completed state.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/jobs.old/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/jobs.old/</guid>
+      <description>Jobs A job in Kubernetes is a supervisor for pods that run for a certain time to completion, for example a calculation or a backup operation.
 Let&amp;rsquo;s create a job named countdown that supervises a pod counting from 9 down to 1.
 $ $ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/jobs/job.yaml job.batch/countdown created  The job definition is listed under the resource type job.
 $ kubectl get jobs NAME COMPLETIONS DURATION AGE countdown 1/1 1s 10s  A job is executed as a pod.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/labels/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/labels/</guid>
+      <description>Labels Labels are the mechanism used to organize Kubernetes objects. A label is a key-value pair with certain restrictions concerning length and allowed values but without any pre-defined meaning. You&amp;rsquo;re free to choose labels as you see fit, for example, to express environments such as &amp;ldquo;this pod is running in production&amp;rdquo; or ownership, like &amp;ldquo;department X owns that pod&amp;rdquo;.
+aaa bbb ccc
+Let&amp;rsquo;s create a pod that initially has one label (env=development):</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/logging/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/logging/</guid>
+      <description>Logging Logging is one option to understand what is going on inside your applications and the cluster at large. Basic logging in Kubernetes makes the output a container produces available through the kubectl tool. More advanced setups consider logs across nodes and store them in a central place, either within the cluster or via a dedicated (cloud-based) service.
+Let&amp;rsquo;s create a pod called logme that runs a container writing to stdout and stderr:</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/namespaces/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/namespaces/</guid>
+      <description>Namespaces Namespaces provide a scope for Kubernetes resources, carving up your cluster in smaller units.
+You can think of it as a workspace you&amp;rsquo;re sharing with other users. Many resources such as pods and services are namespaced. Others, such as nodes, are not namespaced, but are instead treated as cluster-wide.
+As a developer, you&amp;rsquo;ll usually use an assigned namespace, however admins may wish to manage them, for example to set up access control or resource quotas.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/nodes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/nodes/</guid>
+      <description>Nodes In Kubernetes, nodes are the (potentially virtual) machines where your workloads run. As a developer, you typically don&amp;rsquo;t deal with nodes directly, however as an admin you might want to familiarize yourself with node operations.
+Node information is captured in a resource type named node:
+$ kubectl get nodes  The output will vary depending on your cluster. The example below is taken from a minikube cluster:
+NAME STATUS ROLES AGE VERSION minikube Ready control-plane,master 42m v1.</description>
     </item>
     
     <item>
@@ -246,8 +335,70 @@ $ kubectl get jobs NAME COMPLETIONS DURATION AGE countdown 1/1 1s 10s  A job is 
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://tonejito.github.io/kbe/concepts/persistent-volumes/</guid>
+      <description>Persistent Volumes A persistent volume (PV) is a cluster-wide resource that you can use to store data in a way that it persists beyond the lifetime of a pod. The PV is not backed by locally-attached storage on a worker node but by networked storage system such as EBS or NFS or a distributed filesystem like Ceph.
+Depending on your cluster and storage type, the configuration of a PV will vary slightly.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/persistent-volumes.old/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/persistent-volumes.old/</guid>
       <description>Persistent Volume A persistent volume (PV) is a cluster-wide resource that you can use to store data in a way that it persists beyond the lifetime of a pod. The PV is not backed by locally-attached storage on a worker node but by networked storage system such as EBS or NFS or a distributed filesystem like Ceph.
 Depending on your cluster and storage type, the configuration of a PV will vary slightly.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/pods/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/pods/</guid>
+      <description>Pods A pod is a collection of containers sharing a network, acting as the basic unit of deployment in Kubernetes. All containers in a pod are scheduled on the same node.
+To launch a pod using the container image quay.io/openshiftlabs/simpleservice:0.5.0 and exposing a HTTP API on port 9876, execute:
+$ kubectl run sise --image=quay.io/openshiftlabs/simpleservice:0.5.0 --port=9876   Warning: Older releases of kubectl will produce a deployment resource as the result of the provided kubectl run example, while newer releases produce a single pod resource.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/port-forwarding/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/port-forwarding/</guid>
+      <description>Port Forwarding In the context of developing applications on Kubernetes, it is often useful to quickly access a service from your local environment without exposing it using, for example, a load balancer or an ingress resource. In these situations, you can use port forwarding.
+Let&amp;rsquo;s create an application consisting of a deployment and a service named simpleservice, serving on port 80:
+$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/pf/app.yaml  Let&amp;rsquo;s say we want to access the simpleservice service from the local environment on port 8080.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/secrets/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/secrets/</guid>
+      <description>Secrets You don&amp;rsquo;t want sensitive information such as a database password or an API key stored in clear text. Secrets provide you with a mechanism to store such information in a safe and reliable way with the following properties:
+ Secrets are namespaced objects, that is, exist in the context of a specific namespace You can access them via a volume or an environment variable from a container running in a pod The secret data on nodes is stored in tmpfs volumes A per-secret size limit of 1MB exists The API server stores secrets as plaintext in etcd  Let&amp;rsquo;s create a secret named apikey that holds an example API key.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/services/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/services/</guid>
+      <description>Services A service is an abstraction for pods, providing a stable, so called virtual IP (VIP) address. While pods may come and go and with it their IP addresses, a service allows clients to reliably connect to the containers running in the pod using the VIP.
+The virtual in VIP means it is not an actual IP address connected to a network interface, but its purpose is purely to forward traffic to one or more pods.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/concepts/volumes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/concepts/volumes/</guid>
+      <description>Volumes A Kubernetes volume is essentially a directory accessible to all containers running in a pod. In contrast to the container-local filesystem, the data in volumes is preserved across container restarts. The medium backing a volume and its contents are determined by the volume type:
+ node-local types such as emptyDir or hostPath file-sharing types such as nfs cloud provider-specific types like awsElasticBlockStore, azureDisk, or gcePersistentDisk distributed file system types, for example glusterfs or cephfs special-purpose types like secret, gitRepo  A special type of volume is PersistentVolume, which is covered in its own lesson.</description>
     </item>
     
     <item>

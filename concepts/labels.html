@@ -1,0 +1,150 @@
+<section  data-rh-layout="stacked">
+    <header  data-rh-theme="">
+      <div  data-rh-align="left">
+        <h3 >Labels</h3>
+      </div>
+    </header>
+    <div  data-rh-layout="stacked">
+      <div  data-eq-pts="xxs-hr: 0, lg-hr: 450" data-rh-align="left" data-eq-state="xxs-hr lg-hr">
+        <div>
+          <p>Labels are the mechanism used to organize Kubernetes objects. A label is a key-value pair with certain <a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set">restrictions</a> concerning length and allowed values but without any pre-defined meaning. You're free to choose labels as you see fit, for example, to express environments such as "this pod is running in production" or ownership, like "department X owns that pod". </p>
+          <p>Let's create a <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/labels/pod.yaml">pod</a> that initially has one label ( <code>env=development</code>): </p>
+          <div>
+            <pre class=" language-bash">
+                          <code class=" language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/labels/pod.yaml</code>
+                      </pre>
+            <div>
+              <div>
+                
+              </div>
+            </div>
+          </div>
+          <p>The <code>get</code> subcommand can be used to display a pod's labels: </p>
+          <div>
+            <pre class=" language-bash">
+                          <code class=" language-bash">kubectl get pods --show-labels</code>
+                      </pre>
+            <div>
+              <div>
+                
+              </div>
+            </div>
+          </div>
+          <div>The labels are rendered as an additional column in the output:</div>
+          <div>
+            <pre>
+                          <code>NAME      READY   STATUS    RESTARTS   AGE   LABELS
+  labelex   1/1     Running   0          6s    env=development
+  </code>
+                      </pre>
+            <p>You can add a label to the pod through the <code>label</code> subcommand: </p>
+          </div>
+          <div>
+            <pre class=" language-bash">
+                          <code class=" language-bash">kubectl label pods labelex 
+                              <span class="token assign-left variable">owner</span>
+                              <span class="token operator">=</span>michael
+                          </code>
+                      </pre>
+            <div>
+              <div>
+                
+              </div>
+            </div>
+          </div>
+          <p>Running the <code>get</code> subcommand from above shows the new label in addition to the existing one: </p>
+          <pre>
+                      <code>NAME      READY   STATUS    RESTARTS   AGE   LABELS
+  labelex   1/1     Running   0          65s   env=development,owner=michael
+  </code>
+                  </pre>
+          <div>To use a label for filtering, for example to list only pods that have an "owner" that equals "michael", use the <code>--selector</code> option: </div>
+          <div>
+            <pre class=" language-bash">
+                          <code class=" language-bash">kubectl get pods --selector 
+                              <span class="token assign-left variable">owner</span>
+                              <span class="token operator">=</span>michael
+                          </code>
+                      </pre>
+            <div>
+              <div>
+                
+              </div>
+            </div>
+          </div>
+          <p>The <code>--selector</code> option can be abbreviated to <code>-l</code>, so selecting pods that are labelled with <code>env=development</code> can also be done using: </p>
+          <div>
+            <pre class=" language-bash">
+                          <code class=" language-bash">kubectl get pods -l 
+                              <span class="token assign-left variable">env</span>
+                              <span class="token operator">=</span>development
+                          </code>
+                      </pre>
+            <div>
+              <div>
+                
+              </div>
+            </div>
+          </div>
+          <p>Oftentimes, Kubernetes objects support set-based selectors. Let's launch <a href="https://github.com/openshift-evangelists/kbe/blob/main/specs/labels/anotherpod.yaml">another pod</a> that has two labels ( <code>env=production</code> and <code>owner=michael</code>): </p>
+          <div>
+            <pre class=" language-bash">
+                          <code class=" language-bash">kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/labels/anotherpod.yaml</code>
+                      </pre>
+            <div>
+              <div>
+                
+              </div>
+            </div>
+          </div>
+          <p>Now, let's list all pods that are either labelled with <code>env=development</code> or with <code>env=production</code>: </p>
+          <div>
+            <pre class=" language-bash">
+                          <code class=" language-bash">kubectl get pods -l 
+                              <span class="token string">'env in (production, development)'</span>
+                          </code>
+                      </pre>
+            <div>
+              <div>
+                
+              </div>
+            </div>
+          </div>
+          <p>Since we have each pod has one of those two labels, they both appear in the output:</p>
+          <pre>
+                      <code>NAME           READY   STATUS    RESTARTS   AGE
+  labelex        1/1     Running   0          6m39s
+  labelexother   1/1     Running   0          46s
+  </code>
+                  </pre>
+          <p>Other verbs also support label selection. For example, you could remove both of these pods with the same selector:</p>
+          <div>
+            <pre class=" language-bash">
+                          <code class=" language-bash">kubectl delete pods -l 
+                              <span class="token string">'env in (production, development)'</span>
+                          </code>
+                      </pre>
+            <div>
+              <div>
+                
+              </div>
+            </div>
+          </div>
+          <p>Beware that this will destroy any pods with those labels. &nbsp;</p>
+          <div>You can also delete them directly, via their names, with:</div>
+          <div>
+            <pre class=" language-bash">
+                          <code class=" language-bash">kubectl delete pods labelex
+  kubectl delete pods labelexother</code>
+                      </pre>
+            <div>
+              <div>
+                
+              </div>
+            </div>
+          </div>
+          <p>Note that labels are not restricted to pods. In fact you can apply them to all sorts of objects, such as nodes or services.</p>
+        </div>
+      </div>
+    </div>
+  </section>

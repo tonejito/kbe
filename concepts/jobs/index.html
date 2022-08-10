@@ -8,9 +8,16 @@
   <title>Kubernetes By Example</title>
   <meta property="og:title" content="Kubernetes By Example" />
   <meta name="twitter:title" content="Kubernetes By Example" />
-  <meta name="description" content="Kubernetes jobs are supervised pods that run only once">
-  <meta property="og:description" content="Kubernetes jobs are supervised pods that run only once">
-  <meta name="twitter:description" content="Kubernetes jobs are supervised pods that run only once">
+  <meta name="description" content="Jobs A job in Kubernetes is a supervisor for pods that run for a certain time to completion, for example a calculation or a backup operation.
+Let&rsquo;s create a job named countdown that supervises a pod counting from 9 down to 1:
+$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/jobs/job.yaml  The job definition is listed under the resource type job:
+$ kubectl get jobs  A job is executed as a pod. Unlike most pods, however, the pod spawned by a job does not continue to run, but will instead reach a Completed state.">
+  <meta property="og:description" content="Jobs A job in Kubernetes is a supervisor for pods that run for a certain time to completion, for example a calculation or a backup operation.
+Let&rsquo;s create a job named countdown that supervises a pod counting from 9 down to 1:
+$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/jobs/job.yaml  The job definition is listed under the resource type job:
+$ kubectl get jobs  A job is executed as a pod. Unlike most pods, however, the pod spawned by a job does not continue to run, but will instead reach a Completed state.">
+  <meta name="twitter:description" content="Jobs A job in Kubernetes is a supervisor for pods that run for a certain time to completion, for example a calculation or a backup operation.
+Let&rsquo;s create a job named countdown that supervises a …">
   <meta name="author" content=""/>
   <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
   <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
@@ -67,44 +74,12 @@
         
           
             <li class="navlinks-container">
-              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
               <div class="navlinks-children">
                 
-                  <a href="/kbe/pods/">Pods</a>
+                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
                 
-                  <a href="/kbe/labels/">Labels</a>
-                
-                  <a href="/kbe/deployments/">Deployments</a>
-                
-                  <a href="/kbe/services/">Services</a>
-                
-                  <a href="/kbe/sd/">Service Discovery</a>
-                
-                  <a href="/kbe/pf/">Port Forward</a>
-                
-                  <a href="/kbe/healthz/">Health Checks</a>
-                
-                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
-                
-                  <a href="/kbe/ns/">Namespaces</a>
-                
-                  <a href="/kbe/volumes/">Volumes</a>
-                
-                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
-                
-                  <a href="/kbe/secrets/">Secrets</a>
-                
-                  <a href="/kbe/logging/">Logging</a>
-                
-                  <a href="/kbe/concepts/jobs">Jobs</a>
-                
-                  <a href="/kbe/statefulset/">Stateful Sets</a>
-                
-                  <a href="/kbe/ic/">Init Containers</a>
-                
-                  <a href="/kbe/nodes/">Nodes</a>
-                
-                  <a href="/kbe/api/">API Server</a>
+                  <a href="/kbe/topics/istio/istio/">Istio</a>
                 
               </div>
             </li>
@@ -112,12 +87,55 @@
         
           
             <li class="navlinks-container">
-              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
+              <a class="navlinks-parent" href="javascript:void(0)">Concepts</a>
               <div class="navlinks-children">
                 
-                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
+                  <a href="/kbe/concepts/pods">Pods</a>
                 
-                  <a href="/kbe/topics/istio/istio/">Istio</a>
+                  <a href="/kbe/concepts/labels">Labels</a>
+                
+                  <a href="/kbe/concepts/deployments">Deployments</a>
+                
+                  <a href="/kbe/concepts/services">Services</a>
+                
+                  <a href="/kbe/concepts/port-forwarding">Port Forwarding</a>
+                
+                  <a href="/kbe/concepts/health-checks">Health Checks</a>
+                
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
+                
+                  <a href="/kbe/concepts/namespaces">Namespaces</a>
+                
+                  <a href="/kbe/concepts/volumes">Volumes</a>
+                
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
+                
+                  <a href="/kbe/concepts/secrets">Secrets</a>
+                
+                  <a href="/kbe/concepts/logging">Logging</a>
+                
+                  <a href="/kbe/concepts/jobs">Jobs</a>
+                
+                  <a href="/kbe/concepts/nodes">Nodes</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/sd/">Service Discovery</a>
+                
+                  <a href="/kbe/pf/">Port Forward</a>
+                
+                  <a href="/kbe/statefulset/">Stateful Sets</a>
+                
+                  <a href="/kbe/ic/">Init Containers</a>
+                
+                  <a href="/kbe/api/">API Server</a>
                 
               </div>
             </li>
@@ -174,39 +192,33 @@
     <!-- https://kubebyexample.com/en/concept/jobs -->
 <h1 id="jobs">Jobs</h1>
 <p>A <a href="https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/">job</a> in Kubernetes is a supervisor for pods that run for a certain time to completion, for example a calculation or a backup operation.</p>
-<p>Let&rsquo;s create a job named <code>countdown</code> that supervises a pod counting from 9 down to 1.</p>
-<pre><code class="language-bash">$ $ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/jobs/job.yaml
-job.batch/countdown created
+<p>Let&rsquo;s create a <a href="https://github.com/openshift-evangelists/kbe/raw/main/specs/jobs/job.yaml">job named <code>countdown</code></a> that supervises a pod counting from 9 down to 1:</p>
+<pre><code class="language-bash">$ kubectl apply -f https://github.com/openshift-evangelists/kbe/raw/main/specs/jobs/job.yaml
 </code></pre>
-<p>The job definition is listed under the resource type <code>job</code>.</p>
+<p>The job definition is listed under the resource type <code>job</code>:</p>
 <pre><code class="language-bash">$ kubectl get jobs
-NAME        COMPLETIONS   DURATION   AGE
-countdown   1/1           1s         10s
 </code></pre>
 <p>A job is executed as a pod.
 Unlike most pods, however, the pod spawned by a job does not continue to run, but will instead reach a <code>Completed</code> state.
-Below is an example output of the <code>kubectl get pods</code> command after a job has run, the <code>-L</code> option displays a column with the value associated with the <code>job-name</code> label.</p>
-<pre><code class="language-bash">$ kubectl get pods -L job-name
-NAME                 READY   STATUS      RESTARTS   AGE   JOB-NAME
-countdown--1-s2h9r   0/1     Completed   0          20s   countdown
+Below is an example output of the <code>kubectl get pods</code> command after a job has run.</p>
+<pre><code class="language-text">NAME              READY   STATUS      RESTARTS   AGE
+countdown-dzrz8   0/1     Completed   0          55s
 </code></pre>
-<p>Further details of the job can be seen in the <code>describe</code> subcommand.</p>
-<pre><code class="language-bash">$ kubectl describe job countdown
-Name:             countdown
-Namespace:        default
-Selector:         controller-uid=acad8b1e-a930-406f-8b75-6a5f92717936
-Labels:           controller-uid=acad8b1e-a930-406f-8b75-6a5f92717936
-                  job-name=countdown
-Annotations:      &lt;none&gt;
-Parallelism:      1
-Completions:      1
-Completion Mode:  NonIndexed
-Start Time:       Fri, 20 May 2022 20:28:58 -0500
-Completed At:     Fri, 20 May 2022 20:28:59 -0500
-Duration:         1s
-Pods Statuses:    0 Running / 1 Succeeded / 0 Failed
+<p>Further details of the job can be seen in the <code>describe</code> subcommand:</p>
+<pre><code class="language-text">Name:           countdown
+Namespace:      default
+Selector:       controller-uid=e5024398-6795-4583-8e74-431f57f54a3d
+Labels:         controller-uid=e5024398-6795-4583-8e74-431f57f54a3d
+                job-name=countdown
+Annotations:    &lt;none&gt;
+Parallelism:    1
+Completions:    1
+Start Time:     Sat, 05 Jun 2021 15:21:34 -0400
+Completed At:   Sat, 05 Jun 2021 15:21:39 -0400
+Duration:       5s
+Pods Statuses:  0 Running / 1 Succeeded / 0 Failed
 Pod Template:
-  Labels:  controller-uid=acad8b1e-a930-406f-8b75-6a5f92717936
+  Labels:  controller-uid=e5024398-6795-4583-8e74-431f57f54a3d
            job-name=countdown
   Containers:
    counter:
@@ -221,24 +233,15 @@ Pod Template:
     Mounts:       &lt;none&gt;
   Volumes:        &lt;none&gt;
 Events:
-  Type    Reason            Age   From            Message
-  ----    ------            ----  ----            -------
-  Normal  SuccessfulCreate  90s   job-controller  Created pod: countdown--1-s2h9r
-  Normal  Completed         89s   job-controller  Job completed
+  Type    Reason            Age    From            Message
+  ----    ------            ----   ----            -------
+  Normal  SuccessfulCreate  2m34s  job-controller  Created pod: countdown-dzrz8
+  Normal  Completed         2m30s  job-controller  Job completed
 </code></pre>
-<p>View the logs of the job, you can also consult the logs of the pod.</p>
-<pre><code class="language-bash">$ kubectl logs job countdown
-9
-8
-7
-6
-5
-4
-3
-2
-1
+<p>Since the job ran as a pod, the logs subcommand will show any output during its execution (the name of the pod is included in the events list as seen above):</p>
+<pre><code class="language-bash">$ kubectl logs ${POD_NAME}
 </code></pre>
-<p>To clean up, use the <code>delete</code> verb on the job object which will remove all the supervised pods.</p>
+<p>To clean up, use the <code>delete</code> verb on the job object which will remove all the supervised pods:</p>
 <pre><code class="language-bash">$ kubectl delete job countdown
 </code></pre>
 <p>Note that there are also more advanced ways to use jobs, for example, by utilizing a <a href="https://kubernetes.io/docs/tasks/job/coarse-parallel-processing-work-queue/">work queue</a> or scheduling the execution at a certain time through <a href="https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/">cron jobs</a>.</p>
