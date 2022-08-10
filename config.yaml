@@ -1,6 +1,7 @@
 ---
 # baseURL: "https://kubernetesbyexample.com"
 baseURL: "https://tonejito.github.io/kbe/"
+publishDir: public
 
 DefaultContentLanguage: en
 title: Kubernetes By Example
@@ -15,12 +16,12 @@ pygmentsCodeFences: false
 security:
   exec:
     allow:
-      - ^dart-sass-embedded$
-      - ^go$
-      - ^npx$
-      - ^postcss$
-      - ^asciidoctor$
-      - ^pandoc$
+    - ^dart-sass-embedded$
+    - ^go$
+    - ^npx$
+    - ^postcss$
+    - ^asciidoctor$
+    - ^pandoc$
 
 Params:
   subtitle: Brought to you by the OpenShift team
@@ -30,7 +31,7 @@ Params:
   commit: false
   rss: false
   custom_css:
-    - css/custom.css
+  - css/custom.css
   watermark: For testing purposes only
   annoying_banner_ad: false
 
