@@ -208,7 +208,8 @@ myclaim   Bound    pv0001   5Gi        RWO            standard       10s
 <pre><code class="language-bash">$ kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/main/specs/pv/deploy.yaml
 </code></pre>
 <p>Now we want to test if data in the volume actually persists.
-Start by finding the pod managed by above deployment using <code>kubectl get pods</code> (it will begin with <code>pv-deploy-</code>) and then connecting into it:</p>
+Start by finding the pod managed by above deployment using <code>kubectl get pods</code> (it will begin with <code>pv-deploy-</code>) and then connecting into it.</p>
+<p><strong>Note</strong>: You&rsquo;ll need to replace <code>${POD_NAME}</code> with the generated name of one of your pods.</p>
 <pre><code class="language-bash">$ kubectl exec ${POD_NAME} -it -- /bin/bash
 </code></pre>
 <p>Once in the pod, create a new file in the mounted persistent volume:</p>

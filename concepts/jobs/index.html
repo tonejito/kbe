@@ -238,7 +238,8 @@ Events:
   Normal  SuccessfulCreate  2m34s  job-controller  Created pod: countdown-dzrz8
   Normal  Completed         2m30s  job-controller  Job completed
 </code></pre>
-<p>Since the job ran as a pod, the logs subcommand will show any output during its execution (the name of the pod is included in the events list as seen above):</p>
+<p>Since the job ran as a pod, the logs subcommand will show any output during its execution (the name of the pod is included in the events list as seen above).</p>
+<p><strong>Note</strong>: You&rsquo;ll need to replace <code>${POD_NAME}</code> with the generated name of one of your pods.</p>
 <pre><code class="language-bash">$ kubectl logs ${POD_NAME}
 </code></pre>
 <p>To clean up, use the <code>delete</code> verb on the job object which will remove all the supervised pods:</p>
