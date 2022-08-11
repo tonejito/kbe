@@ -66,7 +66,9 @@ Events:
   Normal  Completed         2m30s  job-controller  Job completed
 ```
 
-Since the job ran as a pod, the logs subcommand will show any output during its execution (the name of the pod is included in the events list as seen above):
+Since the job ran as a pod, the logs subcommand will show any output during its execution (the name of the pod is included in the events list as seen above).
+
+**Note**: You'll need to replace `${POD_NAME}` with the generated name of one of your pods.
 
 ```bash
 $ kubectl logs ${POD_NAME}
