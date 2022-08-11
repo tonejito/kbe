@@ -44,7 +44,9 @@ $ kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/m
 ```
 
 Now we want to test if data in the volume actually persists.
-Start by finding the pod managed by above deployment using `kubectl get pods` (it will begin with `pv-deploy-`) and then connecting into it:
+Start by finding the pod managed by above deployment using `kubectl get pods` (it will begin with `pv-deploy-`) and then connecting into it.
+
+**Note**: You'll need to replace `${POD_NAME}` with the generated name of one of your pods.
 
 ```bash
 $ kubectl exec ${POD_NAME} -it -- /bin/bash
