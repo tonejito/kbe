@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Kubernetes By Example</title>
+  <meta property="og:title" content="Kubernetes By Example" />
+  <meta name="twitter:title" content="Kubernetes By Example" />
+  <meta name="description" content="Guided Exercise: Deploying Managed Applications In this exercise you will deploy a managed containerized application in your Kubernetes cluster. You will observe how automatic deployment works and some of the High Availability features of Kubernetes.
+Outcomes You should be able to:
+ Deploy an application container with several replicas. Review the structure of the Deployment resource manifest. Update the application to a new version without losing availability.  Prerequisites You need a working Kubernetes cluster, and your kubectl command must be configured to communicate with the cluster.">
+  <meta property="og:description" content="Guided Exercise: Deploying Managed Applications In this exercise you will deploy a managed containerized application in your Kubernetes cluster. You will observe how automatic deployment works and some of the High Availability features of Kubernetes.
+Outcomes You should be able to:
+ Deploy an application container with several replicas. Review the structure of the Deployment resource manifest. Update the application to a new version without losing availability.  Prerequisites You need a working Kubernetes cluster, and your kubectl command must be configured to communicate with the cluster.">
+  <meta name="twitter:description" content="Guided Exercise: Deploying Managed Applications In this exercise you will deploy a managed containerized application in your Kubernetes cluster. You will observe how automatic deployment works and …">
+  <meta name="author" content=""/>
+  <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-2/managed-practice/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kubernetes By Example" />
+
+  <meta name="generator" content="Hugo 0.91.2" />
+  <link rel="canonical" href="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-2/managed-practice/" />
+  <link rel="alternate" href="https://tonejito.github.io/index.xml" type="application/rss+xml" title="Kubernetes By Example">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/main.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/pygment_highlights.css" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/highlight.min.css" />
+<link rel="stylesheet" type="text/css" href="https://tonejito.github.io/kbe/css/custom.css">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WNHKJNX');</script>
+  
+</head>
+
+  <body>
+    
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WNHKJNX"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
+
+  
+
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://tonejito.github.io/">Home</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
+                
+                  <a href="/kbe/topics/istio/istio/">Istio</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Concepts</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/concepts/pods">Pods</a>
+                
+                  <a href="/kbe/concepts/labels">Labels</a>
+                
+                  <a href="/kbe/concepts/deployments">Deployments</a>
+                
+                  <a href="/kbe/concepts/services">Services</a>
+                
+                  <a href="/kbe/concepts/port-forwarding">Port Forwarding</a>
+                
+                  <a href="/kbe/concepts/health-checks">Health Checks</a>
+                
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
+                
+                  <a href="/kbe/concepts/namespaces">Namespaces</a>
+                
+                  <a href="/kbe/concepts/volumes">Volumes</a>
+                
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
+                
+                  <a href="/kbe/concepts/secrets">Secrets</a>
+                
+                  <a href="/kbe/concepts/logging">Logging</a>
+                
+                  <a href="/kbe/concepts/jobs">Jobs</a>
+                
+                  <a href="/kbe/concepts/nodes">Nodes</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/sd/">Service Discovery</a>
+                
+                  <a href="/kbe/pf/">Port Forward</a>
+                
+                  <a href="/kbe/statefulset/">Stateful Sets</a>
+                
+                  <a href="/kbe/ic/">Init Containers</a>
+                
+                  <a href="/kbe/api/">API Server</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Try out!" href="/kbe/diy/">Try out!</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="Kubernetes By Example" href="https://tonejito.github.io/">
+            <img class="avatar-img" src="https://tonejito.github.io/kbe//img/kbe-logo.png" alt="Kubernetes By Example" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  <div class="intro-header"></div>
+
+
+    
+  <div class="container" role="main">
+    <!-- https://kubebyexample.com/en/learning-paths/application-development-kubernetes/lesson-2-deploying-managed-applications/guided -->
+<h2 id="guided-exercise-deploying-managed-applications">Guided Exercise: Deploying Managed Applications</h2>
+<p>In this exercise you will deploy a managed containerized application in your Kubernetes cluster.
+You will observe how automatic deployment works and some of the High Availability features of Kubernetes.</p>
+<h2 id="outcomes">Outcomes</h2>
+<p>You should be able to:</p>
+<ul>
+<li>Deploy an application container with several replicas.</li>
+<li>Review the structure of the Deployment resource manifest.</li>
+<li>Update the application to a new version without losing availability.</li>
+</ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>You need a working Kubernetes cluster, and your kubectl command must be configured to communicate with the cluster.</p>
+<p>Make sure your kubectl context refers to a namespace where you have enough permissions, usually username-dev or username-stage.
+Use the kubectl config set-context &ndash;current &ndash;namespace=namespace command to switch to the appropriate namespace.</p>
+<h2 id="instructions">Instructions</h2>
+<p>In this exercise, you will deploy an existing application by using the container image quay.io/redhattraining/do100-versioned-hello:v1.0.</p>
+<ol>
+<li>Create a default deployment that starts one replica of the do100-versioned-hello application and review the deployment was successful.</li>
+</ol>
+<p>1.1) Use the kubectl create deployment command to create the deployment.
+Name the deployment do100-versioned-hello.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl create deployment do100-versioned-hello --image quay.io/redhattraining/do100-versioned-hello:v1.0
+deployment.apps/do100-versioned-hello created
+</code></pre>
+<p>1.2) Validate that the deployment created the expected application pod.
+Use the kubectl get pods -w command in a new terminal.
+Keep the command running for observing further updates.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get pods -w
+NAME                                     READY   STATUS    RESTARTS   AGE
+do100-versioned-hello-76c4494b5d-4ldff   1/1     Running   0          51m
+</code></pre>
+<p>1.3) Use the kubectl describe deployment command to get relevant information about the deployment:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl describe deployment do100-versioned-helloName:               do100-versioned-hello
+...output omitted...
+Labels:             app=do100-versioned-hello
+...output omitted...
+Selector:           app=do100-versioned-hello
+Replicas:           1 desired | 1 updated | 1 total | 1 available | 0 unavailable
+...output omitted...
+Pod Template:
+  Labels:  app=do100-versioned-hello
+  Containers:
+   do100-versioned-hello:
+    Image:        quay.io/redhattraining/do100-versioned-hello:v1.0
+...output omitted...
+</code></pre>
+<p>Optionally, use the kubectl get deployment command to get the full manifest for the deployment:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get deployment do100-versioned-hello -o yaml
+apiVersion: apps/v1
+kind: Deployment
+...output omitted...
+  labels:
+    app: do100-versioned-hello
+  name: do100-versioned-hello
+...output omitted...
+spec:
+...output omitted...
+  replicas: 1
+...output omitted...
+  selector:
+    matchLabels:
+      app: do100-versioned-hello
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+...output omitted...
+      labels:
+        app: do100-versioned-hello
+    spec:
+      containers:
+      - image: quay.io/redhattraining/do100-versioned-hello:v1.0
+...output omitted...
+        name: do100-versioned-hello
+...output omitted...
+</code></pre>
+<ol start="2">
+<li>Enable high availability by increasing the number of replicas to two.</li>
+</ol>
+<p>2.1) Edit the number of replicas in the Deployment resource using the kubectl scale deployment command:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl scale deployment do100-versioned-hello --replicas=2
+deployment.apps/do100-versioned-hello scaled
+</code></pre>
+<p>2.2) Validate that Kubernetes deployed a new replica pod.
+Go back to the terminal where the kubectl get pods -w command is running.
+Observe how the output displays a new pod named do100-versioned-hello-76c4494b5d-qtfs9.
+The pod updates from the Pending status to ContainerCreating and finally to Running.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get pods -w
+NAME                                    READY  STATUS             RESTARTS  AGE
+do100-versioned-hello-76c4494b5d-4ldff  1/1    Running            0         51m
+do100-versioned-hello-76c4494b5d-qtfs9  0/1    Pending            0         0sdo100-versioned-hello-76c4494b5d-qtfs9  0/1    Pending            0         0sdo100-versioned-hello-76c4494b5d-qtfs9  0/1    ContainerCreating  0         0sdo100-versioned-hello-76c4494b5d-qtfs9  1/1    Running            0         2s
+</code></pre>
+<ol start="3">
+<li>Verify high availability features in Kubernetes.
+Kubernetes must ensure that two replicas are available at all times.
+Terminate one pod and observe how Kubernetes creates a new pod to ensure the desired number of replicas.</li>
+</ol>
+<p>3.1) Terminate one of the pods by using the kubectl delete pod command.
+This action emulates a failing application or unexpected pod unavailability.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl delete pod do100-versioned-hello-76c4494b5d-qtfs9
+</code></pre>
+<p>This example terminates the pod named do100-versioned-hello-76c4494b5d-qtfs9.
+Use a pod name from your list of pods, which are displayed in the terminal that is running the kubectl get pods -w command.</p>
+<p>3.2) In the terminal running the kubectl get pods -w command, observe that the deleted pod changed to the Terminating status.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get pods -w
+NAME                                    READY  STATUS             RESTARTS AGE
+do100-versioned-hello-76c4494b5d-4ldff  1/1    Running            0        51m
+do100-versioned-hello-76c4494b5d-qtfs9  0/1    Pending            0        0s
+do100-versioned-hello-76c4494b5d-qtfs9  0/1    Pending            0        0s
+do100-versioned-hello-76c4494b5d-qtfs9  0/1    ContainerCreating  0        0s
+do100-versioned-hello-76c4494b5d-qtfs9  1/1    Running            0        2s
+do100-versioned-hello-76c4494b5d-qtfs9  1/1    Terminating        0        97m
+...output omitted...
+</code></pre>
+<p>Immediately after the pod becomes unavailable, Kubernetes creates a new replica:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get pods -w
+NAME                                   READY STATUS            RESTARTS AGE
+do100-versioned-hello-76c4494b5d-4ldff 1/1   Running           0        51m
+do100-versioned-hello-76c4494b5d-qtfs9 0/1   Pending           0        0s
+do100-versioned-hello-76c4494b5d-qtfs9 0/1   Pending           0        0s
+do100-versioned-hello-76c4494b5d-qtfs9 0/1   ContainerCreating 0        0s
+do100-versioned-hello-76c4494b5d-qtfs9 1/1   Running           0        2s
+do100-versioned-hello-76c4494b5d-qtfs9 1/1   Terminating       0        97m
+do100-versioned-hello-76c4494b5d-8qmk8 0/1   Pending           0        0sdo100-versioned-hello-76c4494b5d-8qmk8 0/1   Pending           0        0sdo100-versioned-hello-76c4494b5d-8qmk8 0/1   ContainerCreating 0        1s
+do100-versioned-hello-76c4494b5d-qtfs9 0/1   Terminating       0        97m
+do100-versioned-hello-76c4494b5d-8qmk8 1/1   Running           0        2s
+...output omitted...
+</code></pre>
+<blockquote>
+<p><strong>Note</strong>:</p>
+<p>The Terminating and Pending status might appear many times in the output.
+This repetition reflects the fact that those statuses are aggregating status for another fine-grained status for the deployment.</p>
+</blockquote>
+<ol start="4">
+<li>Deploy a new version of the application and observe the default deployment rollingUpdate strategy.</li>
+</ol>
+<p>4.1) Edit the deployment and update the container image version from v1.0 to v1.1.
+Use the kubectl edit deployment command to edit the Deployment manifest:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl edit deployment do100-versioned-hello
+</code></pre>
+<p>Look for the image: quay.io/redhattraining/do100-versioned-hello:v1.0 entry and change the image tag from v1.0 to v1.1.
+Save the changes and exit the editor.</p>
+<p>4.2) Analyze the status timeline for the pods.
+Observe how Kubernetes orchestrates the termination and deployment of the pods.
+The maximum unavailability is zero pods (25% of 2 pods, rounding down), so there must always be at least two available replicas.
+The maximum surge is 1 (20% of 2 pods, rounding up), so Kubernetes will create new replicas one by one.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get pods -w
+NAME                                    READY STATUS            RESTARTS AGE
+...output omitted...
+do100-versioned-hello-76c4494b5d-qtfs9  1/1   Running           0        2s
+...output omitted...
+do100-versioned-hello-76c4494b5d-8qmk8  1/1   Running           0        2s(1)
+...output omitted...
+do100-versioned-hello-76c4494b5d-7729k  0/1   Pending           0        0s(2)
+do100-versioned-hello-76c4494b5d-7729k  0/1   Pending           0        0s
+do100-versioned-hello-76c4494b5d-7729k  0/1   ContainerCreating 0        0s
+do100-versioned-hello-76c4494b5d-7729k  1/1   Running           0        1s(3)do100-versioned-hello-77fc5857fc-qtfs9  1/1   Terminating       0        4m46s(4)do100-versioned-hello-76c4494b5d-vrlkw  0/1   Pending           0        0s(5)
+do100-versioned-hello-76c4494b5d-vrlkw  0/1   Pending           0        0s
+do100-versioned-hello-76c4494b5d-vrlkw  0/1   ContainerCreating 0        0s
+do100-versioned-hello-77fc5857fc-qtfs9  0/1   Terminating       0        4m47s
+do100-versioned-hello-77fc5857fc-qtfs9  0/1   Terminating       0        4m48s
+do100-versioned-hello-77fc5857fc-qtfs9  0/1   Terminating       0        4m48s
+do100-versioned-hello-77fc5857fc-qtfs9  0/1   Terminating       0        4m48s
+do100-versioned-hello-76c4494b5d-vrlkw  1/1   Running           0        2s(6)do100-versioned-hello-77fc5857fc-8qmk8  1/1   Terminating       0        4m49s(7)
+do100-versioned-hello-77fc5857fc-8qmk8  0/1   Terminating       0        4m50s
+</code></pre>
+<p>Rollout starts.
+At this point, two v1.0 replicas are available.</p>
+<p>Kubernetes creates a single new v1.1 replica, as maxSurge limits the over-deployment to one.</p>
+<p>The new v1.1 replica is running and becomes available.</p>
+<p>There are three pods available, so Kubernetes terminates the do100-versioned-hello-77fc5857fc-qtfs9 pod (v1.0 replica).</p>
+<p>After starting the termination, the number of available pods is two, so Kubernetes starts a new v1.1 replica.</p>
+<p>The new v1.1 replica is running and becomes available.</p>
+<p>Again, three pods are available, so Kubernetes terminates the last v1.0 replica.</p>
+<h2 id="finish">Finish</h2>
+<p>Delete the deployment to clean your cluster.
+Kubernetes automatically deletes the associated pods.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl delete deployment do100-versioned-hello
+deployment.apps &quot;do100-versioned-hello&quot; deleted
+</code></pre>
+<p>Observe in the other terminal that Kubernetes automatically terminates all pods associated with the deployment:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get pods -w
+NAME                                     READY   STATUS           RESTARTS   AGE
+...output omitted...
+do100-versioned-hello-77fc5857fc-8qmk8   0/1     Terminating      0          4m50s
+do100-versioned-hello-76c4494b5d-7729k   1/1     Terminating      0          5m35sdo100-versioned-hello-76c4494b5d-vrlkw   1/1     Terminating      0          5m35sdo100-versioned-hello-76c4494b5d-7729k   0/1     Terminating      0          5m35sdo100-versioned-hello-76c4494b5d-vrlkw   0/1     Terminating      0          5m35s
+...output omitted...
+</code></pre>
+<p>Press <code>Ctrl+C</code> to exit the <code>kubectl get pods -w</code> command.</p>
+<p>This concludes the guided exercise.</p>
+
+  </div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+          &nbsp;&bull;&nbsp;
+          2020
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://tonejito.github.io/">Kubernetes By Example</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.91.2</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://tonejito.github.io/kbe//js/main.js"></script>
+<script>
+
+$('.language-test').parent().css('display', 'none')
+
+
+var copybtns = {
+  fallbackCopyTextToClipboard: function (text) {
+    var txt = document.createElement("textarea");
+    txt.value = text;
+    
+    
+    txt.style.position = "fixed";
+    txt.style.top = "0";
+    txt.style.left = "0";
+  
+    document.body.appendChild(txt);
+    txt.focus();
+    txt.select();
+    txt.setSelectionRange(0, 99999);
+  
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+    } catch (err) {
+      console.error('Fallback: Unable to copy', err);
+    }
+  
+    document.body.removeChild(txt);
+  },
+  copyTextToClipboard: function (text) {
+    if (!navigator.clipboard) {
+      copybtns.fallbackCopyTextToClipboard(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+      
+    }, function(err) {
+      
+      copybtns.fallbackCopyTextToClipboard(text);
+    });
+  },
+  flash: function(btn, content){
+    
+    content.fadeTo(50, 0.25, function() { $(this).fadeTo(300, 1.0); });
+    
+    btn.fadeTo(50, 0.0, function() { $(this).fadeTo(900, 1.0); });
+  },
+  txtClick : function(){
+    var content = $(this);
+    var btn = content.prev('button');
+    
+    copybtns.flash(btn, content);
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  btnClick : function(){
+    var btn = $(this);
+    var content = $(btn.next().children()[0]);
+    
+    copybtns.flash(btn, content)
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  init : function() {
+    var buttonHTML = '<button type="button" data-toggle="tooltip" data-placement="top" title="Copy" class="copybtn btn btn-outline-dark"><img src="https:\/\/tonejito.github.io\/kbe\//img/Icon-Red_Hat-Media_and_documents-Paper_Stack_Blank-A-Black-RGB.png"/></button>';
+    
+    $('div.highlight').prepend(buttonHTML);
+    
+    $('button.copybtn').bind("click", copybtns.btnClick);
+    $('div.highlight pre').bind("click", copybtns.txtClick);
+  }
+}
+copybtns.init();
+</script>
+<script src="https://tonejito.github.io/kbe//js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-34425776-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+<div class="watermark-container">
+  <div class="watermark">
+    For testing purposes only
+  </div>
+  <div style="clear: both;"></div>
+</div>
+
+
+
+  </body>
+</html>
+

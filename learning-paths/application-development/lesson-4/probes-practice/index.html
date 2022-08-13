@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Kubernetes By Example</title>
+  <meta property="og:title" content="Kubernetes By Example" />
+  <meta name="twitter:title" content="Kubernetes By Example" />
+  <meta name="description" content="Guided Exercise: Liveness, Readiness, and Startup Probes Activating Probes In this exercise, you will configure liveness and readiness probes to monitor the health of an application deployed to your Kubernetes cluster.
+The application you deploy in this exercise exposes two HTTP GET endpoints:
+  The /healthz endpoint responds with a 200 HTTP status code when the application pod can receive requests.
+The endpoint indicates that the application pod is healthy and reachable.">
+  <meta property="og:description" content="Guided Exercise: Liveness, Readiness, and Startup Probes Activating Probes In this exercise, you will configure liveness and readiness probes to monitor the health of an application deployed to your Kubernetes cluster.
+The application you deploy in this exercise exposes two HTTP GET endpoints:
+  The /healthz endpoint responds with a 200 HTTP status code when the application pod can receive requests.
+The endpoint indicates that the application pod is healthy and reachable.">
+  <meta name="twitter:description" content="Guided Exercise: Liveness, Readiness, and Startup Probes Activating Probes In this exercise, you will configure liveness and readiness probes to monitor the health of an application deployed to your …">
+  <meta name="author" content=""/>
+  <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/probes-practice/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kubernetes By Example" />
+
+  <meta name="generator" content="Hugo 0.91.2" />
+  <link rel="canonical" href="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/probes-practice/" />
+  <link rel="alternate" href="https://tonejito.github.io/index.xml" type="application/rss+xml" title="Kubernetes By Example">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/main.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/pygment_highlights.css" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/highlight.min.css" />
+<link rel="stylesheet" type="text/css" href="https://tonejito.github.io/kbe/css/custom.css">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WNHKJNX');</script>
+  
+</head>
+
+  <body>
+    
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WNHKJNX"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
+
+  
+
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://tonejito.github.io/">Home</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
+                
+                  <a href="/kbe/topics/istio/istio/">Istio</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Concepts</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/concepts/pods">Pods</a>
+                
+                  <a href="/kbe/concepts/labels">Labels</a>
+                
+                  <a href="/kbe/concepts/deployments">Deployments</a>
+                
+                  <a href="/kbe/concepts/services">Services</a>
+                
+                  <a href="/kbe/concepts/port-forwarding">Port Forwarding</a>
+                
+                  <a href="/kbe/concepts/health-checks">Health Checks</a>
+                
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
+                
+                  <a href="/kbe/concepts/namespaces">Namespaces</a>
+                
+                  <a href="/kbe/concepts/volumes">Volumes</a>
+                
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
+                
+                  <a href="/kbe/concepts/secrets">Secrets</a>
+                
+                  <a href="/kbe/concepts/logging">Logging</a>
+                
+                  <a href="/kbe/concepts/jobs">Jobs</a>
+                
+                  <a href="/kbe/concepts/nodes">Nodes</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/sd/">Service Discovery</a>
+                
+                  <a href="/kbe/pf/">Port Forward</a>
+                
+                  <a href="/kbe/statefulset/">Stateful Sets</a>
+                
+                  <a href="/kbe/ic/">Init Containers</a>
+                
+                  <a href="/kbe/api/">API Server</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Try out!" href="/kbe/diy/">Try out!</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="Kubernetes By Example" href="https://tonejito.github.io/">
+            <img class="avatar-img" src="https://tonejito.github.io/kbe//img/kbe-logo.png" alt="Kubernetes By Example" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  <div class="intro-header"></div>
+
+
+    
+  <div class="container" role="main">
+    <!-- https://kubebyexample.com/en/learning-paths/application-development-kubernetes/lesson-4-customize-deployments-application-3 -->
+<h1 id="guided-exercise-liveness-readiness-and-startup-probes">Guided Exercise: Liveness, Readiness, and Startup Probes</h1>
+<h2 id="activating-probes">Activating Probes</h2>
+<p>In this exercise, you will configure liveness and readiness probes to monitor the health of an application deployed to your Kubernetes cluster.</p>
+<p>The application you deploy in this exercise exposes two HTTP GET endpoints:</p>
+<ul>
+<li>
+<p>The /healthz endpoint responds with a 200 HTTP status code when the application pod can receive requests.</p>
+<p>The endpoint indicates that the application pod is healthy and reachable. It does not indicate that the application is ready to serve requests.</p>
+</li>
+<li>
+<p>The /ready endpoint responds with a 200 HTTP status code if the overall application works.</p>
+<p>The endpoint indicates that the application is ready to serve requests.</p>
+</li>
+</ul>
+<p>In this exercise, the /ready endpoint responds with the 200 HTTP status code when the application pod starts. The /ready endpoint responds with the 503 HTTP status code for the first 30 seconds after deployment to simulate slow application startup.</p>
+<p>You will configure the /healthz endpoint for the liveness probe, and the /ready endpoint for the readiness probe.</p>
+<p>You will simulate network failures in your Kubernetes cluster and observe behavior in the following scenarios:</p>
+<ul>
+<li>
+<p>The application is not available.</p>
+</li>
+<li>
+<p>The application is available but cannot reach the database. Consequently, it cannot serve requests.</p>
+</li>
+</ul>
+<h2 id="outcomes">Outcomes</h2>
+<p>You should be able to:</p>
+<ul>
+<li>
+<p>Configure readiness and liveness probes for an application from the command line.</p>
+</li>
+<li>
+<p>Locate probe failure messages in the event log.</p>
+</li>
+</ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>You need a working Kubernetes cluster, and your kubectl command must be configured to communicate with the cluster.</p>
+<p>Make sure your kubectl context refers to a namespace where you have enough permissions, usually username-dev or username-stage. Use the kubectl config set-context &ndash;current &ndash;namespace=namespace command to switch to the appropriate namespace.</p>
+<h2 id="instructions">Instructions</h2>
+<ol>
+<li>Deploy the do100-probes sample application to the Kubernetes cluster and expose the application.</li>
+</ol>
+<p>1.1) Create a new deployment by using kubectl.</p>
+<blockquote>
+<p><strong>Note</strong>:</p>
+<p>This course uses the backslash character (<code>\</code>) to break long commands.
+On Linux and macOS, you can use the line breaks.</p>
+<p>On Windows, use the backtick character (<code>`</code>) to break long commands.</p>
+<p>Alternatively, do not break long commands.</p>
+</blockquote>
+<pre><code class="language-bash">[user@host ~]$ kubectl create deployment do100-probes \
+--image quay.io/redhattraining/do100-probes:latest
+deployment.apps/do100-probes created
+</code></pre>
+<p>1.2) Expose the deployment on port 8080.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl expose deployment/do100-probes --port 8080
+service/do100-probes exposed
+</code></pre>
+<p>1.3) Use a text editor to create a file in your current directory called probes-ingress.yml.</p>
+<p>Create the probes-ingress.yml file with the following content. Ensure correct indentation (using spaces rather than tabs) and then save the file.</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: do100-probes
+  labels:
+    app: do100-probes
+spec:
+  rules:
+    - host: INGRESS-HOST
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: do100-probes
+                port:
+                  number: 8080
+</code></pre>
+<p>Replace INGRESS-HOST with the hostname associated with your Kubernetes cluster, such as hello.example.com or do100-probes-USER-dev.apps.sandbox.x8i5.p1.openshiftapps.com. If you are unsure of the hostname to use then refer to <a href="">Guided Exercise: Contrasting Kubernetes Distributions</a> to find the appropriate value.</p>
+<p>The file at <a href="https://github.com/RedHatTraining/DO100-apps/blob/main/probes/probes-ingress.yml">https://github.com/RedHatTraining/DO100-apps/blob/main/probes/probes-ingress.yml</a> contains the correct content for the probes-ingress.yml file. You can download the file and use it for comparison.</p>
+<p>1.4) Use the kubectl create command to create the ingress resource.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl create -f probes-ingress.yml
+ingress.networking.k8s.io/do100-probes created
+</code></pre>
+<ol start="2">
+<li>Manually test the application&rsquo;s /ready and /healthz endpoints.</li>
+</ol>
+<p>2.1) Display information about the do100-probes ingress. If the command does not display an IP address, then wait up to a minute and try running the command again.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get ingress/do100-probes
+NAME           CLASS   HOSTS               ADDRESS        PORTS   ...
+do100-probes   nginx   hello.example.com   192.168.49.2   80      ...
+</code></pre>
+<p>The value in the HOST column matches the host line specified in your probes-ingress.yml file. Your IP address is likely different from the one displayed here.</p>
+<p>2.2) Test the /ready endpoint:</p>
+<pre><code class="language-bash">[user@host ~]$ curl -i hello.example.com/ready
+</code></pre>
+<p>On Windows, remove -i flag:</p>
+<pre><code class="language-bash">[user@host ~]$ curl hello.example.com/ready
+</code></pre>
+<p>The /ready endpoint simulates a slow startup of the application, and so for the first 30 seconds after the application starts, it returns an HTTP status code of 503, and the following response:</p>
+<pre><code class="language-text">HTTP/1.1 503 Service Unavailable
+...output omitted...
+Error! Service not ready for requests...
+</code></pre>
+<p>After the application has been running for 30 seconds, it returns:</p>
+<pre><code class="language-text">HTTP/1.1 200 OK
+...output omitted...
+Ready for service requests...
+</code></pre>
+<p>2.3) Test the /healthz endpoint of the application:</p>
+<pre><code class="language-bash">[user@host ~]$ curl -i hello.example.com/healthz
+HTTP/1.1 200 OK
+...output omitted...
+OK
+</code></pre>
+<p>On Windows, remove the -i flag:</p>
+<pre><code class="language-bash">[user@host ~]$ curl hello.example.com/healthz
+</code></pre>
+<p>2.4) Test the application response:</p>
+<pre><code class="language-bash">[user@host ~]$ curl hello.example.com
+Hello! This is the index page for the app.
+</code></pre>
+<ol start="3">
+<li>Activate readiness and liveness probes for the application.</li>
+</ol>
+<p>3.1) Use the kubectl edit command to edit the deployment definition and add readiness and liveness probes.</p>
+<ul>
+<li>
+<p>For the liveness probe, use the /healthz endpoint on the port 8080.</p>
+</li>
+<li>
+<p>For the readiness probe, use the /ready endpoint on the port 8080.</p>
+</li>
+<li>
+<p>For both probes:</p>
+<ul>
+<li>
+<p>Configure an initial delay of 2 seconds.</p>
+</li>
+<li>
+<p>Configure the timeout as 2 seconds.</p>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-bash">[user@host ~] kubectl edit deployment/do100-probes
+...output omitted...
+</code></pre>
+<p>This command opens your default system editor. Make changes to the definition so that it displays as follows.</p>
+<pre><code class="language-yaml">...output omitted...
+spec:
+  ...output omitted...
+  template:
+    ...output omitted...
+    spec:
+      containers:
+      - image: quay.io/redhattraining/do100-probes:latest
+        ...output omitted...readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 2
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 2
+          timeoutSeconds: 2
+</code></pre>
+<blockquote>
+<p><strong>WARNING</strong>:</p>
+<p>The YAML resource is space sensitive. Use spaces to preserve the spacing.</p>
+<p>Do not use the tab character to edit the preceding deployment.</p>
+</blockquote>
+<p>Save and exit the editor to apply your changes.</p>
+<p>3.2) Verify the value in the livenessProbe and readinessProbe entries:</p>
+<pre><code class="language-bash">[user@host DO288-apps]$ kubectl describe deployment do100-probes
+...output omitted...
+Liveness:  http-get http://:8080/healthz delay=2s timeout=2s period=10s #success=1 #failure=3
+Readiness: http-get http://:8080/ready   delay=2s timeout=2s period=10s #success=1 #failure=3
+...output omitted...
+</code></pre>
+<p>3.3) Wait for the application pod to redeploy and change into the READY state:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get pods
+NAME                            READY   STATUS    RESTARTS      AGE
+...output omitted...
+do100-probes-7794c5cb4f-vwl4x   0/1     Running   0             6s
+</code></pre>
+<p>The READY status shows 0/1 if the AGE value is less than approximately 30 seconds. After that, the READY status is 1/1. Note the pod name for the following steps.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get pods
+NAME                            READY   STATUS    RESTARTS      AGE
+...output omitted...
+do100-probes-7794c5cb4f-vwl4x1/1     Running   0             62s
+</code></pre>
+<p>3.4) Use the kubectl logs command to see the results of the liveness and readiness probes. Use the pod name from the previous step.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl logs -f do100-probes-7794c5cb4f-vwl4x
+...output omitted...
+nodejs server running on http://0.0.0.0:8080
+ping /healthz =&gt; pong [healthy]
+ping /ready =&gt; pong [notready]
+ping /healthz =&gt; pong [healthy]
+ping /ready =&gt; pong [notready]
+ping /healthz =&gt; pong [healthy]
+ping /ready =&gt; pong [ready]
+...output omitted...
+</code></pre>
+<p>Observe that the readiness probe fails for about 30 seconds after redeployment, and then succeeds. Recall that the application simulates a slow initialization of the application by forcibly setting a 30-second delay before it responds with a status of ready.</p>
+<p>Do not terminate this command. You will continue to monitor the output of this command in the next step.</p>
+<ol start="4">
+<li>Simulate a network failure.</li>
+</ol>
+<p>In case of a network failure, a service becomes unresponsive. This means both the liveness and readiness probes fail.</p>
+<p>Kubernetes can resolve the issue by recreating the container on a different node.</p>
+<p>4.1) In a different terminal window or tab, run the following commands to simulate a liveness probe failure:</p>
+<pre><code class="language-bash">[user@host ~]$ curl http://hello.example.com/flip?op=kill-health
+Switched app state to unhealthy...
+
+[user@host ~]$ curl http://hello.example.com/flip?op=kill-ready
+Switched app state to not ready...
+</code></pre>
+<p>4.2) Return to the terminal where you are monitoring the application deployment:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl logs -f do100-probes-7794c5cb4f-vwl4x
+...output omitted...
+Received kill request for health probe.
+Received kill request for readiness probe.
+...output omitted...
+ping /ready =&gt; pong [notready]
+ping /healthz =&gt; pong [unhealthy]
+...output omitted...
+Received kill request for health probe.
+...output omitted...
+Received kill request for readiness probe.
+...output omitted...
+</code></pre>
+<p>Kubernetes restarts the pod when the liveness probe fails repeatedly (three consecutive failures by default). This means Kubernetes restarts the application on an available node not affected by the network failure.</p>
+<p>You see this log output only when you immediately check the application logs after you issue the kill request. If you check the logs after Kubernetes restarts the pod, then the logs are cleared and you only see the output shown in the next step.</p>
+<p>4.3) Verify that Kubernetes restarts the unhealthy pod. Keep checking the output of the kubectl get pods command. Observe the RESTARTS column and verify that the count is greater than zero. Note the name of the new pod.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get pods
+NAME                           READY   STATUS    RESTARTS      AGE
+do100-probes-95758759b-4cm2j   1/1     Running   1 (11s ago)   62s
+</code></pre>
+<p>4.4) Review the application logs. The liveness probe succeeds and the application reports a healthy state.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl logs -f do100-probes-95758759b-4cm2j
+...output omitted...
+ping /ready =&gt; pong [ready]
+ping /healthz =&gt; pong [healthy]
+...output omitted...
+</code></pre>
+<h2 id="finish">Finish</h2>
+<p>Delete the deployment, ingress, and service resources to clean your cluster. Kubernetes automatically deletes the associated pods.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl delete deployment do100-probes
+deployment.apps &quot;do100-versioned-hello&quot; deleted
+
+[user@host ~]$ kubectl delete service do100-probes
+service &quot;do100-probes&quot; deleted
+
+[user@host ~]$ kubectl delete ingress do100-probes
+ingress.networking.k8s.io &quot;do100-probes&quot; deleted
+</code></pre>
+
+  </div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+          &nbsp;&bull;&nbsp;
+          2020
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://tonejito.github.io/">Kubernetes By Example</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.91.2</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://tonejito.github.io/kbe//js/main.js"></script>
+<script>
+
+$('.language-test').parent().css('display', 'none')
+
+
+var copybtns = {
+  fallbackCopyTextToClipboard: function (text) {
+    var txt = document.createElement("textarea");
+    txt.value = text;
+    
+    
+    txt.style.position = "fixed";
+    txt.style.top = "0";
+    txt.style.left = "0";
+  
+    document.body.appendChild(txt);
+    txt.focus();
+    txt.select();
+    txt.setSelectionRange(0, 99999);
+  
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+    } catch (err) {
+      console.error('Fallback: Unable to copy', err);
+    }
+  
+    document.body.removeChild(txt);
+  },
+  copyTextToClipboard: function (text) {
+    if (!navigator.clipboard) {
+      copybtns.fallbackCopyTextToClipboard(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+      
+    }, function(err) {
+      
+      copybtns.fallbackCopyTextToClipboard(text);
+    });
+  },
+  flash: function(btn, content){
+    
+    content.fadeTo(50, 0.25, function() { $(this).fadeTo(300, 1.0); });
+    
+    btn.fadeTo(50, 0.0, function() { $(this).fadeTo(900, 1.0); });
+  },
+  txtClick : function(){
+    var content = $(this);
+    var btn = content.prev('button');
+    
+    copybtns.flash(btn, content);
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  btnClick : function(){
+    var btn = $(this);
+    var content = $(btn.next().children()[0]);
+    
+    copybtns.flash(btn, content)
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  init : function() {
+    var buttonHTML = '<button type="button" data-toggle="tooltip" data-placement="top" title="Copy" class="copybtn btn btn-outline-dark"><img src="https:\/\/tonejito.github.io\/kbe\//img/Icon-Red_Hat-Media_and_documents-Paper_Stack_Blank-A-Black-RGB.png"/></button>';
+    
+    $('div.highlight').prepend(buttonHTML);
+    
+    $('button.copybtn').bind("click", copybtns.btnClick);
+    $('div.highlight pre').bind("click", copybtns.txtClick);
+  }
+}
+copybtns.init();
+</script>
+<script src="https://tonejito.github.io/kbe//js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-34425776-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+<div class="watermark-container">
+  <div class="watermark">
+    For testing purposes only
+  </div>
+  <div style="clear: both;"></div>
+</div>
+
+
+
+  </body>
+</html>
+

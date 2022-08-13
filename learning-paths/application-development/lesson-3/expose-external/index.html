@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Kubernetes By Example</title>
+  <meta property="og:title" content="Kubernetes By Example" />
+  <meta name="twitter:title" content="Kubernetes By Example" />
+  <meta name="description" content="Exposing Applications for External Access Objectives After completing this section, you should be able to expose service-backed applications to clients outside the Kubernetes cluster.
+Kubernetes Ingress Kubernetes assigns IP addresses to pods and services. Pod and service IP addresses are not usually accessible outside of the cluster. Unless prevented by network policies, the Kubernetes cluster typically allows internal communication between pods and services. This internal communication allows application pods to interact with services that are not externally accessible, such as database services.">
+  <meta property="og:description" content="Exposing Applications for External Access Objectives After completing this section, you should be able to expose service-backed applications to clients outside the Kubernetes cluster.
+Kubernetes Ingress Kubernetes assigns IP addresses to pods and services. Pod and service IP addresses are not usually accessible outside of the cluster. Unless prevented by network policies, the Kubernetes cluster typically allows internal communication between pods and services. This internal communication allows application pods to interact with services that are not externally accessible, such as database services.">
+  <meta name="twitter:description" content="Exposing Applications for External Access Objectives After completing this section, you should be able to expose service-backed applications to clients outside the Kubernetes cluster.
+Kubernetes …">
+  <meta name="author" content=""/>
+  <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-external/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kubernetes By Example" />
+
+  <meta name="generator" content="Hugo 0.91.2" />
+  <link rel="canonical" href="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-external/" />
+  <link rel="alternate" href="https://tonejito.github.io/index.xml" type="application/rss+xml" title="Kubernetes By Example">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/main.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/pygment_highlights.css" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/highlight.min.css" />
+<link rel="stylesheet" type="text/css" href="https://tonejito.github.io/kbe/css/custom.css">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WNHKJNX');</script>
+  
+</head>
+
+  <body>
+    
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WNHKJNX"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
+
+  
+
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://tonejito.github.io/">Home</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
+                
+                  <a href="/kbe/topics/istio/istio/">Istio</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Concepts</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/concepts/pods">Pods</a>
+                
+                  <a href="/kbe/concepts/labels">Labels</a>
+                
+                  <a href="/kbe/concepts/deployments">Deployments</a>
+                
+                  <a href="/kbe/concepts/services">Services</a>
+                
+                  <a href="/kbe/concepts/port-forwarding">Port Forwarding</a>
+                
+                  <a href="/kbe/concepts/health-checks">Health Checks</a>
+                
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
+                
+                  <a href="/kbe/concepts/namespaces">Namespaces</a>
+                
+                  <a href="/kbe/concepts/volumes">Volumes</a>
+                
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
+                
+                  <a href="/kbe/concepts/secrets">Secrets</a>
+                
+                  <a href="/kbe/concepts/logging">Logging</a>
+                
+                  <a href="/kbe/concepts/jobs">Jobs</a>
+                
+                  <a href="/kbe/concepts/nodes">Nodes</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/sd/">Service Discovery</a>
+                
+                  <a href="/kbe/pf/">Port Forward</a>
+                
+                  <a href="/kbe/statefulset/">Stateful Sets</a>
+                
+                  <a href="/kbe/ic/">Init Containers</a>
+                
+                  <a href="/kbe/api/">API Server</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Try out!" href="/kbe/diy/">Try out!</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="Kubernetes By Example" href="https://tonejito.github.io/">
+            <img class="avatar-img" src="https://tonejito.github.io/kbe//img/kbe-logo.png" alt="Kubernetes By Example" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  <div class="intro-header"></div>
+
+
+    
+  <div class="container" role="main">
+    <!-- https://kubebyexample.com/en/learning-paths/application-development-kubernetes/lesson-3-networking-kubernetes/exposing-0 -->
+<h1 id="exposing-applications-for-external-access">Exposing Applications for External Access</h1>
+<h2 id="objectives">Objectives</h2>
+<p>After completing this section, you should be able to expose service-backed applications to clients outside the Kubernetes cluster.</p>
+<h2 id="kubernetes-ingress">Kubernetes Ingress</h2>
+<p>Kubernetes assigns IP addresses to pods and services. Pod and service IP addresses are not usually accessible outside of the cluster. Unless prevented by network policies, the Kubernetes cluster typically allows internal communication between pods and services. This internal communication allows application pods to interact with services that are not externally accessible, such as database services.</p>
+<p>For a web application that should be accessible to external users,  you must create a Kubernetes ingress resource. An ingress maps a domain name, or potentially a URL, to an existing service. On its own, the ingress resource does not provide access to the specified host or path. The ingress resource interacts with a Kubernetes ingress controller to provide external access to a service over HTTP or HTTPS.</p>
+<h2 id="kubernetes-ingress-controller">Kubernetes Ingress Controller</h2>
+<p>Kubernetes ingress controllers act as load balancers for HTTP and HTTPS requests coming in to your cluster. Because ingress controllers can be specific to an environment, Kubernetes clusters are not configured to use an ingress controller by default.</p>
+<p>As a developer, you cannot choose the ingress controller used by your environment you also cannot configure it.</p>
+<p>Operations teams will install and configure an ingress controller appropriate to their environment. This includes configuring the ingress controller based on the networking characteristics of your environment. Most cloud providers and Kubernetes distributions implement their own ingress controllers, tailored for their products and network environments.</p>
+<p>Local and self-managed Kubernetes distributions tend to use ingress controllers offered by open source projects, network vendors or sample ingress controllers provided by Kubernetes. Find a list of ingress controllers provided by upstream Kubernetes in the References section.</p>
+<h2 id="ingress-resource-configuration">Ingress Resource Configuration</h2>
+<p>One of the main things that you must specify in your ingress resource configuration is the host name used to access your application. This host name is part of the cluster configuration as it comes defined by factors external to the cluster, such as network characteristics and DNS services. The operations team must provide the cluster host name to developers.</p>
+<p>Production deployments must have DNS records pointing to the Kubernetes cluster. Some Kubernetes distributions use wildcard DNS records to link a family of host names to the same Kubernetes cluster. A wildcard DNS record is a DNS record that, given a parent wildcard domain, maps all its subdomains to a single IP. For example, a wildcard DNS record might map the wildcard domain *.example.com to the IP 10.0.0.8. DNS requests for Subdomains such as hello.example.com or myapp.example.com will obtain 10.0.0.8 as a response.</p>
+<p>Details for identifying the wildcard domain name used by your Kubernetes cluster can be found in the <a href="">Guided Exercise: Contrasting Kubernetes Distributions</a>.</p>
+<p>The following is an example of an ingress resource.</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello  &lt;1&gt;
+spec:
+  rules:
+    - host: hello.example.com  &lt;2&gt;
+      http:
+        paths:
+          - path: /  &lt;3&gt;
+            pathType: Prefix  &lt;4&gt;
+            backend:
+              service:
+                name: hello  &lt;5&gt;
+                port:
+                  number: 8080  &lt;6&gt;
+</code></pre>
+<ol>
+<li>
+<p>The name of the ingress resource.</p>
+</li>
+<li>
+<p>The host name used by external users to access your application.</p>
+</li>
+<li>
+<p>This value is used in combination with pathType to determine if the URL request matches any of the accepted paths. A path value of / with the pathType value of Prefix is the equivalent of a wildcard that matches any path.</p>
+</li>
+<li>
+<p>This value is used in combination with path to determine if the URL matches any of the accepted paths. A pathType of Prefix offers a bit more flexibility allowing for matches where the path and the requested URL can contain either a trailing / or not. A pathType of Exact requires the requested URL to exactly match the path value.</p>
+</li>
+<li>
+<p>The name of the service to which requests are redirected.</p>
+</li>
+<li>
+<p>The port number on which the service listens.</p>
+</li>
+</ol>
+<p>Testing Your Ingress
+If you have an application already running in your Kubernetes cluster, then you can test the ingress resource by verifying the external access to the application. The test checks that the ingress resource successfully configures with the ingress controller to redirect the HTTP or HTTPS request.</p>
+<p>After using either the kubectl create command or the kubectl apply command to create an ingress resource, use a web browser to access your application URL. Browse to the host name and the path defined in the ingress resource and verify that the request is forwarded to the application and the browser get the response:</p>
+<p><img src="https://kubebyexample.com/sites/default/files/2021-06/firefox-hello-world.png" alt=""></p>
+<p>Image
+Hello world from nginx screenshot
+Optionally you can use the curl command to perform simple tests.</p>
+<pre><code class="language-bash">[user@host ~]$ curl hello.example.com
+&lt;html&gt;
+  &lt;body&gt;
+      &lt;h1&gt;Hello, world from nginx!&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>If the browser does not obtain the expected response then verify that:</p>
+<ul>
+<li>
+<p>The host name and paths are the ones used in the ingress resource.</p>
+</li>
+<li>
+<p>Your system can translate the host name to the IP address for the ingress controller (via your hosts file or a DNS entry).</p>
+</li>
+<li>
+<p>The ingress resource is available and its information is correct.</p>
+</li>
+<li>
+<p>If applicable, verify that the ingress controller is installed and running in your cluster.</p>
+</li>
+</ul>
+<hr>
+<h2 id="references">References</h2>
+<ul>
+<li>
+<p><a href="https://kubernetes.io/docs/concepts/services-networking/ingress/">Ingress</a></p>
+</li>
+<li>
+<p><a href="https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/">Ingress Controllers</a></p>
+</li>
+</ul>
+
+  </div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+          &nbsp;&bull;&nbsp;
+          2020
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://tonejito.github.io/">Kubernetes By Example</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.91.2</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://tonejito.github.io/kbe//js/main.js"></script>
+<script>
+
+$('.language-test').parent().css('display', 'none')
+
+
+var copybtns = {
+  fallbackCopyTextToClipboard: function (text) {
+    var txt = document.createElement("textarea");
+    txt.value = text;
+    
+    
+    txt.style.position = "fixed";
+    txt.style.top = "0";
+    txt.style.left = "0";
+  
+    document.body.appendChild(txt);
+    txt.focus();
+    txt.select();
+    txt.setSelectionRange(0, 99999);
+  
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+    } catch (err) {
+      console.error('Fallback: Unable to copy', err);
+    }
+  
+    document.body.removeChild(txt);
+  },
+  copyTextToClipboard: function (text) {
+    if (!navigator.clipboard) {
+      copybtns.fallbackCopyTextToClipboard(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+      
+    }, function(err) {
+      
+      copybtns.fallbackCopyTextToClipboard(text);
+    });
+  },
+  flash: function(btn, content){
+    
+    content.fadeTo(50, 0.25, function() { $(this).fadeTo(300, 1.0); });
+    
+    btn.fadeTo(50, 0.0, function() { $(this).fadeTo(900, 1.0); });
+  },
+  txtClick : function(){
+    var content = $(this);
+    var btn = content.prev('button');
+    
+    copybtns.flash(btn, content);
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  btnClick : function(){
+    var btn = $(this);
+    var content = $(btn.next().children()[0]);
+    
+    copybtns.flash(btn, content)
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  init : function() {
+    var buttonHTML = '<button type="button" data-toggle="tooltip" data-placement="top" title="Copy" class="copybtn btn btn-outline-dark"><img src="https:\/\/tonejito.github.io\/kbe\//img/Icon-Red_Hat-Media_and_documents-Paper_Stack_Blank-A-Black-RGB.png"/></button>';
+    
+    $('div.highlight').prepend(buttonHTML);
+    
+    $('button.copybtn').bind("click", copybtns.btnClick);
+    $('div.highlight pre').bind("click", copybtns.txtClick);
+  }
+}
+copybtns.init();
+</script>
+<script src="https://tonejito.github.io/kbe//js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-34425776-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+<div class="watermark-container">
+  <div class="watermark">
+    For testing purposes only
+  </div>
+  <div style="clear: both;"></div>
+</div>
+
+
+
+  </body>
+</html>
+

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Kubernetes By Example</title>
+  <meta property="og:title" content="Kubernetes By Example" />
+  <meta name="twitter:title" content="Kubernetes By Example" />
+  <meta name="description" content="Contrasting Kubernetes Distributions Objectives After completing this section, you should be able to see the differences between several Kubernetes implementations, and understand how to prepare different Kubernetes flavors for this course.
+Kubernetes Distributions Kubernetes has historically been a general solution for container management and orchestration. With this versatility, Kubernetes can solve the same problems in different ways depending on needs and opinions. Because of this Kubernetes has evolved into different opinionated distributions based on:">
+  <meta property="og:description" content="Contrasting Kubernetes Distributions Objectives After completing this section, you should be able to see the differences between several Kubernetes implementations, and understand how to prepare different Kubernetes flavors for this course.
+Kubernetes Distributions Kubernetes has historically been a general solution for container management and orchestration. With this versatility, Kubernetes can solve the same problems in different ways depending on needs and opinions. Because of this Kubernetes has evolved into different opinionated distributions based on:">
+  <meta name="twitter:description" content="Contrasting Kubernetes Distributions Objectives After completing this section, you should be able to see the differences between several Kubernetes implementations, and understand how to prepare …">
+  <meta name="author" content=""/>
+  <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubernetes-distributions/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kubernetes By Example" />
+
+  <meta name="generator" content="Hugo 0.91.2" />
+  <link rel="canonical" href="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubernetes-distributions/" />
+  <link rel="alternate" href="https://tonejito.github.io/index.xml" type="application/rss+xml" title="Kubernetes By Example">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/main.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/pygment_highlights.css" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/highlight.min.css" />
+<link rel="stylesheet" type="text/css" href="https://tonejito.github.io/kbe/css/custom.css">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WNHKJNX');</script>
+  
+</head>
+
+  <body>
+    
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WNHKJNX"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
+
+  
+
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://tonejito.github.io/">Home</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
+                
+                  <a href="/kbe/topics/istio/istio/">Istio</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Concepts</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/concepts/pods">Pods</a>
+                
+                  <a href="/kbe/concepts/labels">Labels</a>
+                
+                  <a href="/kbe/concepts/deployments">Deployments</a>
+                
+                  <a href="/kbe/concepts/services">Services</a>
+                
+                  <a href="/kbe/concepts/port-forwarding">Port Forwarding</a>
+                
+                  <a href="/kbe/concepts/health-checks">Health Checks</a>
+                
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
+                
+                  <a href="/kbe/concepts/namespaces">Namespaces</a>
+                
+                  <a href="/kbe/concepts/volumes">Volumes</a>
+                
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
+                
+                  <a href="/kbe/concepts/secrets">Secrets</a>
+                
+                  <a href="/kbe/concepts/logging">Logging</a>
+                
+                  <a href="/kbe/concepts/jobs">Jobs</a>
+                
+                  <a href="/kbe/concepts/nodes">Nodes</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/sd/">Service Discovery</a>
+                
+                  <a href="/kbe/pf/">Port Forward</a>
+                
+                  <a href="/kbe/statefulset/">Stateful Sets</a>
+                
+                  <a href="/kbe/ic/">Init Containers</a>
+                
+                  <a href="/kbe/api/">API Server</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Try out!" href="/kbe/diy/">Try out!</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="Kubernetes By Example" href="https://tonejito.github.io/">
+            <img class="avatar-img" src="https://tonejito.github.io/kbe//img/kbe-logo.png" alt="Kubernetes By Example" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  <div class="intro-header"></div>
+
+
+    
+  <div class="container" role="main">
+    <!-- https://kubebyexample.com/en/learning-paths/application-development-kubernetes/lesson-1-running-containerized-applications-1 -->
+<h1 id="contrasting-kubernetes-distributions">Contrasting Kubernetes Distributions</h1>
+<h2 id="objectives">Objectives</h2>
+<p>After completing this section, you should be able to see the differences between several Kubernetes implementations, and understand how to prepare different Kubernetes flavors for this course.</p>
+<h2 id="kubernetes-distributions">Kubernetes Distributions</h2>
+<p>Kubernetes has historically been a general solution for container management and orchestration.
+With this versatility, Kubernetes can solve the same problems in different ways depending on needs and opinions.
+Because of this Kubernetes has evolved into different opinionated distributions based on:</p>
+<p>The target size of the cluster: From small single-node clusters to large-scale clusters of hundreds of thousands of nodes.</p>
+<p>The location of the nodes: Either locally on the developer workstation, on premises (such as a private data center), on the cloud, or a hybrid solution of those two.</p>
+<p>The ownership of the management: Self-managed clusters versus Kubernetes-as-a-Service.</p>
+<p>The following table shows a classification for some of the most popular Kubernetes distributions:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Management</th>
+<th style="text-align:center">Environment</th>
+<th style="text-align:center">Big Scale</th>
+<th style="text-align:center">Small Scale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Self-Managed</td>
+<td style="text-align:center">Local</td>
+<td style="text-align:center">&ndash;</td>
+<td style="text-align:center">minikube, CodeReady Containers, Microk8s, Docker Kubernetes</td>
+</tr>
+<tr>
+<td style="text-align:center">Self-Managed</td>
+<td style="text-align:center">On Premises / Hybrid</td>
+<td style="text-align:center">Red Hat OpenShift, VMWare Tanzu, Rancher</td>
+<td style="text-align:center">&ndash;</td>
+</tr>
+<tr>
+<td style="text-align:center">Kubernetes-as-a-Service</td>
+<td style="text-align:center">On Cloud</td>
+<td style="text-align:center">OpenShift Dedicated, Google Container Engine, Amazon EKS</td>
+<td style="text-align:center">Developer Sandbox</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note</strong>
+This course supports <code>minikube</code> (version <code>1.20.0</code>) for local development and <strong>Developer Sandbox</strong> for remote development.
+Instructions and exercises have been tested in the following operating systems:</p>
+<ul>
+<li>Fedora Linux 33 and 34</li>
+<li>Red Hat Enterprise Linux 8</li>
+<li>Windows 10 Pro and Enterprise</li>
+<li>MacOS Big Sur (11.3.1)</li>
+</ul>
+</blockquote>
+<p>Visit the links in the references section below for a comprehensive list of Kubernetes certified distributions.</p>
+<h2 id="kubernetes-extensions">Kubernetes Extensions</h2>
+<p>Kubernetes is highly extendable for adding more services to the platform.
+Each distribution provides different approaches (or none) for adding capabilities to Kubernetes:</p>
+<h3 id="dns">DNS</h3>
+<p>DNS allows internal name resolution inside the cluster, so pods and services can refer to others by using a fixed name.</p>
+<p>Both <code>minikube</code> and OpenShift include a <strong>CoreDNS</strong> controller that provides this feature.</p>
+<h3 id="dashboard">Dashboard</h3>
+<p>The dashboard provides a graphical user interface to Kubernetes.</p>
+<p><code>minikube</code> provides an add-on and utility commands for using the general-purpose <strong>Dashboard</strong> open source application.
+OpenShift includes the <strong>Console</strong>, a dedicated application that integrates most of the Kubernetes extensions provided by OpenShift.</p>
+<h3 id="ingress">Ingress</h3>
+<p>The ingress extension allows traffic to get into the cluster network, redirecting requests from managed domains to services and pods.
+Ingress enables services and applications inside the cluster to expose ports and features to the public.</p>
+<p><code>minikube</code> uses an ingress add-on based on the <code>ingress-nginx</code> controller.</p>
+<blockquote>
+<p><strong>Note</strong>
+You must install the ingress add-on for minikube for some exercises.
+Refer to the <a href="../kubernetes-distributions-practice">Guided Exercise: Contrasting Kubernetes Distributions</a> for instructions.</p>
+</blockquote>
+<p>OpenShift deploys an ingress controller based on <code>HAProxy</code> and controlled by a <strong>Ingress Operator</strong>.
+OpenShift also introduces the <code>route</code> resource.
+A <code>route</code> extends the <code>ingress</code> manifest to ease controlling ingress traffic.</p>
+<h3 id="storage">Storage</h3>
+<p>The storage extension allows pods to use persistent storage and nodes to distribute and share the storage contents.</p>
+<p>OpenShift bases its storage strategy on <strong>Red Hat OpenShift Data Foundation</strong>, a storage provider supporting multiple storage strategies across nodes and hybrid clouds.
+<code>minikube</code> provides out-of-the-box storage by using the underlying storage infrastructure (either local the file system or the virtual machine&rsquo;s file-system).
+This feature is provided by the <code>storage-provisioner</code> add-on.
+<code>minikube</code> also provides a <code>storage-provisioner-gluster</code> add-on that allows Kubernetes to use <strong>Gluster</strong> as shared persistent storage.</p>
+<h3 id="authentication-and-authorization">Authentication and authorization</h3>
+<p>Kubernetes embeds a certificate authority (CA) and considers anyone that presents a certificate issued by that CA as a valid user.</p>
+<p><code>minikube</code> provides the user with an administrator <code>minikube</code> account, so users have total control over the cluster.</p>
+<p>Different OpenShift implementations differ on authentication features, but all of them agree on avoiding the use of administration accounts.
+Developer Sandbox provides limited access to the user, restricting them to the <code>username-dev</code> and <code>username-stage</code> namespaces.</p>
+<p>Authorization in Kubernetes is role based.
+Authorized users or administrators can assign predefined roles to users on each resource.
+For example, administrators can grant read-only access to auditor users to application namespaces.</p>
+<h3 id="operators">Operators</h3>
+<p>Operators are a core feature of most Kubernetes distributions.
+Operators allow automated management of applications and Kubernetes services, by using a declarative approach.</p>
+<p><code>minikube</code> requires the <code>olm</code> add-on to be installed to enable operators in the cluster.</p>
+<p>OpenShift distributions enable operators by default, despite the fact that Kubernetes-as-a-Service platforms usually restrict user-deployed operators.
+Developer Sandbox does not allow users to install operators, but comes with the <strong>RHOAS-Operator</strong> and the <strong>Service Binding Operator</strong> by default.</p>
+<p>Table 1.
+Comparison summary of Kubernetes features</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Feature</th>
+<th style="text-align:left"><code>minikube</code></th>
+<th style="text-align:left">Developer Sandbox</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>DNS</strong></td>
+<td style="text-align:left">CoreDNS</td>
+<td style="text-align:left">CoreDNS</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Dashboard</strong></td>
+<td style="text-align:left">Dashboard add-on</td>
+<td style="text-align:left">OpenShift Console</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Ingress</strong></td>
+<td style="text-align:left">NGINX Ingress add-on</td>
+<td style="text-align:left">Operator-controlled HAProxy</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Storage</strong></td>
+<td style="text-align:left">Local or Gluster add-ons</td>
+<td style="text-align:left">Red Hat OpenShift Data Foundation</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Authentication</strong></td>
+<td style="text-align:left">Administrator minikube user</td>
+<td style="text-align:left">Developer used restricted to 2 namespaces</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Operators</strong></td>
+<td style="text-align:left">OLM add-on. No restrictions</td>
+<td style="text-align:left">Limited to RHOAS and Service Binding</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://minikube.sigs.k8s.io/docs/">minikube documentation</a></li>
+<li><a href="https://developers.redhat.com/developer-sandbox">Developer Sandbox</a></li>
+<li><a href="https://landscape.cncf.io/card-mode?category=certified-kubernetes-distribution,certified-kubernetes-hosted,certified-kubernetes-installer&amp;grouping=category">CNCF Cloud Native Interactive Landscape - Certified Kubernetes Platforms</a></li>
+<li><a href="https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#normal-user">Certificate Signing Requests</a></li>
+</ul>
+
+  </div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+          &nbsp;&bull;&nbsp;
+          2020
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://tonejito.github.io/">Kubernetes By Example</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.91.2</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://tonejito.github.io/kbe//js/main.js"></script>
+<script>
+
+$('.language-test').parent().css('display', 'none')
+
+
+var copybtns = {
+  fallbackCopyTextToClipboard: function (text) {
+    var txt = document.createElement("textarea");
+    txt.value = text;
+    
+    
+    txt.style.position = "fixed";
+    txt.style.top = "0";
+    txt.style.left = "0";
+  
+    document.body.appendChild(txt);
+    txt.focus();
+    txt.select();
+    txt.setSelectionRange(0, 99999);
+  
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+    } catch (err) {
+      console.error('Fallback: Unable to copy', err);
+    }
+  
+    document.body.removeChild(txt);
+  },
+  copyTextToClipboard: function (text) {
+    if (!navigator.clipboard) {
+      copybtns.fallbackCopyTextToClipboard(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+      
+    }, function(err) {
+      
+      copybtns.fallbackCopyTextToClipboard(text);
+    });
+  },
+  flash: function(btn, content){
+    
+    content.fadeTo(50, 0.25, function() { $(this).fadeTo(300, 1.0); });
+    
+    btn.fadeTo(50, 0.0, function() { $(this).fadeTo(900, 1.0); });
+  },
+  txtClick : function(){
+    var content = $(this);
+    var btn = content.prev('button');
+    
+    copybtns.flash(btn, content);
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  btnClick : function(){
+    var btn = $(this);
+    var content = $(btn.next().children()[0]);
+    
+    copybtns.flash(btn, content)
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  init : function() {
+    var buttonHTML = '<button type="button" data-toggle="tooltip" data-placement="top" title="Copy" class="copybtn btn btn-outline-dark"><img src="https:\/\/tonejito.github.io\/kbe\//img/Icon-Red_Hat-Media_and_documents-Paper_Stack_Blank-A-Black-RGB.png"/></button>';
+    
+    $('div.highlight').prepend(buttonHTML);
+    
+    $('button.copybtn').bind("click", copybtns.btnClick);
+    $('div.highlight pre').bind("click", copybtns.txtClick);
+  }
+}
+copybtns.init();
+</script>
+<script src="https://tonejito.github.io/kbe//js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-34425776-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+<div class="watermark-container">
+  <div class="watermark">
+    For testing purposes only
+  </div>
+  <div style="clear: both;"></div>
+</div>
+
+
+
+  </body>
+</html>
+

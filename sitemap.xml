@@ -102,6 +102,60 @@
   </url><url>
     <loc>https://tonejito.github.io/kbe/concepts/volumes/</loc>
   </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubectl-practice/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubectl/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubernetes-distributions-practice/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubernetes-distributions/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/running-applications-practice/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/running-applications/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-2/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-2/managed-practice/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-2/managed/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-external-practice/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-external/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-internal-practice/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-internal/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/cloud-practice/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/cloud/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/limit-practice/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/limit/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/probes-practice/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/probes/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-5/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-5/strategies-practice/</loc>
+  </url><url>
+    <loc>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-5/strategies/</loc>
+  </url><url>
     <loc>https://tonejito.github.io/kbe/topics/istio/gateway-virtualservice/</loc>
   </url><url>
     <loc>https://tonejito.github.io/kbe/topics/istio/ingress-control/</loc>

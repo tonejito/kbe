@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kubernetes By Example</title>
+    <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/</link>
+    <description>Recent content on Kubernetes By Example</description>
+    <generator>Hugo -- gohugo.io</generator><atom:link href="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubectl-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubectl-practice/</guid>
+      <description>Guided Exercise: Connecting kubectl to Your Cluster In this exercise you will install the kubectl command-line tool on your computer, and connect to the Kubernetes cluster that you will be using throughout the course.
+Outcomes You should be able to:
+ Install kubectl Connect to minikube (in case you are using it) Connect to the OpenShift Developer Sandbox (in case you are using it)  Prerequisites Ensure you have either installed minikube or created an OpenShift Developer Sandbox account.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubectl/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubectl/</guid>
+      <description>Introducing kubectl Objectives After completing this section, you should be able to review the basic usage of the kubectl command and understand how to connect to your Kubernetes cluster by using the CLI.
+Introducing kubectl The kubectl tool is a Kubernetes command-line tool that allows you to interact with your Kubernetes cluster. It provides an easy way to perform tasks such as creating resources or redirecting cluster traffic. The kubectl tool is available for the three main operating systems (Linux, Windows and macOS).</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubernetes-distributions-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubernetes-distributions-practice/</guid>
+      <description>Guided Exercise: Contrasting Kubernetes Distributions In this exercise you will prepare your development environment to use a local or remote Kubernetes instance.
+Outcomes You should be able to:
+ Install a local Kubernetes instance by using minikube on Linux, macOS or Windows. Register for using a remote Kubernetes instance by using Developer Sandbox for Red Hat OpenShift.  Instructions  Note Installing a local Kubernetes cluster requires administrative privileges in your development workstation.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubernetes-distributions/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubernetes-distributions/</guid>
+      <description>Contrasting Kubernetes Distributions Objectives After completing this section, you should be able to see the differences between several Kubernetes implementations, and understand how to prepare different Kubernetes flavors for this course.
+Kubernetes Distributions Kubernetes has historically been a general solution for container management and orchestration. With this versatility, Kubernetes can solve the same problems in different ways depending on needs and opinions. Because of this Kubernetes has evolved into different opinionated distributions based on:</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/running-applications-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/running-applications-practice/</guid>
+      <description>Guided Exercise: Running and Interacting with Your First Application In this exercise, you will create a pod and connect to it. You will also create and manage a new namespace resource by using a resource definition file that you create.
+Outcomes You should be able to:
+ Connect a shell session to an existing pod. Create a resource definition file. Use a resource definition to create and update a namespace resource.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/running-applications/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/running-applications/</guid>
+      <description>Running and Interacting with Your First Application Objectives After completing this section, you should be able to execute a pre-built application in your Kubernetes cluster and review the resources related to the process.
+Running Pods From Container Images The simplest way to run a container in your Kubernetes cluster is with the kubectl run command. At a minimum, you must specify a name and container image. This container image must be accessible by the Kubernetes cluster.</description>
+    </item>
+    
+  </channel>
+</rss>

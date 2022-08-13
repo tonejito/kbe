@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Kubernetes By Example</title>
+  <meta property="og:title" content="Kubernetes By Example" />
+  <meta name="twitter:title" content="Kubernetes By Example" />
+  <meta name="description" content="Guided Exercise: Connecting kubectl to Your Cluster In this exercise you will install the kubectl command-line tool on your computer, and connect to the Kubernetes cluster that you will be using throughout the course.
+Outcomes You should be able to:
+ Install kubectl Connect to minikube (in case you are using it) Connect to the OpenShift Developer Sandbox (in case you are using it)  Prerequisites Ensure you have either installed minikube or created an OpenShift Developer Sandbox account.">
+  <meta property="og:description" content="Guided Exercise: Connecting kubectl to Your Cluster In this exercise you will install the kubectl command-line tool on your computer, and connect to the Kubernetes cluster that you will be using throughout the course.
+Outcomes You should be able to:
+ Install kubectl Connect to minikube (in case you are using it) Connect to the OpenShift Developer Sandbox (in case you are using it)  Prerequisites Ensure you have either installed minikube or created an OpenShift Developer Sandbox account.">
+  <meta name="twitter:description" content="Guided Exercise: Connecting kubectl to Your Cluster In this exercise you will install the kubectl command-line tool on your computer, and connect to the Kubernetes cluster that you will be using …">
+  <meta name="author" content=""/>
+  <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubectl-practice/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kubernetes By Example" />
+
+  <meta name="generator" content="Hugo 0.91.2" />
+  <link rel="canonical" href="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubectl-practice/" />
+  <link rel="alternate" href="https://tonejito.github.io/index.xml" type="application/rss+xml" title="Kubernetes By Example">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/main.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/pygment_highlights.css" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/highlight.min.css" />
+<link rel="stylesheet" type="text/css" href="https://tonejito.github.io/kbe/css/custom.css">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WNHKJNX');</script>
+  
+</head>
+
+  <body>
+    
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WNHKJNX"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
+
+  
+
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://tonejito.github.io/">Home</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
+                
+                  <a href="/kbe/topics/istio/istio/">Istio</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Concepts</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/concepts/pods">Pods</a>
+                
+                  <a href="/kbe/concepts/labels">Labels</a>
+                
+                  <a href="/kbe/concepts/deployments">Deployments</a>
+                
+                  <a href="/kbe/concepts/services">Services</a>
+                
+                  <a href="/kbe/concepts/port-forwarding">Port Forwarding</a>
+                
+                  <a href="/kbe/concepts/health-checks">Health Checks</a>
+                
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
+                
+                  <a href="/kbe/concepts/namespaces">Namespaces</a>
+                
+                  <a href="/kbe/concepts/volumes">Volumes</a>
+                
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
+                
+                  <a href="/kbe/concepts/secrets">Secrets</a>
+                
+                  <a href="/kbe/concepts/logging">Logging</a>
+                
+                  <a href="/kbe/concepts/jobs">Jobs</a>
+                
+                  <a href="/kbe/concepts/nodes">Nodes</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/sd/">Service Discovery</a>
+                
+                  <a href="/kbe/pf/">Port Forward</a>
+                
+                  <a href="/kbe/statefulset/">Stateful Sets</a>
+                
+                  <a href="/kbe/ic/">Init Containers</a>
+                
+                  <a href="/kbe/api/">API Server</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Try out!" href="/kbe/diy/">Try out!</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="Kubernetes By Example" href="https://tonejito.github.io/">
+            <img class="avatar-img" src="https://tonejito.github.io/kbe//img/kbe-logo.png" alt="Kubernetes By Example" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  <div class="intro-header"></div>
+
+
+    
+  <div class="container" role="main">
+    <h1 id="guided-exercise-connecting-kubectl-to-your-cluster"><strong>Guided Exercise</strong>: Connecting <code>kubectl</code> to Your Cluster</h1>
+<p>In this exercise you will install the kubectl command-line tool on your computer, and connect to the Kubernetes cluster that you will be using throughout the course.</p>
+<h2 id="outcomes">Outcomes</h2>
+<p>You should be able to:</p>
+<ul>
+<li>Install kubectl</li>
+<li>Connect to <code>minikube</code> (in case you are using it)</li>
+<li>Connect to the OpenShift Developer Sandbox (in case you are using it)</li>
+</ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Ensure you have either installed <code>minikube</code> or created an <strong>OpenShift Developer Sandbox</strong> account.</p>
+<h2 id="instructions">Instructions</h2>
+<p>The installation procedure of kubectl depends on your operating system.</p>
+<ol>
+<li><strong>Installing kubectl in Linux-based systems</strong>.</li>
+</ol>
+<p>The Linux distributions supported in this course are Fedora Linux 34 and Red Hat Enterprise Linux 8.</p>
+<p>You can install kubectl by downloading the binary and moving it to your <code>PATH</code>.
+At the same time, it is possible to use a package manager.</p>
+<p>1.1) Using <code>curl</code> and the binary file</p>
+<ul>
+<li>Open a command-line terminal to download the kubectl binary.</li>
+</ul>
+<pre><code class="language-bash">[user@host ~]$ curl -LO https://dl.k8s.io/release/v1.21.0/bin/linux/amd64/kubectl
+</code></pre>
+<ul>
+<li>Copy the binary to your PATH and make sure it has executable permissions.</li>
+</ul>
+<pre><code class="language-bash">[user@host ~]$ sudo install -m 0755 kubectl /usr/local/bin/kubectl
+</code></pre>
+<ul>
+<li>Verify that kubectl has been installed successfully.</li>
+</ul>
+<pre><code class="language-bash">[user@host ~]$ kubectl version --client
+Client Version: version.Info{Major:&quot;1&quot;, Minor:&quot;21&quot;, GitVersion:&quot;v1.21.0&quot;, GitCommit:&quot;…&quot;, GitTreeState:&quot;clean&quot;, BuildDate:&quot;…&quot;, GoVersion:&quot;…&quot;, Compiler:&quot;gc&quot;, Platform:&quot;linux/amd64&quot;}
+</code></pre>
+<p>1.1) Using the <code>dnf</code> package manager.</p>
+<ul>
+<li>Open a command-line terminal.
+Install the package by using dnf.</li>
+</ul>
+<pre><code class="language-bash">[user@host ~]$ dnf install kubectl
+...output omitted...
+================================================================================
+ Package          Architecture    Version             Repository           Size
+================================================================================
+Installing:
+ kubectl          x86_64          1.21.1-0            kubernetes          9.8 M
+
+Transaction Summary
+================================================================================
+Install  1 Package
+...output omitted...
+</code></pre>
+<ul>
+<li>Verify that kubectl has been installed successfully.</li>
+</ul>
+<pre><code class="language-bash">[user@host ~]$ kubectl version --client
+Client Version: version.Info{Major:&quot;1&quot;, Minor:&quot;21&quot;, GitVersion:&quot;v1.21.0&quot;, GitCommit:&quot;…&quot;, GitTreeState:&quot;clean&quot;, BuildDate:&quot;…&quot;, GoVersion:&quot;…&quot;, Compiler:&quot;gc&quot;, Platform:&quot;linux/amd64&quot;}
+</code></pre>
+<ol start="2">
+<li><strong>Installing <code>kubectl</code> in macOS</strong>.</li>
+</ol>
+<p>2.1) Using curl and the binary file</p>
+<ul>
+<li>Open a command-line terminal.
+Download the <code>kubectl</code> binary by using <code>curl</code>.
+Replace the <code>${ARCH}</code> parameter depending on your Mac processor.
+<ul>
+<li>If your Mac comes with an <strong>Intel</strong> processor, use <code>amd64</code>.</li>
+<li>If your Mac comes with an <strong>Apple</strong> Sillicon processor, use <code>arm64</code>.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-bash">[user@host ~]$ curl -LO https://dl.k8s.io/release/v1.21.0/bin/darwin/${ARCH}/kubectl
+</code></pre>
+<ul>
+<li>Give the binary file executable permissions.
+Move the binary file executable to your <code>PATH</code>.</li>
+</ul>
+<pre><code class="language-bash">[user@host ~]$ chmod +x ./kubectl
+[user@host ~]$ sudo mv ./kubectl /usr/local/bin/kubectl
+</code></pre>
+<ul>
+<li>Verify that <code>kubectl</code> has been installed successfully.</li>
+</ul>
+<pre><code class="language-bash">[user@host ~]$ kubectl version --client
+Client Version: version.Info{Major:&quot;1&quot;, Minor:&quot;21&quot;, GitVersion:&quot;v1.21.0&quot;, GitCommit:&quot;…&quot;, GitTreeState:&quot;clean&quot;, BuildDate:&quot;…&quot;, GoVersion:&quot;…&quot;, Compiler:&quot;gc&quot;, Platform:&quot;darwin/amd64&quot;}
+</code></pre>
+<p>2.2) Using the <code>brew</code> package manager</p>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>If you have previously installed <code>minikube</code> with <code>brew</code>, then <code>kubectl</code> should already be installed in your computer.
+You can skip the installation step and directly verify that <code>kubectl</code> has been installed correctly.</p>
+</blockquote>
+<ul>
+<li>Install kubectl by using <code>brew</code></li>
+</ul>
+<pre><code class="language-bash">[user@host ~]$ brew install kubectl
+...output omitted...
+</code></pre>
+<ul>
+<li>Verify that kubectl has been installed successfully.</li>
+</ul>
+<pre><code class="language-bash">[user@host ~]$ kubectl version --client
+Client Version: version.Info{Major:&quot;1&quot;, Minor:&quot;21&quot;, GitVersion:&quot;v1.21.0&quot;, GitCommit:&quot;…&quot;, GitTreeState:&quot;clean&quot;, BuildDate:&quot;…&quot;, GoVersion:&quot;…&quot;, Compiler:&quot;gc&quot;, Platform:&quot;darwin/amd64&quot;}
+</code></pre>
+<ol start="3">
+<li><strong>Installing kubectl in Windows</strong>.</li>
+</ol>
+<p>3.1) Using the binary</p>
+<ul>
+<li>
+<p>Create a new folder, such as <code>C:\kube</code>, to use as the destination directory of the <code>kubectl</code> binary download.</p>
+</li>
+<li>
+<p>Download the latest release of the <code>kubectl</code> binary from <a href="https://dl.k8s.io/release/v1.21.0/bin/windows/amd64/kubectl.exe">https://dl.k8s.io/release/v1.21.0/bin/windows/amd64/kubectl.exe</a> and save it to the previously created folder.</p>
+</li>
+<li>
+<p>Add the binary to your <code>PATH</code>.</p>
+<ul>
+<li>
+<p>In the search box on the taskbar, type <code>env</code>, and select <strong>Edit the system environment variables</strong> from the search results.</p>
+</li>
+<li>
+<p>Click <strong>Environment Variables</strong> on the <strong>System Properties</strong> screen.</p>
+</li>
+<li>
+<p>Under the <strong>System variables</strong> section, select the row containing <code>PATH</code> and click <strong>Edit</strong>.
+This will open the <strong>Edit environment variables</strong> screen.</p>
+</li>
+<li>
+<p>Click <strong>New</strong> and type the full path of the folder containing the <code>kubectl.exe</code> (for example, <code>C:\kube</code>).</p>
+</li>
+<li>
+<p>Click <strong>OK</strong> to save the change and close the editor.</p>
+</li>
+<li>
+<p>Click <strong>OK</strong> → <strong>OK</strong> to close out of the remaining screens.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Verify that <code>kubectl</code> has been installed successfully.</p>
+</li>
+</ul>
+<pre><code class="language-powershell">PS C:\&gt; kubectl version --client
+Client Version: version.Info{Major:&quot;1&quot;, Minor:&quot;21&quot;, GitVersion:&quot;v1.21.0&quot;, GitCommit:&quot;…&quot;, GitTreeState:&quot;clean&quot;, BuildDate:&quot;…&quot;, GoVersion:&quot;…&quot;, Compiler:&quot;gc&quot;, Platform:&quot;windows/amd64&quot;}
+</code></pre>
+<ol start="4">
+<li><strong>Download the <code>DO100-apps</code> repository</strong></li>
+</ol>
+<p>The <code>D100-apps</code> GitHub repository contains files used throughout the course.
+The best way to work with it is by using Git.
+However, if you are not used to Git, you can simply download it as a regular folder and place it anywhere in your computer.</p>
+<p>4.1) If you have <code>git</code> installed in your system, you can simply <code>clone</code> the repository.</p>
+<pre><code class="language-bash">[user@host ~]$ git clone https://github.com/RedHatTraining/DO100-apps.git
+...output omitted...
+</code></pre>
+<p>4.1) Downloading it from the GitHub web page</p>
+<ul>
+<li>
+<p>Open a web browser and navigate to <a href="https://github.com/RedHatTraining/DO100-apps">https://github.com/RedHatTraining/DO100-apps</a>.</p>
+</li>
+<li>
+<p>Click <strong>Code</strong> and then click <strong>Download ZIP</strong>.
+A ZIP file with the repository content is downloaded.</p>
+</li>
+</ul>
+<ol start="5">
+<li>Connecting <code>kubectl</code> to the Kubernetes cluster</li>
+</ol>
+<p>The <code>DO100-apps</code> contains a script that handles all configurations for you under the <code>setup</code> directory.
+The script you should run depends on your operating system (Linux, macOS or Windows) and the Kubernetes distribution you use (<code>minikube</code> or the OpenShift Developer Sandbox).</p>
+<p>If you run the <code>minikube</code> script, it will configure <code>minikube</code> to work as a Kubernetes cluster with restricted access.
+You will only have access to two namespaces.
+This way, we simulate a real Kubernetes cluster, where usually developers do not have full access.</p>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>If you want to recover full access over your cluster, then you can change the <code>kubectl</code> context to the default <code>minikube</code> context.
+Use the <code>kubectl config use-context minikube</code> command.</p>
+</blockquote>
+<p>If you run the OpenShift Developer Sandbox script, it will configure kubectl to run commands against the Openshift Developer Sandbox cluster.
+The script will ask you to provide some information such as cluster url, username or token.</p>
+<p>5.1) <strong>Using <code>minikube</code></strong>.</p>
+<ul>
+<li><strong>Linux</strong> and <strong>macOS</strong></li>
+</ul>
+<p>In your command-line terminal, change to the <code>DO100-apps</code> directory and run the script located at <code>./setup/${OPERATING_SYSTEM}/setup.sh</code>.
+Replace <code>${OPERATING_SYSTEM}</code> for <code>linux</code> if you are using Linux, or <code>macos</code> if you are using macOS.
+Make sure the script has executable permissions.</p>
+<pre><code class="language-bash">[user@host DO100-apps]$ OPERATING_SYSTEM=linux
+[user@host DO100-apps]$ chmod +x ./setup/${OPERATING_SYSTEM}/setup.sh
+[user@host DO100-apps]$ ./setup/${OPERATING_SYSTEM}/setup.sh
+Creating namespace 'user-dev' ...
+Creating namespace 'user-stage' ...
+Creating certificates ...
+Creating Kubectl credentials for 'user' ...
+Creating Kubectl context 'user-context' for user 'user' ...
+Creating role resources for user 'user' in namespace 'user-dev' ...
+Creating role resources for user 'user' in namespace 'user-stage' ...
+Switched to context &quot;user-context&quot;.
+Switching to namespace 'user-dev' ...
+OK!
+</code></pre>
+<ul>
+<li><strong>Windows</strong></li>
+</ul>
+<p>In your command-line terminal, change to the <code>DO100-apps</code> directory.
+Run the command <code>Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass</code>.
+This command allows you to run unsigned PowerShell scripts in your current terminal session.</p>
+<pre><code class="language-powershell">PS C:\DO100-apps\&gt; Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+</code></pre>
+<p>Run the script located at <code>.\setup\windows\setup.ps1</code>.</p>
+<pre><code class="language-powershell">PS C:\DO100-apps\&gt; .\setup\windows\setup.ps1
+Creating namespace 'user-dev' ...
+Creating namespace 'user-stage' ...
+Creating certificates ...
+Creating Kubectl credentials for 'user' ...
+Creating Kubectl context 'user-context' for user 'user' ...
+Creating role resources for user 'user' in namespace 'user-dev' ...
+Creating role resources for user 'user' in namespace 'user-stage' ...
+Switched to context &quot;user-context&quot;.
+Switching to namespace 'user-dev' ...
+OK!
+</code></pre>
+<p>5.1) Using the OpenShift Developer Sandbox</p>
+<p>The <code>setup-sandbox</code> script will ask you to provide a server, a token and your username.
+To find the server and token follow these steps:</p>
+<ul>
+<li>
+<p>Open a web browser and navigate to the OpenShift Developer Sandbox website.
+Log in with your username and password.</p>
+</li>
+<li>
+<p>Click on your username in the upper right pane of the screen.
+A dropdown menu opens.</p>
+</li>
+<li>
+<p>In the dropdown menu, click <strong>Copy login command</strong>.
+A new tab opens, log in again with your account if necessary by clicking <code>DevSandbox</code>.</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><img src="https://kubebyexample.com/sites/default/files/2021-06/devsandbox-menu.png" alt="DevSandbox menu"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">DevSandbox menu</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>Click Display Token.</p>
+</li>
+<li>
+<p>The token you must provide in the script shows in your web browser.</p>
+</li>
+<li>
+<p>The server you must provide is a parameter of the <code>oc login</code> command displayed.
+For example, in the command <code>oc login --token=sha256~Gs54-tjq1Bo-fo866bbddv8wbQObpmy321eSiqj1g --server=https://api.sandbox.x8i5.p1.openshiftapps.com:6443</code>, the server is <code>https://api.sandbox.x8i5.p1.openshiftapps.com:6443</code>.</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><img src="https://kubebyexample.com/sites/default/files/2021-06/devsandbox-token.png" alt="API token"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Dev sandbox API token</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Keep these values.
+You will be asked for them in the script.</li>
+</ul>
+<p>Run the appropriate script.
+The following instructions will depend on your operating system.</p>
+<ul>
+<li><strong>Linux</strong> and <strong>macOS</strong></li>
+</ul>
+<p>In your command-line terminal, change to the <code>DO100-apps</code> directory and run the script located at <code>./setup/${OPERATING_SYSTEM}/setup-sandbox.sh</code>.
+Replace <code>${OPERATING_SYSTEM}</code> for <code>linux</code> if you are using Linux, or <code>macos</code> if you are using macOS.
+Make sure the script has executable permissions.</p>
+<pre><code class="language-bash">[user@host DO100-apps]$ OPERATING_SYSTEM=linux
+[user@host DO100-apps]$ chmod +x ./setup/${OPERATING_SYSTEM}/setup-sandbox.sh
+[user@host DO100-apps]$ ./setup/${OPERATING_SYSTEM}/setup-sandbox.sh
+What is the OpenShift cluster URL?
+https://api.sandbox.x8i5.p1.openshiftapps.com:6443
+What is the OpenShift token?
+sha256~wVSG...DDn0
+What is your OpenShift username?
+user
+Creating Kubectl context...
+Context created successfully
+</code></pre>
+<ul>
+<li><strong>Windows</strong></li>
+</ul>
+<p>In your command-line terminal, change to the <code>DO100-apps</code> directory.
+Run the command <code>Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass</code>.
+This command allows you to run unsigned PowerShell scripts in your current terminal session.</p>
+<pre><code class="language-powershell">PS C:\DO100-apps\&gt; Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+</code></pre>
+<p>Run the script located at <code>.\setup\windows\setup-sandbox.ps1</code>.</p>
+<pre><code class="language-powershell">PS C:\DO100-apps\&gt; .\setup\windows\setup-sandbox.ps1
+What is the OpenShift cluster URL?
+https://api.sandbox.x8i5.p1.openshiftapps.com:6443
+What is the OpenShift token?
+sha256~wVSG...DDn0
+What is your OpenShift username?
+user
+Creating Kubectl context...
+Context created successfully
+</code></pre>
+<p>This concludes the guided exercise.</p>
+
+  </div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+          &nbsp;&bull;&nbsp;
+          2020
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://tonejito.github.io/">Kubernetes By Example</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.91.2</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://tonejito.github.io/kbe//js/main.js"></script>
+<script>
+
+$('.language-test').parent().css('display', 'none')
+
+
+var copybtns = {
+  fallbackCopyTextToClipboard: function (text) {
+    var txt = document.createElement("textarea");
+    txt.value = text;
+    
+    
+    txt.style.position = "fixed";
+    txt.style.top = "0";
+    txt.style.left = "0";
+  
+    document.body.appendChild(txt);
+    txt.focus();
+    txt.select();
+    txt.setSelectionRange(0, 99999);
+  
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+    } catch (err) {
+      console.error('Fallback: Unable to copy', err);
+    }
+  
+    document.body.removeChild(txt);
+  },
+  copyTextToClipboard: function (text) {
+    if (!navigator.clipboard) {
+      copybtns.fallbackCopyTextToClipboard(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+      
+    }, function(err) {
+      
+      copybtns.fallbackCopyTextToClipboard(text);
+    });
+  },
+  flash: function(btn, content){
+    
+    content.fadeTo(50, 0.25, function() { $(this).fadeTo(300, 1.0); });
+    
+    btn.fadeTo(50, 0.0, function() { $(this).fadeTo(900, 1.0); });
+  },
+  txtClick : function(){
+    var content = $(this);
+    var btn = content.prev('button');
+    
+    copybtns.flash(btn, content);
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  btnClick : function(){
+    var btn = $(this);
+    var content = $(btn.next().children()[0]);
+    
+    copybtns.flash(btn, content)
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  init : function() {
+    var buttonHTML = '<button type="button" data-toggle="tooltip" data-placement="top" title="Copy" class="copybtn btn btn-outline-dark"><img src="https:\/\/tonejito.github.io\/kbe\//img/Icon-Red_Hat-Media_and_documents-Paper_Stack_Blank-A-Black-RGB.png"/></button>';
+    
+    $('div.highlight').prepend(buttonHTML);
+    
+    $('button.copybtn').bind("click", copybtns.btnClick);
+    $('div.highlight pre').bind("click", copybtns.txtClick);
+  }
+}
+copybtns.init();
+</script>
+<script src="https://tonejito.github.io/kbe//js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-34425776-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+<div class="watermark-container">
+  <div class="watermark">
+    For testing purposes only
+  </div>
+  <div style="clear: both;"></div>
+</div>
+
+
+
+  </body>
+</html>
+

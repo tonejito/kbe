@@ -403,6 +403,231 @@ The virtual in VIP means it is not an actual IP address connected to a network i
     
     <item>
       <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubectl-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubectl-practice/</guid>
+      <description>Guided Exercise: Connecting kubectl to Your Cluster In this exercise you will install the kubectl command-line tool on your computer, and connect to the Kubernetes cluster that you will be using throughout the course.
+Outcomes You should be able to:
+ Install kubectl Connect to minikube (in case you are using it) Connect to the OpenShift Developer Sandbox (in case you are using it)  Prerequisites Ensure you have either installed minikube or created an OpenShift Developer Sandbox account.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubectl/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubectl/</guid>
+      <description>Introducing kubectl Objectives After completing this section, you should be able to review the basic usage of the kubectl command and understand how to connect to your Kubernetes cluster by using the CLI.
+Introducing kubectl The kubectl tool is a Kubernetes command-line tool that allows you to interact with your Kubernetes cluster. It provides an easy way to perform tasks such as creating resources or redirecting cluster traffic. The kubectl tool is available for the three main operating systems (Linux, Windows and macOS).</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubernetes-distributions-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubernetes-distributions-practice/</guid>
+      <description>Guided Exercise: Contrasting Kubernetes Distributions In this exercise you will prepare your development environment to use a local or remote Kubernetes instance.
+Outcomes You should be able to:
+ Install a local Kubernetes instance by using minikube on Linux, macOS or Windows. Register for using a remote Kubernetes instance by using Developer Sandbox for Red Hat OpenShift.  Instructions  Note Installing a local Kubernetes cluster requires administrative privileges in your development workstation.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubernetes-distributions/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/kubernetes-distributions/</guid>
+      <description>Contrasting Kubernetes Distributions Objectives After completing this section, you should be able to see the differences between several Kubernetes implementations, and understand how to prepare different Kubernetes flavors for this course.
+Kubernetes Distributions Kubernetes has historically been a general solution for container management and orchestration. With this versatility, Kubernetes can solve the same problems in different ways depending on needs and opinions. Because of this Kubernetes has evolved into different opinionated distributions based on:</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/running-applications-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/running-applications-practice/</guid>
+      <description>Guided Exercise: Running and Interacting with Your First Application In this exercise, you will create a pod and connect to it. You will also create and manage a new namespace resource by using a resource definition file that you create.
+Outcomes You should be able to:
+ Connect a shell session to an existing pod. Create a resource definition file. Use a resource definition to create and update a namespace resource.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/running-applications/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-1/running-applications/</guid>
+      <description>Running and Interacting with Your First Application Objectives After completing this section, you should be able to execute a pre-built application in your Kubernetes cluster and review the resources related to the process.
+Running Pods From Container Images The simplest way to run a container in your Kubernetes cluster is with the kubectl run command. At a minimum, you must specify a name and container image. This container image must be accessible by the Kubernetes cluster.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-2/managed-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-2/managed-practice/</guid>
+      <description>Guided Exercise: Deploying Managed Applications In this exercise you will deploy a managed containerized application in your Kubernetes cluster. You will observe how automatic deployment works and some of the High Availability features of Kubernetes.
+Outcomes You should be able to:
+ Deploy an application container with several replicas. Review the structure of the Deployment resource manifest. Update the application to a new version without losing availability.  Prerequisites You need a working Kubernetes cluster, and your kubectl command must be configured to communicate with the cluster.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-2/managed/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-2/managed/</guid>
+      <description>Deploying Managed Applications Objectives After completing this section, you should be able to use Kubernetes container management capabilities to deploy containerized applications in a declarative way.
+Managing Containers One of the most significant features of Kubernetes is that it enables developers to use a declarative approach for automatic container life cycle management. Declarative approach means developers declare what should be the status of the application, and Kubernetes will update the containers to reach that state.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-external-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-external-practice/</guid>
+      <description>Guided Exercise: Exposing Applications for External Access In this exercise you will provide external access to a service running inside your Kubernetes cluster.
+Outcomes You should be able to:
+  Verify that the service IP address and the associated pod IP addresses for an application are not accessible outside of the cluster.
+  Create an ingress resource to provide external access to an application service.
+  Confirm that the ingress redirects traffic to the service.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-external/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-external/</guid>
+      <description>Exposing Applications for External Access Objectives After completing this section, you should be able to expose service-backed applications to clients outside the Kubernetes cluster.
+Kubernetes Ingress Kubernetes assigns IP addresses to pods and services. Pod and service IP addresses are not usually accessible outside of the cluster. Unless prevented by network policies, the Kubernetes cluster typically allows internal communication between pods and services. This internal communication allows application pods to interact with services that are not externally accessible, such as database services.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-internal-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-internal-practice/</guid>
+      <description>Guided Exercise: Exposing Applications for Internal Access In this exercise you will deploy two apps in different namespaces. They communicate by using the built-in Kubernetes DNS resolution system.
+Outcomes You should be able to:
+ Create a service using kubectl expose Create a service using a manifest Use DNS resolution for service communication  Prerequisites Ensure that:
+ Minikube and kubectl are running on your machine You have cloned the DO100-apps repository You have executed the setup script  Instructions To illustrate how communication is handled in Kubernetes, you use two applications.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-internal/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-internal/</guid>
+      <description>Exposing Applications for Internal Access Objectives After completing this section, you should be able to enable intra-pod network communications for applications deployed in Kubernetes, and learn how to keep communication up even with automatic deployments.
+Kubernetes Networking When pods are created, they are assigned an IP address. You use this IP to access the pod from anywhere within the Kubernetes cluster. Containers inside a pod share the same network space, which means that, within the pod, containers can communicate with each other by using the localhost address.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/cloud-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/cloud-practice/</guid>
+      <description>Guided Exercise: Configuring Cloud Applications Injecting Configuration Data into an Application In this exercise, you will use configuration maps and secrets to externalize the configuration for a containerized application.
+Outcomes You should be able to:
+  Deploy a simple Node.js-based application that prints configuration details from environment variables and files.
+  Inject configuration data into the container using configuration maps and secrets.
+  Change the data in the configuration map and verify that the application picks up the changed values.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/cloud/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/cloud/</guid>
+      <description>Configuring Cloud Applications Objectives After completing this section, you should be able to create Kubernetes resources holding application configuration and secrets, and how to make that configuration available to running applications.
+Externalizing Application Configuration in Kubernetes Developers configure their applications through a combination of environment variables, command-line arguments, and configuration files. When deploying applications to Kubernetes, configuration management presents a challenge due to the immutable nature of containers. When running containerized applications, decoupling application and configuration code is of a higher priority than in traditional deployments.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/limit-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/limit-practice/</guid>
+      <description>Guided Exercise: Limiting Resource Usage Outcomes You should be able to use the Kubernetes command-line interface to:
+  Configure an application to specify resource requests for CPU and memory usage.
+  Modify an application to work within existing cluster restrictions.
+  Prerequisites You need a working Kubernetes cluster, and your kubectl command must be configured to communicate with the cluster.
+Make sure your kubectl context refers to a namespace where you have enough permissions, usually username-dev or username-stage.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/limit/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/limit/</guid>
+      <description>Limiting Resource Usage Objectives After completing this section, you should be able to leverage how to avoid applications overusing system resources.
+Defining Resource Requests and Limits for Pods A pod definition can include both resource requests and resource limits:
+ Resource requests Used for scheduling and indicating that a pod cannot run with less than the specified amount of compute resources. The scheduler tries to find a node with sufficient compute resources to satisfy the requests.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/probes-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/probes-practice/</guid>
+      <description>Guided Exercise: Liveness, Readiness, and Startup Probes Activating Probes In this exercise, you will configure liveness and readiness probes to monitor the health of an application deployed to your Kubernetes cluster.
+The application you deploy in this exercise exposes two HTTP GET endpoints:
+  The /healthz endpoint responds with a 200 HTTP status code when the application pod can receive requests.
+The endpoint indicates that the application pod is healthy and reachable.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/probes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/probes/</guid>
+      <description>Liveness, Readiness, and Startup Probes Objectives After completing this section, you should be able to review how Kubernetes evaluates application health status via probes and automatic application restart.
+Kubernetes Readiness and Liveness Probes Applications can become unreliable for a variety of reasons, for example:
+ Temporary connection loss Configuration errors Application errors  Developers can use probes to monitor their applications. Probes make developers aware of events such as application status, resource usage, and errors.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-5/strategies-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-5/strategies-practice/</guid>
+      <description>Guided Exercise: Implementing Cloud Deployment Strategies Outcomes You should be able to:
+  Deploy an application container with several replicas.
+  Review the structure of the Deployment resource manifest.
+  Update the application to a new version without losing availability.
+  Prerequisites You need a working Kubernetes cluster, and your kubectl command must be configured to communicate with the cluster.
+Make sure your kubectl context refers to a namespace where you have enough permissions, usually username-dev or username-stage.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-5/strategies/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-5/strategies/</guid>
+      <description>Implementing Cloud Deployment Strategies Deployment Strategies in Kubernetes A deployment strategy is a method of changing or upgrading an application. The objective is to make changes or upgrades with minimal downtime and with reduced impact on end users.
+Kubernetes provides several deployment strategies. These strategies are organized into two primary categories:
+  By using the deployment strategy defined in the application deployment.
+  By using the Kubernetes router to route traffic to specific application pods.</description>
+    </item>
+    
+    <item>
+      <title></title>
       <link>https://tonejito.github.io/kbe/topics/istio/gateway-virtualservice/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       

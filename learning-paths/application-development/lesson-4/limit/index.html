@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Kubernetes By Example</title>
+  <meta property="og:title" content="Kubernetes By Example" />
+  <meta name="twitter:title" content="Kubernetes By Example" />
+  <meta name="description" content="Limiting Resource Usage Objectives After completing this section, you should be able to leverage how to avoid applications overusing system resources.
+Defining Resource Requests and Limits for Pods A pod definition can include both resource requests and resource limits:
+ Resource requests Used for scheduling and indicating that a pod cannot run with less than the specified amount of compute resources. The scheduler tries to find a node with sufficient compute resources to satisfy the requests.">
+  <meta property="og:description" content="Limiting Resource Usage Objectives After completing this section, you should be able to leverage how to avoid applications overusing system resources.
+Defining Resource Requests and Limits for Pods A pod definition can include both resource requests and resource limits:
+ Resource requests Used for scheduling and indicating that a pod cannot run with less than the specified amount of compute resources. The scheduler tries to find a node with sufficient compute resources to satisfy the requests.">
+  <meta name="twitter:description" content="Limiting Resource Usage Objectives After completing this section, you should be able to leverage how to avoid applications overusing system resources.
+Defining Resource Requests and Limits for Pods A …">
+  <meta name="author" content=""/>
+  <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/limit/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kubernetes By Example" />
+
+  <meta name="generator" content="Hugo 0.91.2" />
+  <link rel="canonical" href="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-4/limit/" />
+  <link rel="alternate" href="https://tonejito.github.io/index.xml" type="application/rss+xml" title="Kubernetes By Example">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/main.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/pygment_highlights.css" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/highlight.min.css" />
+<link rel="stylesheet" type="text/css" href="https://tonejito.github.io/kbe/css/custom.css">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WNHKJNX');</script>
+  
+</head>
+
+  <body>
+    
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WNHKJNX"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
+
+  
+
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://tonejito.github.io/">Home</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
+                
+                  <a href="/kbe/topics/istio/istio/">Istio</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Concepts</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/concepts/pods">Pods</a>
+                
+                  <a href="/kbe/concepts/labels">Labels</a>
+                
+                  <a href="/kbe/concepts/deployments">Deployments</a>
+                
+                  <a href="/kbe/concepts/services">Services</a>
+                
+                  <a href="/kbe/concepts/port-forwarding">Port Forwarding</a>
+                
+                  <a href="/kbe/concepts/health-checks">Health Checks</a>
+                
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
+                
+                  <a href="/kbe/concepts/namespaces">Namespaces</a>
+                
+                  <a href="/kbe/concepts/volumes">Volumes</a>
+                
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
+                
+                  <a href="/kbe/concepts/secrets">Secrets</a>
+                
+                  <a href="/kbe/concepts/logging">Logging</a>
+                
+                  <a href="/kbe/concepts/jobs">Jobs</a>
+                
+                  <a href="/kbe/concepts/nodes">Nodes</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/sd/">Service Discovery</a>
+                
+                  <a href="/kbe/pf/">Port Forward</a>
+                
+                  <a href="/kbe/statefulset/">Stateful Sets</a>
+                
+                  <a href="/kbe/ic/">Init Containers</a>
+                
+                  <a href="/kbe/api/">API Server</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Try out!" href="/kbe/diy/">Try out!</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="Kubernetes By Example" href="https://tonejito.github.io/">
+            <img class="avatar-img" src="https://tonejito.github.io/kbe//img/kbe-logo.png" alt="Kubernetes By Example" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  <div class="intro-header"></div>
+
+
+    
+  <div class="container" role="main">
+    <!-- https://kubebyexample.com/en/learning-paths/application-development-kubernetes/lesson-4-customize-deployments-application-0 -->
+<h1 id="limiting-resource-usage">Limiting Resource Usage</h1>
+<h2 id="objectives">Objectives</h2>
+<p>After completing this section, you should be able to leverage how to avoid applications overusing system resources.</p>
+<h2 id="defining-resource-requests-and-limits-for-pods">Defining Resource Requests and Limits for Pods</h2>
+<p>A pod definition can include both resource requests and resource limits:</p>
+<dl>
+<dt><strong>Resource requests</strong></dt>
+<dd>Used for scheduling and indicating that a pod cannot run with less than the specified amount of compute resources. The scheduler tries to find a node with sufficient compute resources to satisfy the requests.</dd>
+<dt><strong>Resource limits</strong></dt>
+<dd>Used to prevent a pod from using up all compute resources from a node. The node that runs a pod configures the Linux kernel cgroups feature to enforce the pod&rsquo;s resource limits.</dd>
+</dl>
+<p>You should define resource requests and resource limits for each container in a deployment. If not, then the deployment definition will include a resources: {} line for each container.</p>
+<p>Modify the resources: {} line to specify the desired requests and or limits. For example:</p>
+<pre><code class="language-yaml">...output omitted...
+    spec:
+      containers:
+      - image: quay.io/redhattraining/hello-world-nginx:v1.0
+        name: hello-world-nginx
+        resources:requests:cpu: &quot;10m&quot;memory: 20Milimits:cpu: &quot;80m&quot;memory: 100Mi
+status: {}
+</code></pre>
+<blockquote>
+<p><strong>Note</strong>:</p>
+<p>If you use the kubectl edit command to modify a deployment, then ensure you use the correct indentation.
+Indentation mistakes can result in the editor refusing to save changes.
+To avoid indentation issues, you can use the kubectl set resources command to specify resource requests and limits.</p>
+</blockquote>
+<p>The following command sets the same requests and limits as the preceding example:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl set resources deployment hello-world-nginx \
+--requests cpu=10m,memory=20Mi --limits cpu=80m,memory=100Mi
+</code></pre>
+<p>If a resource quota applies to a resource request, then the pod should define a resource request. If a resource quota applies to a resource limit, then the pod should also define a resource limit. Even without quotas, you should define resource requests and limits.</p>
+<h2 id="viewing-requests-limits-and-actual-usage">Viewing Requests, Limits, and Actual Usage</h2>
+<p>Using the Kubernetes command-line interface, cluster administrators can view compute usage information for individual nodes. The kubectl describe node command displays detailed information about a node, including information about the pods running on the node. For each pod, it shows CPU and memory requests, as well as limits for each. If a request or limit is not specified, then the pod shows a 0 for that column. A summary of all resource requests and limits is also displayed.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl describe node node1.us-west-1.compute.internal
+Name:               node1.us-west-1.compute.internal
+Roles:              worker
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/instance-type=m4.xlarge
+                    beta.kubernetes.io/os=linux
+...output omitted...
+Non-terminated Pods:                      (20 in total)
+...  Name                CPU Requests  ...  Memory Requests  Memory Limits  AGE
+...  ----                ------------  ...  ---------------  -------------  ---
+...  tuned-vdwt4         10m (0%)      ...  50Mi (0%)        0 (0%)         8d
+...  dns-default-2rpwf   110m (3%)     ...  70Mi (0%)        512Mi (3%)     8d
+...  node-ca-6xwmn       10m (0%)      ...  10Mi (0%)        0 (0%)         8d
+...output omitted...
+  Resource                    Requests     Limits
+  --------                    --------     ------
+  cpu                         600m (17%)   0 (0%)
+  memory                      1506Mi (9%)  512Mi (3%)
+...output omitted...
+</code></pre>
+<blockquote>
+<p><strong>Note</strong>:</p>
+<p>The summary columns for Requests and Limits display the sum totals of defined requests and limits.
+In the preceding output, only one of the 20 pods running on the node defined a memory limit, and that limit was 512Mi.</p>
+</blockquote>
+<p>The kubectl describe node command displays requests and limits, and the kubectl top command shows actual usage. For example, if a pod requests 10m of CPU, then the scheduler will ensure that it places the pod on a node with available capacity. Although the pod requested 10m of CPU, it might use more or less than this value, unless it is also constrained by a CPU limit. The kubectl top nodes command shows actual usage for one or more nodes in the cluster, and the kubectl top pods command shows actual usage for each pod in a namespace.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl top nodes -l node-role.kubernetes.io/worker
+NAME                               CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
+node1.us-west-1.compute.internal   519m         14%    3126Mi          20%
+node2.us-west-1.compute.internal   167m         4%     1178Mi          7%
+</code></pre>
+<h2 id="applying-quotas">Applying Quotas</h2>
+<p>Kubernetes can enforce quotas that track and limit the use of two kinds of resources:</p>
+<dl>
+<dt><strong>Object counts</strong></dt>
+<dd>The number of Kubernetes resources, such as pods, services, and routes.</dd>
+<dt><strong>Compute resources</strong></dt>
+<dd>The number of physical or virtual hardware resources, such as CPU, memory, and storage capacity.</dd>
+</dl>
+<p>Imposing a quota on the number of Kubernetes resources avoids exhausting other limited software resources, such as IP addresses for services.</p>
+<p>Similarly, imposing a quota on the amount of compute resources avoids exhausting the capacity of a single node in a Kubernetes cluster. It also prevents one application from starving other applications of resources.</p>
+<p>Kubernetes manages resource quotas by using a ResourceQuota or quota resource. A quota specifies hard resource usage limits for a namespace. All attributes of a quota are optional, meaning that any resource that is not restricted by a quota can be consumed without bounds.</p>
+<blockquote>
+<p><strong>Note</strong>:
+Although a single quota resource can define all of the quotas for a namespace, a namespace can also contain multiple quotas.
+For example, one quota resource might limit compute resources, such as total CPU allowed or total memory allowed.
+Another quota resource might limit object counts, such as the number of pods allowed or the number of services allowed.
+The effect of multiple quotas is cumulative, but it is expected that two different ResourceQuota resources for the same namespace do not limit the use of the same type of Kubernetes or compute resource.
+For example, two different quotas in a namespace should not both attempt to limit the maximum number of pods allowed.</p>
+</blockquote>
+<p>The following table describes some resources that a quota can restrict by their count or number:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Resource Name</th>
+<th style="text-align:center">Quota Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>pods</code></td>
+<td style="text-align:center">Total number of pods</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>replicationcontrollers</code></td>
+<td style="text-align:center">Total number of replication controllers</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>services</code></td>
+<td style="text-align:center">Total number of services</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>secrets</code></td>
+<td style="text-align:center">Total number of secrets</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>persistentvolumeclaims</code></td>
+<td style="text-align:center">Total number of persistent volume claims</td>
+</tr>
+</tbody>
+</table>
+<p>The following table describes some compute resources that can be restricted by a quota:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Compute resource Name</th>
+<th style="text-align:center">Quota Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">CPU (<code>requests.cpu</code>)</td>
+<td style="text-align:center">Total CPU use across all containers</td>
+</tr>
+<tr>
+<td style="text-align:center">Memory (<code>requests.memory</code>)</td>
+<td style="text-align:center">Total memory use across all containers</td>
+</tr>
+<tr>
+<td style="text-align:center">Storage (<code>requests.storage</code>)</td>
+<td style="text-align:center">Total storage requests by containers across all persistent volume claims</td>
+</tr>
+</tbody>
+</table>
+<p>Quota attributes can track either resource requests or resource limits for all pods in the namespace. By default, quota attributes track resource requests. Instead, to track resource limits, prefix the compute resource name with limits, for example, limits.cpu.</p>
+<p>The following listing shows a ResourceQuota resource defined using YAML syntax. This example specifies quotas for both the number of resources and the use of compute resources:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: dev-quota
+spec:
+  hard:
+    services: &quot;10&quot;
+    cpu: &quot;1300m&quot;
+    memory: &quot;1.5Gi&quot;
+</code></pre>
+<p>Resource units are the same for pod resource requests and resource limits. For example, Gi means GiB, and m means millicores. One millicore is the equivalent to 1/1000 of a single CPU core.</p>
+<p>Resource quotas can be created in the same way as any other Kubernetes resource; that is, by passing a YAML or JSON resource definition file to the kubectl create command:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl create --save-config -f dev-quota.yml
+</code></pre>
+<p>Another way to create a resource quota is by using the kubectl create quota command, for example:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl create quota dev-quota --hard services=10,cpu=1300,memory=1.5Gi
+</code></pre>
+<p>Use the kubectl get resourcequota command to list available quotas, and use the kubectl describe resourcequota command to view usage statistics related to any hard limits defined in the quota, for example:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get resourcequota
+NAME            AGE   REQUEST
+compute-quota   51s   cpu: 500m/10, memory: 300Mi/1Gi                        ...
+count-quota     28s   pods: 1/3, replicationcontrollers: 1/5, services: 1/2  ...
+</code></pre>
+<p>Without arguments, the kubectl describe quota command displays the cumulative limits set for all ResourceQuota resources in the namespace:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl describe quota
+Name:       compute-quota
+Namespace:  schedule-demo
+Resource    Used    Hard
+--------    ----    ----
+cpu         500m    10
+memory      300Mi   1Gi
+
+
+Name:                   count-quota
+Namespace:              schedule-demo
+Resource                Used  Hard
+--------                ----  ----
+pods                    1     3
+replicationcontrollers  1     5
+services                1     2
+</code></pre>
+<p>An active quota can be deleted by name using the kubectl delete command:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl delete resourcequota QUOTA
+</code></pre>
+<p>When a quota is first created in a namespace, the namespace restricts the ability to create any new resources that might violate a quota constraint until it has calculated updated usage statistics. After a quota is created and usage statistics are up-to-date, the namespace accepts the creation of new resources. When creating a new resource, the quota usage immediately increments. When deleting a resource, the quota use decrements during the next full recalculation of quota statistics for the namespace.</p>
+<p>Quotas are applied to new resources, but they do not affect existing resources. For example, if you create a quota to limit a namespace to 15 pods, but 20 pods are already running, then the quota will not remove the additional 5 pods that exceed the quota.</p>
+<blockquote>
+<p><strong>IMPORTANT</strong>:</p>
+<p>ResourceQuota constraints are applied for the namespace as a whole, but many Kubernetes processes, such as builds and deployments, create pods inside the namespace and might fail because starting them would exceed the namespace quota.</p>
+<p>If a modification to a namespace exceeds the quota for a resource count, then Kubernetes denies the action and returns an appropriate error message to the user.
+However, if the modification exceeds the quota for a compute resource, then the operation does not fail immediately; Kubernetes retries the operation several times, giving the administrator an opportunity to increase the quota or to perform another corrective action, such as bringing a new node online.</p>
+</blockquote>
+<blockquote>
+<p><strong>IMPORTANT</strong>:</p>
+<p>If a quota that restricts usage of compute resources for a namespace is set, then Kubernetes refuses to create pods that do not specify resource requests or resource limits for that compute resource.
+To use most templates and builders with a namespace restricted by quotas, the namespace must also contain a limit range resource that specifies default values for container resource requests.</p>
+</blockquote>
+<h2 id="applying-limit-ranges">Applying Limit Ranges</h2>
+<p>A LimitRange resource, also called a limit, defines the default, minimum, and maximum values for compute resource requests, and the limits for a single pod or container defined inside the namespace. A resource request or limit for a pod is the sum of its containers.</p>
+<p>To understand the difference between a limit range and a resource quota, consider that a limit range defines valid ranges and default values for a single pod, and a resource quota defines only top values for the sum of all pods in a namespace. A cluster administrator concerned about resource usage in a Kubernetes cluster usually defines both limits and quotas for a namespace.</p>
+<p>A limit range resource can also define default, minimum, and maximum values for the storage capacity requested by an image, image stream, or persistent volume claim. If a resource that is added to a namespace does not provide a compute resource request, then it takes the default value provided by the limit ranges for the namespace. If a new resource provides compute resource requests or limits that are smaller than the minimum specified by the namespace limit ranges, then the resource is not created. Similarly, if a new resource provides compute resource requests or limits that are higher than the maximum specified by the namespace limit ranges, then the resource is not created.</p>
+<p>The following listing shows a limit range defined using YAML syntax:</p>
+<pre><code class="language-yaml">apiVersion: &quot;v1&quot;
+kind: &quot;LimitRange&quot;
+metadata:
+  name: &quot;dev-limits&quot;
+spec:
+  limits:
+    - type: &quot;Pod&quot;
+      max:  &lt;1&gt;
+        cpu: &quot;500m&quot;
+        memory: &quot;750Mi&quot;
+      min:  &lt;2&gt;
+        cpu: &quot;10m&quot;
+        memory: &quot;5Mi&quot;
+    - type: &quot;Container&quot;
+      max:  &lt;3&gt;
+        cpu: &quot;500m&quot;
+        memory: &quot;750Mi&quot;
+      min:  &lt;4&gt;
+        cpu: &quot;10m&quot;
+        memory: &quot;5Mi&quot;
+      default:  &lt;5&gt;
+        cpu: &quot;100m&quot;
+        memory: &quot;100Mi&quot;
+      defaultRequest:  &lt;6&gt;
+        cpu: &quot;20m&quot;
+        memory: &quot;20Mi&quot;
+    - type: &quot;PersistentVolumeClaim&quot;  &lt;7&gt;
+      min:
+        storage: &quot;1Gi&quot;
+      max:
+        storage: &quot;50Gi&quot;
+</code></pre>
+<ol>
+<li>
+<p>The maximum amount of CPU and memory that all containers within a pod can consume.
+A new pod that exceeds the maximum limits is not created.
+An existing pod that exceeds the maximum limits is restarted.</p>
+</li>
+<li>
+<p>The minimum amount of CPU and memory consumed across all containers within a pod.
+A pod that does not satisfy the minimum requirements is not created.
+Because many pods only have one container, you might set the minimum pod values to the same values as the minimum container values.</p>
+</li>
+<li>
+<p>The maximum amount of CPU and memory that an individual container within a pod can consume.
+A new container that exceeds the maximum limits does not create the associated pod.
+An existing container that exceeds the maximum limits restarts the entire pod.</p>
+</li>
+<li>
+<p>The minimum amount of CPU and memory that an individual container within a pod can consume.
+A container that does not satisfy the minimum requirements prevents the associated pod from being created.</p>
+</li>
+<li>
+<p>The default maximum amount of CPU and memory that an individual container can consume.
+This is used when a CPU resource limit or a memory limit is not defined for the container.</p>
+</li>
+<li>
+<p>The default CPU and memory an individual container requests.
+This default is used when a CPU resource request or a memory request is not defined for the container.
+If CPU and memory quotas are enabled for a namespace, then configuring the defaultRequest section allows pods to start, even if the containers do not specify resource requests.</p>
+</li>
+<li>
+<p>The minimum and maximum sizes allowed for a persistent volume claim.</p>
+</li>
+</ol>
+<p>Users can create a limit range resource in the same way as any other Kubernetes resource; that is, by passing a YAML or JSON resource definition file to the kubectl create command:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl create --save-config -f dev-limits.yml
+</code></pre>
+<p>Use the kubectl describe limitrange command to view the limit constraints enforced in a namespace:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl describe limitrange dev-limits
+Name:       dev-limits
+Namespace:  schedule-demo
+Type                      Resource                 Min  Max    Default Request ...
+----                      --------                 ---  ---    --------------- ...
+Pod                       cpu                      10m  500m   -               ...
+Pod                       memory                   5Mi  750Mi  -               ...
+Container                 memory                   5Mi  750Mi  20Mi            ...
+Container                 cpu                      10m  500m   20m             ...
+PersistentVolumeClaim     storage                  1Gi  50Gi   -               ...
+</code></pre>
+<p>An active limit range can be deleted by name with the kubectl delete command:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl delete limitrange dev-limits
+</code></pre>
+<p>After a limit range is created in a namespace, all requests to create new resources are evaluated against each limit range resource in the namespace. If the new resource violates the minimum or maximum constraint enumerated by any limit range, then the resource is rejected. If the new resource does not set an explicit value, and the constraint supports a default value, then the default value is applied to the new resource as its usage value.</p>
+<p>All resource update requests are also evaluated against each limit range resource in the namespace. If the updated resource violates any constraint, then the update is rejected.</p>
+<blockquote>
+<p><strong>IMPORTANT</strong>:</p>
+<p>Avoid setting LimitRange constraints that are too high, or ResourceQuota constraints that are too low.
+A violation of LimitRange constraints prevents pod creation, resulting in error messages.
+A violation of ResourceQuota constraints prevents a pod from being scheduled to any node.
+The pod might be created but remain in the pending state.</p>
+</blockquote>
+
+  </div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+          &nbsp;&bull;&nbsp;
+          2020
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://tonejito.github.io/">Kubernetes By Example</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.91.2</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://tonejito.github.io/kbe//js/main.js"></script>
+<script>
+
+$('.language-test').parent().css('display', 'none')
+
+
+var copybtns = {
+  fallbackCopyTextToClipboard: function (text) {
+    var txt = document.createElement("textarea");
+    txt.value = text;
+    
+    
+    txt.style.position = "fixed";
+    txt.style.top = "0";
+    txt.style.left = "0";
+  
+    document.body.appendChild(txt);
+    txt.focus();
+    txt.select();
+    txt.setSelectionRange(0, 99999);
+  
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+    } catch (err) {
+      console.error('Fallback: Unable to copy', err);
+    }
+  
+    document.body.removeChild(txt);
+  },
+  copyTextToClipboard: function (text) {
+    if (!navigator.clipboard) {
+      copybtns.fallbackCopyTextToClipboard(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+      
+    }, function(err) {
+      
+      copybtns.fallbackCopyTextToClipboard(text);
+    });
+  },
+  flash: function(btn, content){
+    
+    content.fadeTo(50, 0.25, function() { $(this).fadeTo(300, 1.0); });
+    
+    btn.fadeTo(50, 0.0, function() { $(this).fadeTo(900, 1.0); });
+  },
+  txtClick : function(){
+    var content = $(this);
+    var btn = content.prev('button');
+    
+    copybtns.flash(btn, content);
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  btnClick : function(){
+    var btn = $(this);
+    var content = $(btn.next().children()[0]);
+    
+    copybtns.flash(btn, content)
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  init : function() {
+    var buttonHTML = '<button type="button" data-toggle="tooltip" data-placement="top" title="Copy" class="copybtn btn btn-outline-dark"><img src="https:\/\/tonejito.github.io\/kbe\//img/Icon-Red_Hat-Media_and_documents-Paper_Stack_Blank-A-Black-RGB.png"/></button>';
+    
+    $('div.highlight').prepend(buttonHTML);
+    
+    $('button.copybtn').bind("click", copybtns.btnClick);
+    $('div.highlight pre').bind("click", copybtns.txtClick);
+  }
+}
+copybtns.init();
+</script>
+<script src="https://tonejito.github.io/kbe//js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-34425776-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+<div class="watermark-container">
+  <div class="watermark">
+    For testing purposes only
+  </div>
+  <div style="clear: both;"></div>
+</div>
+
+
+
+  </body>
+</html>
+

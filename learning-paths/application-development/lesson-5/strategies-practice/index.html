@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Kubernetes By Example</title>
+  <meta property="og:title" content="Kubernetes By Example" />
+  <meta name="twitter:title" content="Kubernetes By Example" />
+  <meta name="description" content="Guided Exercise: Implementing Cloud Deployment Strategies Outcomes You should be able to:
+  Deploy an application container with several replicas.
+  Review the structure of the Deployment resource manifest.
+  Update the application to a new version without losing availability.
+  Prerequisites You need a working Kubernetes cluster, and your kubectl command must be configured to communicate with the cluster.
+Make sure your kubectl context refers to a namespace where you have enough permissions, usually username-dev or username-stage.">
+  <meta property="og:description" content="Guided Exercise: Implementing Cloud Deployment Strategies Outcomes You should be able to:
+  Deploy an application container with several replicas.
+  Review the structure of the Deployment resource manifest.
+  Update the application to a new version without losing availability.
+  Prerequisites You need a working Kubernetes cluster, and your kubectl command must be configured to communicate with the cluster.
+Make sure your kubectl context refers to a namespace where you have enough permissions, usually username-dev or username-stage.">
+  <meta name="twitter:description" content="Guided Exercise: Implementing Cloud Deployment Strategies Outcomes You should be able to:
+  Deploy an application container with several replicas.
+  Review the structure of the Deployment resource …">
+  <meta name="author" content=""/>
+  <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-5/strategies-practice/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kubernetes By Example" />
+
+  <meta name="generator" content="Hugo 0.91.2" />
+  <link rel="canonical" href="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-5/strategies-practice/" />
+  <link rel="alternate" href="https://tonejito.github.io/index.xml" type="application/rss+xml" title="Kubernetes By Example">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/main.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/pygment_highlights.css" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/highlight.min.css" />
+<link rel="stylesheet" type="text/css" href="https://tonejito.github.io/kbe/css/custom.css">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WNHKJNX');</script>
+  
+</head>
+
+  <body>
+    
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WNHKJNX"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
+
+  
+
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://tonejito.github.io/">Home</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
+                
+                  <a href="/kbe/topics/istio/istio/">Istio</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Concepts</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/concepts/pods">Pods</a>
+                
+                  <a href="/kbe/concepts/labels">Labels</a>
+                
+                  <a href="/kbe/concepts/deployments">Deployments</a>
+                
+                  <a href="/kbe/concepts/services">Services</a>
+                
+                  <a href="/kbe/concepts/port-forwarding">Port Forwarding</a>
+                
+                  <a href="/kbe/concepts/health-checks">Health Checks</a>
+                
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
+                
+                  <a href="/kbe/concepts/namespaces">Namespaces</a>
+                
+                  <a href="/kbe/concepts/volumes">Volumes</a>
+                
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
+                
+                  <a href="/kbe/concepts/secrets">Secrets</a>
+                
+                  <a href="/kbe/concepts/logging">Logging</a>
+                
+                  <a href="/kbe/concepts/jobs">Jobs</a>
+                
+                  <a href="/kbe/concepts/nodes">Nodes</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/sd/">Service Discovery</a>
+                
+                  <a href="/kbe/pf/">Port Forward</a>
+                
+                  <a href="/kbe/statefulset/">Stateful Sets</a>
+                
+                  <a href="/kbe/ic/">Init Containers</a>
+                
+                  <a href="/kbe/api/">API Server</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Try out!" href="/kbe/diy/">Try out!</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="Kubernetes By Example" href="https://tonejito.github.io/">
+            <img class="avatar-img" src="https://tonejito.github.io/kbe//img/kbe-logo.png" alt="Kubernetes By Example" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  <div class="intro-header"></div>
+
+
+    
+  <div class="container" role="main">
+    <!-- https://kubebyexample.com/en/learning-paths/application-development-kubernetes/lesson-5-implementing-cloud-deployment-0 -->
+<h1 id="guided-exercise-implementing-cloud-deployment-strategies">Guided Exercise: Implementing Cloud Deployment Strategies</h1>
+<h2 id="outcomes">Outcomes</h2>
+<p>You should be able to:</p>
+<ul>
+<li>
+<p>Deploy an application container with several replicas.</p>
+</li>
+<li>
+<p>Review the structure of the Deployment resource manifest.</p>
+</li>
+<li>
+<p>Update the application to a new version without losing availability.</p>
+</li>
+</ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>You need a working Kubernetes cluster, and your kubectl command must be configured to communicate with the cluster.</p>
+<p>Make sure your kubectl context refers to a namespace where you have enough permissions, usually username-dev or username-stage. Use the kubectl config set-context &ndash;current &ndash;namespace=namespace command to switch to the appropriate namespace.</p>
+<h2 id="instructions">Instructions</h2>
+<ol>
+<li>Deploy a Node.js application container to your Kubernetes cluster.</li>
+</ol>
+<p>1.1) Use the kubectl create command to create a new application with the following parameters:</p>
+<blockquote>
+<p><strong>Note</strong>:</p>
+<p>This course uses the backslash character (<code>\</code>) to break long commands.
+On Linux and macOS, you can use the line breaks.</p>
+<p>On Windows, use the backtick character (<code>`</code>) to break long commands.</p>
+<p>Alternatively, do not break long commands.</p>
+</blockquote>
+<pre><code class="language-bash">[user@host ~]$ kubectl create deployment do100-multi-version \
+--replicas=5 \
+--image quay.io/redhattraining/do100-multi-version:v1
+deployment.apps/do100-multi-version created
+</code></pre>
+<p>1.2) Wait until the pod is deployed. The pod should be in the READY state.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get pods
+NAME                                   READY   STATUS    RESTARTS      AGE
+do100-multi-version-788cb59f94-54lcz   1/1     Running   0               4s
+do100-multi-version-788cb59f94-cv4dd   1/1     Running   0               4s
+do100-multi-version-788cb59f94-nt2lh   1/1     Running   0               4s
+do100-multi-version-788cb59f94-snx4f   1/1     Running   0               4s
+do100-multi-version-788cb59f94-x7k7n   1/1     Running   0               4s
+</code></pre>
+<p>Note that the exact names of your pods will likely differ from the previous example.</p>
+<p>1.3) Review the application logs to see the running version.</p>
+<pre><code class="language-bash">[user@host ~] kubectl logs deploy/do100-multi-version
+Found 5 pods, using pod/do100-multi-version-788cb59f94-54lcz
+
+&gt; multi-version@1.0.0 start /opt/app-root/src
+&gt; node app.js
+
+do100-multi-version server running version 1.0 on http://0.0.0.0:8080
+</code></pre>
+<p>Note the version number that the application logs.</p>
+<ol start="2">
+<li>Edit the deployment to change the application version and add a readiness probe.</li>
+</ol>
+<p>2.1) Verify that the deployment strategy for the application is RollingUpdate:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl describe deploy/do100-multi-version...output omitted...
+StrategyType:           RollingUpdate
+...output omitted...
+</code></pre>
+<p>2.2) Use kubectl edit to modify the deployment resource.</p>
+<pre><code class="language-bash">[user@host ~] kubectl edit deployment/do100-multi-version...output omitted...
+</code></pre>
+<p>2.3) Update the version of the image to v2. Additionally, configure a readiness probe so that you can watch the new deployment as it happens.</p>
+<p>Your deployment resource should look like the following:</p>
+<pre><code class="language-yaml">...output omitted...
+spec:
+  ...output omitted...
+  template:
+    ...output omitted...
+    spec:
+      containers:
+      - image: quay.io/redhattraining/do100-multi-version: v2...output omitted...
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 2
+          timeoutSeconds: 2
+</code></pre>
+<p>When you are done, save your changes and close the editor.</p>
+<ol start="3">
+<li>Verify that the new version of the application is deployed via the rolling deployment strategy.</li>
+</ol>
+<p>3.1) Watch the pods as Kubernetes redeploys the application.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get pods -w
+NAME                                   READY   STATUS              RESTARTS   AGE
+do100-multi-version-788cb59f94-54lcz   1/1     Running             0          5m28s
+...output omitted...
+do100-multi-version-8477f6f4bb-lnlcz   0/1     ContainerCreating   0          3s
+...output omitted...
+do100-multi-version-8477f6f4bb-lnlcz   0/1     Running             0          5s
+do100-multi-version-8477f6f4bb-lnlcz   1/1     Running             0          40s
+...output omitted...
+do100-multi-version-788cb59f94-54lcz   0/1     Terminating         0          6m8s
+...output omitted...
+</code></pre>
+<p>As the new application pods start and become ready, pods running the older version are terminated. Note that the application takes about thirty seconds to enter the ready state.</p>
+<p>Press <code>Ctrl+C</code> to stop the command.</p>
+<p>3.2) View the logs of the new version of the application.</p>
+<pre><code class="language-bash">[user@host ~] kubectl logs deploy/do100-multi-version
+Found 5 pods, using pod/do100-multi-version-8477f6f4bb-9h5xl
+
+&gt; multi-version@1.0.0 start /opt/app-root/src
+&gt; node app.js
+
+do100-multi-version server running version 2.0 on http://0.0.0.0:8080
+</code></pre>
+<h2 id="finish">Finish</h2>
+<p>Delete the deployment to clean your cluster. Kubernetes automatically deletes the associated pods.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl delete deploy/do100-multi-version
+deployment.apps &quot;do100-multi-version&quot; deleted
+</code></pre>
+
+  </div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+          &nbsp;&bull;&nbsp;
+          2020
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://tonejito.github.io/">Kubernetes By Example</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.91.2</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://tonejito.github.io/kbe//js/main.js"></script>
+<script>
+
+$('.language-test').parent().css('display', 'none')
+
+
+var copybtns = {
+  fallbackCopyTextToClipboard: function (text) {
+    var txt = document.createElement("textarea");
+    txt.value = text;
+    
+    
+    txt.style.position = "fixed";
+    txt.style.top = "0";
+    txt.style.left = "0";
+  
+    document.body.appendChild(txt);
+    txt.focus();
+    txt.select();
+    txt.setSelectionRange(0, 99999);
+  
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+    } catch (err) {
+      console.error('Fallback: Unable to copy', err);
+    }
+  
+    document.body.removeChild(txt);
+  },
+  copyTextToClipboard: function (text) {
+    if (!navigator.clipboard) {
+      copybtns.fallbackCopyTextToClipboard(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+      
+    }, function(err) {
+      
+      copybtns.fallbackCopyTextToClipboard(text);
+    });
+  },
+  flash: function(btn, content){
+    
+    content.fadeTo(50, 0.25, function() { $(this).fadeTo(300, 1.0); });
+    
+    btn.fadeTo(50, 0.0, function() { $(this).fadeTo(900, 1.0); });
+  },
+  txtClick : function(){
+    var content = $(this);
+    var btn = content.prev('button');
+    
+    copybtns.flash(btn, content);
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  btnClick : function(){
+    var btn = $(this);
+    var content = $(btn.next().children()[0]);
+    
+    copybtns.flash(btn, content)
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  init : function() {
+    var buttonHTML = '<button type="button" data-toggle="tooltip" data-placement="top" title="Copy" class="copybtn btn btn-outline-dark"><img src="https:\/\/tonejito.github.io\/kbe\//img/Icon-Red_Hat-Media_and_documents-Paper_Stack_Blank-A-Black-RGB.png"/></button>';
+    
+    $('div.highlight').prepend(buttonHTML);
+    
+    $('button.copybtn').bind("click", copybtns.btnClick);
+    $('div.highlight pre').bind("click", copybtns.txtClick);
+  }
+}
+copybtns.init();
+</script>
+<script src="https://tonejito.github.io/kbe//js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-34425776-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+<div class="watermark-container">
+  <div class="watermark">
+    For testing purposes only
+  </div>
+  <div style="clear: both;"></div>
+</div>
+
+
+
+  </body>
+</html>
+

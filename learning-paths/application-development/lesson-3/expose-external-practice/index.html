@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Kubernetes By Example</title>
+  <meta property="og:title" content="Kubernetes By Example" />
+  <meta name="twitter:title" content="Kubernetes By Example" />
+  <meta name="description" content="Guided Exercise: Exposing Applications for External Access In this exercise you will provide external access to a service running inside your Kubernetes cluster.
+Outcomes You should be able to:
+  Verify that the service IP address and the associated pod IP addresses for an application are not accessible outside of the cluster.
+  Create an ingress resource to provide external access to an application service.
+  Confirm that the ingress redirects traffic to the service.">
+  <meta property="og:description" content="Guided Exercise: Exposing Applications for External Access In this exercise you will provide external access to a service running inside your Kubernetes cluster.
+Outcomes You should be able to:
+  Verify that the service IP address and the associated pod IP addresses for an application are not accessible outside of the cluster.
+  Create an ingress resource to provide external access to an application service.
+  Confirm that the ingress redirects traffic to the service.">
+  <meta name="twitter:description" content="Guided Exercise: Exposing Applications for External Access In this exercise you will provide external access to a service running inside your Kubernetes cluster.
+Outcomes You should be able to: …">
+  <meta name="author" content=""/>
+  <link href='https://tonejito.github.io/kbe/img/kbe-logo.ico' rel='icon' type='image/x-icon'/>
+  <meta property="og:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:image" content="https://tonejito.github.io/kbe/img/kbe-logo.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-external-practice/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kubernetes By Example" />
+
+  <meta name="generator" content="Hugo 0.91.2" />
+  <link rel="canonical" href="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-external-practice/" />
+  <link rel="alternate" href="https://tonejito.github.io/index.xml" type="application/rss+xml" title="Kubernetes By Example">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/main.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/pygment_highlights.css" />
+  <link rel="stylesheet" href="https://tonejito.github.io/kbe//css/highlight.min.css" />
+<link rel="stylesheet" type="text/css" href="https://tonejito.github.io/kbe/css/custom.css">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WNHKJNX');</script>
+  
+</head>
+
+  <body>
+    
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WNHKJNX"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom" style="padding: 0px">
+
+  
+
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://tonejito.github.io/">Home</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Other topics</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/topics/metallb/metallb/">MetalLB</a>
+                
+                  <a href="/kbe/topics/istio/istio/">Istio</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Concepts</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/concepts/pods">Pods</a>
+                
+                  <a href="/kbe/concepts/labels">Labels</a>
+                
+                  <a href="/kbe/concepts/deployments">Deployments</a>
+                
+                  <a href="/kbe/concepts/services">Services</a>
+                
+                  <a href="/kbe/concepts/port-forwarding">Port Forwarding</a>
+                
+                  <a href="/kbe/concepts/health-checks">Health Checks</a>
+                
+                  <a href="/kbe/concepts/environment-variables">Environment Variables</a>
+                
+                  <a href="/kbe/concepts/namespaces">Namespaces</a>
+                
+                  <a href="/kbe/concepts/volumes">Volumes</a>
+                
+                  <a href="/kbe/concepts/persistent-volumes">Persistent Volumes</a>
+                
+                  <a href="/kbe/concepts/secrets">Secrets</a>
+                
+                  <a href="/kbe/concepts/logging">Logging</a>
+                
+                  <a href="/kbe/concepts/jobs">Jobs</a>
+                
+                  <a href="/kbe/concepts/nodes">Nodes</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">Hands-on Examples</a>
+              <div class="navlinks-children">
+                
+                  <a href="/kbe/sd/">Service Discovery</a>
+                
+                  <a href="/kbe/pf/">Port Forward</a>
+                
+                  <a href="/kbe/statefulset/">Stateful Sets</a>
+                
+                  <a href="/kbe/ic/">Init Containers</a>
+                
+                  <a href="/kbe/api/">API Server</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Contribute" href="https://github.com/openshift-evangelists/kbe.git">Contribute</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Try out!" href="/kbe/diy/">Try out!</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="Kubernetes By Example" href="https://tonejito.github.io/">
+            <img class="avatar-img" src="https://tonejito.github.io/kbe//img/kbe-logo.png" alt="Kubernetes By Example" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  <div class="intro-header"></div>
+
+
+    
+  <div class="container" role="main">
+    <!-- https://kubebyexample.com/en/learning-paths/application-development-kubernetes/lesson-3-networking-kubernetes/guided-exercise-0 -->
+<h1 id="guided-exercise-exposing-applications-for-external-access">Guided Exercise: Exposing Applications for External Access</h1>
+<p>In this exercise you will provide external access to a service running inside your Kubernetes cluster.</p>
+<h2 id="outcomes">Outcomes</h2>
+<p>You should be able to:</p>
+<ul>
+<li>
+<p>Verify that the service IP address and the associated pod IP addresses for an application are not accessible outside of the cluster.</p>
+</li>
+<li>
+<p>Create an ingress resource to provide external access to an application service.</p>
+</li>
+<li>
+<p>Confirm that the ingress redirects traffic to the service.</p>
+</li>
+</ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>You need a working Kubernetes cluster with the following:</p>
+<ul>
+<li>
+<p>Your kubectl command configured to communicate with the cluster.</p>
+</li>
+<li>
+<p>An ingress controller enabled in your cluster and the associated domain name mapping.</p>
+</li>
+<li>
+<p>Your Kubernetes context referring to your cluster and using the username-dev namespace.</p>
+</li>
+</ul>
+<p>Review <a href="">Guided Exercise: Contrasting Kubernetes Distributions</a> for a comprehensive guide to install and enable ingress in your Kubernetes cluster.</p>
+<h2 id="instructions">Instructions</h2>
+<ol>
+<li>Deploy a sample hello application. The hello app displays a greeting and its local IP address. When running under Kubernetes, this is the IP address assigned to its pod.</li>
+</ol>
+<p>Create a new deployment named hello that uses the container image located at quay.io/redhattraining/do100-hello-ip:v1.0 in the username-dev namespace. Configure the deployment to use three pods.</p>
+<p>1.1) Create the hello deployment with three replicas. Use the container image located at quay.io/redhattraining/do100-hello-ip:v1.0. This container image simply displays the IP address of its associated pod.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl create deployment hello --replicas 3 \
+    --image quay.io/redhattraining/do100-hello-ip:v1.0
+deployment.apps/hello created
+</code></pre>
+<p>Run the kubectl get pods -w command to verify that three pods are running. Press Ctrl+C to exit the kubectl command after all three hello pods display the Running status.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get pods -w
+NAME                     READY   STATUS              RESTARTS   ...
+hello-5f87ddc987-76hxn   0/1     ContainerCreating   0          ...
+hello-5f87ddc987-j8bbv   0/1     ContainerCreating   0          ...
+hello-5f87ddc987-ndbk5   0/1     ContainerCreating   0          ...
+hello-5f87ddc987-j8bbv   1/1     Running             0          ...
+hello-5f87ddc987-ndbk5   1/1     Running             0          ...
+hello-5f87ddc987-76hxn   1/1     Running             0          ...
+</code></pre>
+<p>1.2) Create a service for the hello deployment that redirects to pod port 8080.</p>
+<p>Run the kubectl expose command to create a service that redirects to the hello deployment. Configure the service to listen on port 8080 and redirect to port 8080 within the pod.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl expose deployment/hello --port 8080
+service/hello exposed
+</code></pre>
+<p>Verify that Kubernetes created the service:</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get service/hello
+NAME    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    ...
+hello   ClusterIP   10.103.208.46   &lt;none&gt;        8080/TCP   ...
+</code></pre>
+<p>Note that the IP associated to the service is private to the Kubernetes cluster, You can not access that IP directly.</p>
+<ol start="2">
+<li>Create an ingress resource that directs external traffic to the hello service.</li>
+</ol>
+<p>2.1) Use a text editor to create a file in your current directory named ingress-hello.yml.</p>
+<p>Create the ingress-hello.yml file with the following content. Ensure correct indentation (using spaces rather than tabs) and then save the file.</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello
+  labels:
+    app: hello
+spec:
+  rules:
+    - host: INGRESS-HOST
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hello
+                port:
+                  number: 8080
+</code></pre>
+<p>Replace INGRESS-HOST by the host name associated to your Kubernetes cluster, such as hello.example.com or hello-username-dev.apps.sandbox.x8i5.p1.openshiftapps.com. If you are unsure of the host name to use then refer to Guided Exercise: Contrasting Kubernetes Distributions to find the appropriate value.</p>
+<p>The file at <a href="https://github.com/RedHatTraining/DO100-apps/blob/main/network/ingress-hello.yml">https://github.com/RedHatTraining/DO100-apps/blob/main/network/ingress-hello.yml</a> contains the correct content for the ingress-hello.yml file. You can download the file and use it for comparison.</p>
+<p>2.2) Use the kubectl create command to create the ingress resource.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl create -f ingress-hello.yml
+ingress.networking.k8s.io/hello created
+</code></pre>
+<p>2.3) Display information about the hello ingress. If the command does not display an IP address, then wait up to a minute and try running the command again.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get ingress/hello
+NAME    CLASS    HOSTS               ADDRESS        PORTS   ...
+hello   &lt;none&gt;   hello.example.com   192.168.64.7   80      ...
+</code></pre>
+<p>The value in the HOST column matches the host line specified in your ingress-hello.yml file. Your IP address is likely different from the one displayed here.</p>
+<ol start="3">
+<li>Verify that the ingress resource successfully provides access to the hello service and the pods associated with the service.</li>
+</ol>
+<p>3.1) Access the domain name specified by your ingress resource.</p>
+<p>Use the curl command to access the domain name associated to your ingress controller. Repeat the same command multiple times and note the IP of the responding pod replica varies:</p>
+<pre><code class="language-bash">[user@host ~]$ curl hello.example.com
+Hello from IP: 172.17.0.5
+
+[user@host ~]$ curl hello.example.com
+Hello from IP: 172.17.0.5
+
+[user@host ~]$ curl hello.example.com
+Hello from IP: 172.17.0.6
+
+[user@host ~]$ curl hello.example.com
+Hello from IP: 172.17.0.6
+
+[user@host ~]$ curl hello.example.com
+Hello from IP: 172.17.0.4
+
+[user@host ~]$ curl hello.example.com
+Hello from IP: 172.17.0.4
+</code></pre>
+<p>The hello ingress queries the hello service to identify the IP addresses of the pod endpoints. The hello ingress then uses round robin load balancing to spread the requests among the available pods, and each pod responds to the curl command with the pod IP address.</p>
+<p>Optionally, open a web browser and navigate to the wildcard domain name. The web browser displays a message similar to the following.</p>
+<pre><code class="language-text">Hello from IP: 172.17.0.6
+</code></pre>
+<p>Refresh you browser window to repeat the request and see different responses.</p>
+<p>Note</p>
+<p>Because load balancers frequently create an association between a web client and a server (one of the hello pods in this case), reloading the web page is unlikely to display a different IP address. This association, sometimes referred to as a sticky session, does not apply to the curl command.</p>
+<h2 id="finish">Finish</h2>
+<p>Delete the created resources that have the app=hello label.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl delete deployment,service,ingress -l app=hello
+deployment.apps &quot;hello&quot; deleted
+service &quot;hello&quot; deleted
+ingress.networking.k8s.io &quot;hello&quot; deleted
+</code></pre>
+<p>Verify that no resources with the app=hello label exist in the current namespace.</p>
+<pre><code class="language-bash">[user@host ~]$ kubectl get deployment,service,ingress -l app=hello
+No resources found in username-dev namespace.
+</code></pre>
+<p>This concludes the guided exercise.</p>
+
+  </div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+          &nbsp;&bull;&nbsp;
+          2020
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://tonejito.github.io/">Kubernetes By Example</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.91.2</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://tonejito.github.io/kbe//js/main.js"></script>
+<script>
+
+$('.language-test').parent().css('display', 'none')
+
+
+var copybtns = {
+  fallbackCopyTextToClipboard: function (text) {
+    var txt = document.createElement("textarea");
+    txt.value = text;
+    
+    
+    txt.style.position = "fixed";
+    txt.style.top = "0";
+    txt.style.left = "0";
+  
+    document.body.appendChild(txt);
+    txt.focus();
+    txt.select();
+    txt.setSelectionRange(0, 99999);
+  
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+    } catch (err) {
+      console.error('Fallback: Unable to copy', err);
+    }
+  
+    document.body.removeChild(txt);
+  },
+  copyTextToClipboard: function (text) {
+    if (!navigator.clipboard) {
+      copybtns.fallbackCopyTextToClipboard(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+      
+    }, function(err) {
+      
+      copybtns.fallbackCopyTextToClipboard(text);
+    });
+  },
+  flash: function(btn, content){
+    
+    content.fadeTo(50, 0.25, function() { $(this).fadeTo(300, 1.0); });
+    
+    btn.fadeTo(50, 0.0, function() { $(this).fadeTo(900, 1.0); });
+  },
+  txtClick : function(){
+    var content = $(this);
+    var btn = content.prev('button');
+    
+    copybtns.flash(btn, content);
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  btnClick : function(){
+    var btn = $(this);
+    var content = $(btn.next().children()[0]);
+    
+    copybtns.flash(btn, content)
+    
+    copybtns.copyTextToClipboard(content.text());
+  },
+  init : function() {
+    var buttonHTML = '<button type="button" data-toggle="tooltip" data-placement="top" title="Copy" class="copybtn btn btn-outline-dark"><img src="https:\/\/tonejito.github.io\/kbe\//img/Icon-Red_Hat-Media_and_documents-Paper_Stack_Blank-A-Black-RGB.png"/></button>';
+    
+    $('div.highlight').prepend(buttonHTML);
+    
+    $('button.copybtn').bind("click", copybtns.btnClick);
+    $('div.highlight pre').bind("click", copybtns.txtClick);
+  }
+}
+copybtns.init();
+</script>
+<script src="https://tonejito.github.io/kbe//js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-34425776-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+<div class="watermark-container">
+  <div class="watermark">
+    For testing purposes only
+  </div>
+  <div style="clear: both;"></div>
+</div>
+
+
+
+  </body>
+</html>
+

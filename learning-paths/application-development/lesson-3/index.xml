@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kubernetes By Example</title>
+    <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/</link>
+    <description>Recent content on Kubernetes By Example</description>
+    <generator>Hugo -- gohugo.io</generator><atom:link href="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-external-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-external-practice/</guid>
+      <description>Guided Exercise: Exposing Applications for External Access In this exercise you will provide external access to a service running inside your Kubernetes cluster.
+Outcomes You should be able to:
+  Verify that the service IP address and the associated pod IP addresses for an application are not accessible outside of the cluster.
+  Create an ingress resource to provide external access to an application service.
+  Confirm that the ingress redirects traffic to the service.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-external/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-external/</guid>
+      <description>Exposing Applications for External Access Objectives After completing this section, you should be able to expose service-backed applications to clients outside the Kubernetes cluster.
+Kubernetes Ingress Kubernetes assigns IP addresses to pods and services. Pod and service IP addresses are not usually accessible outside of the cluster. Unless prevented by network policies, the Kubernetes cluster typically allows internal communication between pods and services. This internal communication allows application pods to interact with services that are not externally accessible, such as database services.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-internal-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-internal-practice/</guid>
+      <description>Guided Exercise: Exposing Applications for Internal Access In this exercise you will deploy two apps in different namespaces. They communicate by using the built-in Kubernetes DNS resolution system.
+Outcomes You should be able to:
+ Create a service using kubectl expose Create a service using a manifest Use DNS resolution for service communication  Prerequisites Ensure that:
+ Minikube and kubectl are running on your machine You have cloned the DO100-apps repository You have executed the setup script  Instructions To illustrate how communication is handled in Kubernetes, you use two applications.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-internal/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-3/expose-internal/</guid>
+      <description>Exposing Applications for Internal Access Objectives After completing this section, you should be able to enable intra-pod network communications for applications deployed in Kubernetes, and learn how to keep communication up even with automatic deployments.
+Kubernetes Networking When pods are created, they are assigned an IP address. You use this IP to access the pod from anywhere within the Kubernetes cluster. Containers inside a pod share the same network space, which means that, within the pod, containers can communicate with each other by using the localhost address.</description>
+    </item>
+    
+  </channel>
+</rss>

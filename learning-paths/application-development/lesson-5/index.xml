@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kubernetes By Example</title>
+    <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-5/</link>
+    <description>Recent content on Kubernetes By Example</description>
+    <generator>Hugo -- gohugo.io</generator><atom:link href="https://tonejito.github.io/kbe/learning-paths/application-development/lesson-5/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-5/strategies-practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-5/strategies-practice/</guid>
+      <description>Guided Exercise: Implementing Cloud Deployment Strategies Outcomes You should be able to:
+  Deploy an application container with several replicas.
+  Review the structure of the Deployment resource manifest.
+  Update the application to a new version without losing availability.
+  Prerequisites You need a working Kubernetes cluster, and your kubectl command must be configured to communicate with the cluster.
+Make sure your kubectl context refers to a namespace where you have enough permissions, usually username-dev or username-stage.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-5/strategies/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://tonejito.github.io/kbe/learning-paths/application-development/lesson-5/strategies/</guid>
+      <description>Implementing Cloud Deployment Strategies Deployment Strategies in Kubernetes A deployment strategy is a method of changing or upgrading an application. The objective is to make changes or upgrades with minimal downtime and with reduced impact on end users.
+Kubernetes provides several deployment strategies. These strategies are organized into two primary categories:
+  By using the deployment strategy defined in the application deployment.
+  By using the Kubernetes router to route traffic to specific application pods.</description>
+    </item>
+    
+  </channel>
+</rss>
